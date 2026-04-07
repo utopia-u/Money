@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>我的记账本</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --ios-bg: #F2F2F7;
+            --ios-card: #FFFFFF;
+            --ios-blue: #007AFF;
+            --ios-red: #FF3B30;
+            --ios-text: #000000;
+            --ios-text-secondary: #8E8E93;
+            --ios-separator: #C6C6C8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--ios-bg);
+            color: var(--ios-text);
+            padding: 20px 16px;
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-left: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .ios-list {
+            background-color: var(--ios-card);
+            border-radius: 10px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .ios-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            position: relative;
+        }
+
+        .ios-list-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 16px;
+            right: 0;
+            height: 0.5px;
+            background-color: var(--ios-separator);
+        }
+
+        .ios-list-item label {
+            font-size: 17px;
+            font-weight: 400;
+        }
+
+        .ios-list-item input {
+            text-align: right;
+            font-size: 17px;
+            color: var(--ios-text-secondary);
+            border: none;
+            outline: none;
+            background: transparent;
+            -webkit-appearance: none;
+            flex: 1;
+            padding-left: 20px;
+        }
+        
+        .ios-list-item input::placeholder {
+            color: #C7C7CC;
+        }
+
+        .ios-button {
+            display: block;
+            width: 100%;
+            background-color: var(--ios-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 14px 0;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .ios-button:active {
+            opacity: 0.7;
+        }
+
+        .calendar-card {
+            background-color: var(--ios-card);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: none;
+            color: var(--ios-blue);
+            font-size: 17px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .calendar-header button:active {
+            opacity: 0.5;
+        }
+
+        /* 标题区域：居中显示月份和总计 */
+        .header-title {
+            text-align: center;
+        }
+
+        .header-title h2 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        /* 本月总计的样式 */
+        .monthly-total {
+            font-size: 13px;
+            color: var(--ios-text-secondary);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            row-gap: 12px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 500;
+            color: var(--ios-text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .day-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 50px;
+            cursor: pointer;
+        }
+
+        .day-number {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--ios-text);
+        }
+
+        .expense-amount {
+            font-size: 11px;
+            color: var(--ios-text-secondary);
+            font-weight: 500;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .today .day-number {
+            background-color: var(--ios-red);
+            color: white;
+            font-weight: 600;
+        }
+
+        .selected .day-number:not(.today .day-number) {
+            background-color: #E5E5EA;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>记账本</h1>
+
+    <div class="ios-list">
+        <div class="ios-list-item">
+            <label for="expense-date">日期</label>
+            <input type="date" id="expense-date" required>
+        </div>
+        <div class="ios-list-item">
+            <label for="expense-amount">金额</label>
+            <input type="number" id="expense-amount" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+    </div>
+
+    <button class="ios-button" onclick="addExpense()">记录一笔</button>
+
+    <div class="calendar-card">
+        <div class="calendar-header">
+            <button onclick="changeMonth(-1)">上月</button>
+            <div class="header-title">
+                <h2 id="current-month-year"></h2>
+                <div id="monthly-total" class="monthly-total"></div>
+            </div>
+            <button onclick="changeMonth(1)">下月</button>
+        </div>
+        <div class="calendar-grid" id="calendar-grid">
+            </div>
+    </div>
+</div>
+
+<script>
+    let currentDate = new Date();
+    let expenseData = JSON.parse(localStorage.getItem('iosExpenses')) || {};
+    let selectedDateStr = ""; 
+
+    const initNow = new Date();
+    const initLocalNow = new Date(initNow.getTime() - (initNow.getTimezoneOffset() * 60000));
+    selectedDateStr = initLocalNow.toISOString().split('T')[0];
+    document.getElementById('expense-date').value = selectedDateStr;
+
+    renderCalendar();
+
+    document.getElementById('expense-date').addEventListener('change', function(e) {
+        selectedDateStr = e.target.value;
+        renderCalendar();
+    });
+
+    function addExpense() {
+        const dateInput = document.getElementById('expense-date').value;
+        const amountInput = parseFloat(document.getElementById('expense-amount').value);
+
+        if (!dateInput) {
+            alert("请选择日期");
+            return;
+        }
+        if (isNaN(amountInput) || amountInput <= 0) {
+            alert("请输入有效金额");
+            return;
+        }
+
+        if (expenseData[dateInput]) {
+            expenseData[dateInput] += amountInput;
+        } else {
+            expenseData[dateInput] = amountInput;
+        }
+
+        localStorage.setItem('iosExpenses', JSON.stringify(expenseData));
+        document.getElementById('expense-amount').value = '';
+        renderCalendar();
+    }
+
+    function changeMonth(delta) {
+        currentDate.setMonth(currentDate.getMonth() + delta);
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        document.getElementById('current-month-year').innerText = `${year}年 ${month + 1}月`;
+
+        // 计算当前月份的总支出
+        let monthlyTotal = 0;
+        const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+        for (const date in expenseData) {
+            if (date.startsWith(monthPrefix)) {
+                monthlyTotal += expenseData[date];
+            }
+        }
+        // 更新总计显示
+        document.getElementById('monthly-total').innerText = `总计: ¥${monthlyTotal.toFixed(2)}`;
+
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = ''; 
+
+        const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+        weekdays.forEach(day => {
+            const div = document.createElement('div');
+            div.className = 'weekday';
+            div.innerText = day;
+            grid.appendChild(div);
+        });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'day-cell empty';
+            grid.appendChild(emptyCell);
+        }
+
+        const now = new Date();
+        const localNow = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
+        const todayStr = localNow.toISOString().split('T')[0];
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cell = document.createElement('div');
+            cell.className = 'day-cell';
+            
+            const monthStr = String(month + 1).padStart(2, '0');
+            const dayStr = String(day).padStart(2, '0');
+            const dateString = `${year}-${monthStr}-${dayStr}`;
+
+            if (dateString === todayStr) {
+                cell.classList.add('today');
+            }
+            if (dateString === selectedDateStr) {
+                cell.classList.add('selected');
+            }
+
+            const dayNum = document.createElement('div');
+            dayNum.className = 'day-number';
+            dayNum.innerText = day;
+            cell.appendChild(dayNum);
+
+            if (expenseData[dateString]) {
+                const amountDiv = document.createElement('div');
+                amountDiv.className = 'expense-amount';
+                const amount = expenseData[dateString];
+                amountDiv.innerText = amount % 1 === 0 ? `¥${amount}` : `¥${amount.toFixed(2)}`;
+                cell.appendChild(amountDiv);
+            }
+
+            cell.onclick = () => {
+                selectedDateStr = dateString;
+                document.getElementById('expense-date').value = dateString;
+                renderCalendar(); 
+                document.getElementById('expense-amount').focus();
+            };
+
+            grid.appendChild(cell);
+        }
+    }
+</script>
+
+</body>
+</html>
