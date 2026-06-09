@@ -2,372 +2,500 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>我的记账本</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阶梯单量单价计算器</title>
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
-            --ios-blue: #007AFF;
-            --ios-red: #FF3B30;
-            --ios-text: #000000;
-            --ios-text-secondary: #8E8E93;
-            --ios-separator: #C6C6C8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--ios-bg);
-            color: var(--ios-text);
-            padding: 20px 16px;
-            padding-top: max(20px, env(safe-area-inset-top));
-            padding-bottom: max(20px, env(safe-area-inset-bottom));
-            display: flex;
-            justify-content: center;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px 10px;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 600px;
-            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-left: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .ios-list {
-            background-color: var(--ios-card);
-            border-radius: 10px;
+        header {
+            text-align: center;
             margin-bottom: 24px;
-            overflow: hidden;
         }
 
-        .ios-list-item {
+        header h1 {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            position: relative;
+            align-items: center;
         }
 
-        .ios-list-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 16px;
-            right: 0;
-            height: 0.5px;
-            background-color: var(--ios-separator);
+        .form-group {
+            margin-bottom: 16px;
         }
 
-        .ios-list-item label {
-            font-size: 17px;
-            font-weight: 400;
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .ios-list-item input {
-            text-align: right;
-            font-size: 17px;
-            color: var(--ios-text-secondary);
-            border: none;
-            outline: none;
-            background: transparent;
-            -webkit-appearance: none;
-            flex: 1;
-            padding-left: 20px;
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            -webkit-appearance: textfield;
+            -moz-appearance: textfield;
         }
         
-        .ios-list-item input::placeholder {
-            color: #C7C7CC;
-        }
-
-        .ios-button {
-            display: block;
-            width: 100%;
-            background-color: var(--ios-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 17px;
-            font-weight: 600;
-            padding: 14px 0;
-            margin-bottom: 30px;
-            cursor: pointer;
-        }
-
-        .ios-button:active {
-            opacity: 0.7;
-        }
-
-        .calendar-card {
-            background-color: var(--ios-card);
-            border-radius: 10px;
-            padding: 16px;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding: 0 4px;
-        }
-
-        .calendar-header button {
-            background: none;
-            border: none;
-            color: var(--ios-blue);
-            font-size: 17px;
-            font-weight: 400;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-
-        .calendar-header button:active {
-            opacity: 0.5;
-        }
-
-        /* 标题区域：居中显示月份和总计 */
-        .header-title {
-            text-align: center;
-        }
-
-        .header-title h2 {
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
             margin: 0;
-            font-size: 17px;
-            font-weight: 600;
         }
 
-        /* 本月总计的样式 */
-        .monthly-total {
-            font-size: 13px;
-            color: var(--ios-text-secondary);
-            margin-top: 2px;
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 500;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            row-gap: 12px;
-        }
-
-        .weekday {
-            text-align: center;
-            font-weight: 500;
-            color: var(--ios-text-secondary);
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .day-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 50px;
             cursor: pointer;
-        }
-
-        .day-number {
-            width: 32px;
-            height: 32px;
-            display: flex;
+            transition: background-color 0.2s;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            font-size: 17px;
-            font-weight: 400;
-            color: var(--ios-text);
         }
 
-        .expense-amount {
-            font-size: 11px;
-            color: var(--ios-text-secondary);
-            font-weight: 500;
-            margin-top: 4px;
-            white-space: nowrap;
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: var(--danger-hover); }
+
+        .btn-secondary { background-color: #e2e8f0; color: #475569; }
+        .btn-secondary:hover { background-color: #cbd5e1; }
+
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .today .day-number {
-            background-color: var(--ios-red);
-            color: white;
-            font-weight: 600;
+        .tier-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e2e8f0;
         }
 
-        .selected .day-number:not(.today .day-number) {
-            background-color: #E5E5EA;
+        .tier-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            text-align: center;
+        }
+
+        .result-box {
+            background: #f1f5f9;
+            padding: 12px 8px;
+            border-radius: 8px;
+        }
+
+        .result-box.highlight {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            word-break: break-all;
+        }
+
+        .result-box.highlight .result-value {
+            color: var(--primary-color);
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .save-tip {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #10b981;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            body { padding: 40px 20px; }
+            header h1 { font-size: 2.25rem; }
+            .result-grid { gap: 20px; }
+            .result-box { padding: 20px; }
+            .result-value { font-size: 1.6rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>记账本</h1>
+    <header>
+        <h1>阶梯单量单价计算器</h1>
+    </header>
 
-    <div class="ios-list">
-        <div class="ios-list-item">
-            <label for="expense-date">日期</label>
-            <input type="date" id="expense-date" required>
-        </div>
-        <div class="ios-list-item">
-            <label for="expense-amount">金额</label>
-            <input type="number" id="expense-amount" placeholder="0.00" step="0.01" min="0" required>
+    <div id="errorBox" class="error-msg"></div>
+    
+    <div id="saveTip" class="save-tip">✓ 所有更改已实时本地保存</div>
+
+    <div class="card">
+        <div class="form-group">
+            <label for="totalOrders">实际完成总单量</label>
+            <input type="number" id="totalOrders" placeholder="请输入正整数总单量" min="0" step="1">
         </div>
     </div>
 
-    <button class="ios-button" onclick="addExpense()">记录一笔</button>
-
-    <div class="calendar-card">
-        <div class="calendar-header">
-            <button onclick="changeMonth(-1)">上月</button>
-            <div class="header-title">
-                <h2 id="current-month-year"></h2>
-                <div id="monthly-total" class="monthly-total"></div>
+    <div class="card">
+        <div class="card-title">计算结果</div>
+        <div class="result-grid">
+            <div class="result-box">
+                <div class="result-label">匹配档位</div>
+                <div id="resTier" class="result-value">-</div>
             </div>
-            <button onclick="changeMonth(1)">下月</button>
+            <div class="result-box">
+                <div class="result-label">执行单价</div>
+                <div id="resPrice" class="result-value">￥0.00</div>
+            </div>
+            <div class="result-box highlight">
+                <div class="result-label">总结算金额</div>
+                <div id="resTotal" class="result-value">￥0.00</div>
+            </div>
         </div>
-        <div class="calendar-grid" id="calendar-grid">
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <span>阶梯规则配置 (统一计价)</span>
+            <button class="btn btn-primary btn-sm" id="btnAddTier">+ 添加自定义档位</button>
+        </div>
+        
+        <div id="tierContainer">
             </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-sm" id="btnReset">恢复图片默认规则</button>
+            <button class="btn btn-secondary btn-sm" id="btnClear">清空所有内容</button>
+        </div>
     </div>
 </div>
 
 <script>
-    let currentDate = new Date();
-    let expenseData = JSON.parse(localStorage.getItem('iosExpenses')) || {};
-    let selectedDateStr = ""; 
+    // 图片标准的初始默认数据
+    const imageTiers = [
+        { minOrder: 1, price: 3.0 },
+        { minOrder: 600, price: 4.5 },
+        { minOrder: 1000, price: 5.0 },
+        { minOrder: 1200, price: 5.5 },
+        { minOrder: 1500, price: 6.0 }
+    ];
 
-    const initNow = new Date();
-    const initLocalNow = new Date(initNow.getTime() - (initNow.getTimezoneOffset() * 60000));
-    selectedDateStr = initLocalNow.toISOString().split('T')[0];
-    document.getElementById('expense-date').value = selectedDateStr;
+    const totalOrdersInput = document.getElementById('totalOrders');
+    const tierContainer = document.getElementById('tierContainer');
+    const btnAddTier = document.getElementById('btnAddTier');
+    const btnReset = document.getElementById('btnReset');
+    const btnClear = document.getElementById('btnClear');
+    const errorBox = document.getElementById('errorBox');
+    const saveTip = document.getElementById('saveTip');
 
-    renderCalendar();
+    const resTier = document.getElementById('resTier');
+    const resPrice = document.getElementById('resPrice');
+    const resTotal = document.getElementById('resTotal');
 
-    document.getElementById('expense-date').addEventListener('change', function(e) {
-        selectedDateStr = e.target.value;
-        renderCalendar();
+    let saveTimeout = null;
+
+    // 页面加载自动初始化
+    window.addEventListener('DOMContentLoaded', () => {
+        initData();
     });
 
-    function addExpense() {
-        const dateInput = document.getElementById('expense-date').value;
-        const amountInput = parseFloat(document.getElementById('expense-amount').value);
-
-        if (!dateInput) {
-            alert("请选择日期");
-            return;
-        }
-        if (isNaN(amountInput) || amountInput <= 0) {
-            alert("请输入有效金额");
-            return;
-        }
-
-        if (expenseData[dateInput]) {
-            expenseData[dateInput] += amountInput;
-        } else {
-            expenseData[dateInput] = amountInput;
+    // 安全加载本地数据
+    function initData() {
+        let localData = null;
+        try {
+            // 增加安全防御：防止环境禁用 localStorage 导致崩溃
+            if (window.localStorage) {
+                localData = localStorage.getItem('tier_calculator_storage');
+            }
+        } catch (e) {
+            console.warn("浏览器沙盒环境限制了本地存储读取:", e);
         }
 
-        localStorage.setItem('iosExpenses', JSON.stringify(expenseData));
-        document.getElementById('expense-amount').value = '';
-        renderCalendar();
-    }
-
-    function changeMonth(delta) {
-        currentDate.setMonth(currentDate.getMonth() + delta);
-        renderCalendar();
-    }
-
-    function renderCalendar() {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        
-        document.getElementById('current-month-year').innerText = `${year}年 ${month + 1}月`;
-
-        // 计算当前月份的总支出
-        let monthlyTotal = 0;
-        const monthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
-        for (const date in expenseData) {
-            if (date.startsWith(monthPrefix)) {
-                monthlyTotal += expenseData[date];
+        if (localData) {
+            try {
+                const parsed = JSON.parse(localData);
+                totalOrdersInput.value = parsed.totalOrders;
+                tierContainer.innerHTML = '';
+                parsed.tiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
+                calculate(false); 
+                return;
+            } catch (e) {
+                console.error("解析缓存失败，加载默认数据", e);
             }
         }
-        // 更新总计显示
-        document.getElementById('monthly-total').innerText = `总计: ¥${monthlyTotal.toFixed(2)}`;
+        loadDefaultImageTiers();
+    }
 
-        const grid = document.getElementById('calendar-grid');
-        grid.innerHTML = ''; 
+    // 恢复图片默认规则
+    function loadDefaultImageTiers() {
+        tierContainer.innerHTML = '';
+        imageTiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
+        totalOrdersInput.value = 650; 
+        calculate(true);
+    }
 
-        const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-        weekdays.forEach(day => {
-            const div = document.createElement('div');
-            div.className = 'weekday';
-            div.innerText = day;
-            grid.appendChild(div);
+    // 动态添加一个阶梯输入行
+    function addTierRow(minOrder = '', price = '') {
+        const row = document.createElement('div');
+        row.className = 'tier-row';
+        row.innerHTML = `
+            <div>
+                <input type="number" class="input-min" placeholder="最低单量 (≥)" value="${minOrder}" min="0" step="1">
+            </div>
+            <div>
+                <input type="number" class="input-price" placeholder="该档单价 (元)" value="${price}" min="0" step="0.01">
+            </div>
+            <div>
+                <button class="btn btn-danger btn-sm btn-del">删除</button>
+            </div>
+        `;
+
+        row.querySelector('.btn-del').addEventListener('click', () => {
+            row.remove();
+            calculate(true);
         });
 
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => calculate(true));
+        });
 
-        for (let i = 0; i < firstDay; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.className = 'day-cell empty';
-            grid.appendChild(emptyCell);
+        tierContainer.appendChild(row);
+    }
+
+    // 核心实时计算与本地保存逻辑
+    function calculate(shouldSave = true) {
+        showError("");
+        const totalOrdersStr = totalOrdersInput.value.trim();
+        
+        const rows = tierContainer.querySelectorAll('.tier-row');
+        const currentTiersForSave = [];
+        
+        rows.forEach(row => {
+            currentTiersForSave.push({
+                minOrder: row.querySelector('.input-min').value,
+                price: row.querySelector('.input-price').value
+            });
+        });
+
+        // 执行安全自动保存
+        if (shouldSave) {
+            triggerAutoSave(totalOrdersStr, currentTiersForSave);
         }
 
-        const now = new Date();
-        const localNow = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
-        const todayStr = localNow.toISOString().split('T')[0];
+        if (totalOrdersStr === "") {
+            updateResult("-", 0, 0);
+            return;
+        }
 
-        for (let day = 1; day <= daysInMonth; day++) {
-            const cell = document.createElement('div');
-            cell.className = 'day-cell';
-            
-            const monthStr = String(month + 1).padStart(2, '0');
-            const dayStr = String(day).padStart(2, '0');
-            const dateString = `${year}-${monthStr}-${dayStr}`;
+        const totalOrders = parseFloat(totalOrdersStr);
 
-            if (dateString === todayStr) {
-                cell.classList.add('today');
+        if (totalOrders < 0 || !Number.isInteger(totalOrders)) {
+            showError("错误：实际完成总单量必须是正整数！");
+            updateResult("错误", 0, 0);
+            return;
+        }
+
+        const validTiersList = [];
+        let hasValueError = false;
+
+        currentTiersForSave.forEach(tier => {
+            if (tier.minOrder === "" || tier.price === "") {
+                hasValueError = true;
+                return;
             }
-            if (dateString === selectedDateStr) {
-                cell.classList.add('selected');
+            const minOrder = parseFloat(tier.minOrder);
+            const price = parseFloat(tier.price);
+
+            if (minOrder < 0 || price < 0 || !Number.isInteger(minOrder)) {
+                hasValueError = true;
+                return;
+            }
+            validTiersList.push({ minOrder, price });
+        });
+
+        if (hasValueError) {
+            showError("错误：配置中的“最低单量”须为正整数，“单价”不能为负或留空！");
+            updateResult("错误", 0, 0);
+            return;
+        }
+
+        if (validTiersList.length === 0) {
+            showError("提示：请至少配置一组有效的阶梯规则。");
+            updateResult("无规则", 0, 0);
+            return;
+        }
+
+        // 从小到大排序
+        validTiersList.sort((a, b) => a.minOrder - b.minOrder);
+
+        let matchedIndex = -1;
+        for (let i = 0; i < validTiersList.length; i++) {
+            if (totalOrders >= validTiersList[i].minOrder) {
+                matchedIndex = i;
+            }
+        }
+
+        if (matchedIndex !== -1) {
+            const matchedTier = validTiersList[matchedIndex];
+            const finalPrice = matchedTier.price;
+            const totalAmount = totalOrders * finalPrice;
+
+            let tierText = "";
+            if (matchedIndex === validTiersList.length - 1) {
+                tierText = `${matchedTier.minOrder}单起`;
+            } else {
+                const nextTier = validTiersList[matchedIndex + 1];
+                tierText = `${matchedTier.minOrder}-${nextTier.minOrder - 1}单`;
             }
 
-            const dayNum = document.createElement('div');
-            dayNum.className = 'day-number';
-            dayNum.innerText = day;
-            cell.appendChild(dayNum);
-
-            if (expenseData[dateString]) {
-                const amountDiv = document.createElement('div');
-                amountDiv.className = 'expense-amount';
-                const amount = expenseData[dateString];
-                amountDiv.innerText = amount % 1 === 0 ? `¥${amount}` : `¥${amount.toFixed(2)}`;
-                cell.appendChild(amountDiv);
-            }
-
-            cell.onclick = () => {
-                selectedDateStr = dateString;
-                document.getElementById('expense-date').value = dateString;
-                renderCalendar(); 
-                document.getElementById('expense-amount').focus();
-            };
-
-            grid.appendChild(cell);
+            updateResult(tierText, finalPrice, totalAmount);
+        } else {
+            // 当删除了 1单 门槛，或者输入的单量小于所有配置的最低起算值时
+            showError("提示：当前总单量未达到任何阶梯的起算门槛。");
+            updateResult("未达标", 0, 0);
         }
     }
+
+    // 增加 try...catch 防御本地存储写入异常
+    function triggerAutoSave(totalOrders, tiers) {
+        try {
+            if (window.localStorage) {
+                const dataToSave = { totalOrders, tiers };
+                localStorage.setItem('tier_calculator_storage', JSON.stringify(dataToSave));
+                
+                saveTip.style.display = 'block';
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    saveTip.style.display = 'none';
+                }, 1500);
+            }
+        } catch (e) {
+            // 静默失败，不打扰核心计算逻辑
+            console.warn("当前环境不支持本地持久化存储，改用纯内存运行模式", e);
+        }
+    }
+
+    function updateResult(tierText, price, total) {
+        resTier.textContent = tierText;
+        resPrice.textContent = `￥${price.toFixed(2)}`;
+        resTotal.textContent = `￥${total.toFixed(2)}`;
+    }
+
+    function showError(msg) {
+        if (msg) {
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+        } else {
+            errorBox.style.display = 'none';
+        }
+    }
+
+    totalOrdersInput.addEventListener('input', () => calculate(true));
+    
+    btnAddTier.addEventListener('click', () => {
+        addTierRow();
+        calculate(true);
+    });
+
+    btnReset.addEventListener('click', () => {
+        loadDefaultImageTiers();
+    });
+
+    btnClear.addEventListener('click', () => {
+        tierContainer.innerHTML = '';
+        totalOrdersInput.value = '';
+        calculate(true);
+    });
 </script>
 
 </body>
