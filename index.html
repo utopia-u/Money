@@ -25,7 +25,6 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            /* 防护二：CSS 级禁止双击缩放，优化触摸反馈 */
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
@@ -55,7 +54,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* 卡片基础设计 */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -92,7 +90,6 @@
         .card-title.accent .title-tag::before { background: var(--accent-color); }
         .card-title.gray .title-tag::before { background: var(--text-muted); }
 
-        /* 人性化输入框组合 (带后缀单位) */
         .form-group {
             margin-bottom: 14px;
         }
@@ -152,7 +149,6 @@
             gap: 12px;
         }
 
-        /* 按钮重构 */
         .btn {
             padding: 10px 16px;
             border: none;
@@ -165,7 +161,6 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            /* 增强：防止双击选中文字 */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -187,7 +182,6 @@
             margin-top: 16px;
         }
 
-        /* 动态阶梯行样式优化 */
         .tier-row {
             display: grid;
             grid-template-columns: 1fr 1fr auto;
@@ -200,7 +194,6 @@
             border: 1px dashed var(--border-color);
         }
 
-        /* 看板设计 */
         .result-panel {
             display: flex;
             flex-direction: column;
@@ -262,7 +255,6 @@
             display: none;
         }
 
-        /* --- 独立计算器样式 --- */
         .calculator-wrapper {
             background: #f8fafc;
             border: 1px solid var(--border-color);
@@ -301,18 +293,23 @@
             transition: all 0.1s ease;
             font-weight: 600;
             color: var(--text-main);
-            /* 增强：防止双击计算器按钮选中文字 */
             user-select: none;
             -webkit-user-select: none;
         }
+        
+        /* 新增：专门处理按下的极速动画类 */
+        .calc-btn.is-pressed {
+            background: #cbd5e1 !important;
+            transform: scale(0.92) !important;
+            transition: none !important; /* 按下瞬间无过渡，干脆利落 */
+        }
+
         .calc-btn:hover { background: #e2e8f0; }
-        .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
         .calc-op { background: #eff6ff; color: var(--primary-color); }
         .calc-clear { background: #fef2f2; color: var(--danger-color); }
         .calc-equal { background: var(--primary-color); color: #fff; }
         .calc-equal:hover { background: var(--primary-hover); }
 
-        /* PC端自适应布局增强 */
         @media (min-width: 640px) {
             body { padding: 32px 16px; }
             header h1 { font-size: 2.2rem; }
@@ -442,18 +439,18 @@
 <script>
     // --- 移动端体验优化：全局拦截与修复 ---
     (function() {
-        // 1. 阻止双指缩放
+        // 1. 阻止双指缩放 (修复点：豁免计算器按钮，允许双手极速敲击计算器)
         document.addEventListener('touchstart', function (event) {
-            if (event.touches.length > 1) {
+            if (event.touches.length > 1 && !event.target.closest('.calc-btn')) {
                 event.preventDefault();
             }
         }, { passive: false });
 
-        // 2. 阻止双击放大 (300ms 内连续点击判定)
+        // 2. 阻止双击放大 (300ms 内连续点击判定，修复点：豁免计算器按钮)
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = Date.now();
-            if (now - lastTouchEnd <= 300) {
+            if (now - lastTouchEnd <= 300 && !event.target.closest('.calc-btn')) {
                 event.preventDefault();
             }
             lastTouchEnd = now;
@@ -472,7 +469,7 @@
         }, { passive: true });
     })();
 
-    // --- 原有：阶梯计算器逻辑 ---
+    // --- 阶梯计算器逻辑 ---
     const imageTiers = [
         { minOrder: 1, price: 3.0 },
         { minOrder: 600, price: 4.5 },
@@ -517,7 +514,6 @@
         if (localData) {
             try {
                 const parsed = JSON.parse(localData);
-                // 安全优化：增加对象类型安全检查
                 if (parsed && typeof parsed === 'object') {
                     totalOrdersInput.value = parsed.totalOrders || '';
                     groupOrdersInput.value = parsed.groupOrders || '';
@@ -545,7 +541,6 @@
         calculate(true);
     }
 
-    // 安全漏洞修复：移除模板字符串直接注入变量的方式，防止 XSS
     function addTierRow(minOrder = '', price = '') {
         const row = document.createElement('div');
         row.className = 'tier-row';
@@ -563,7 +558,6 @@
             </div>
         `;
 
-        // 安全赋值
         row.querySelector('.input-min').value = minOrder;
         row.querySelector('.input-price').value = price;
 
@@ -744,17 +738,16 @@
     let calcValue = '';
 
     calcButtons.forEach(btn => {
-        // 核心优化：使用 pointerdown 替代 click，实现接触瞬间即刻响应
+        let pressTimeout; // 修复点：记录每个按钮独立的定时器
+
         btn.addEventListener('pointerdown', (event) => {
-            event.preventDefault(); // 阻止原生的 click 派发，防止重复输入和焦点丢失
+            event.preventDefault(); 
             
-            // 极速视觉反馈 (弥补 preventDefault 导致的 :active 伪类失效)
-            const originalBg = btn.style.background;
-            btn.style.transform = 'scale(0.92)';
-            btn.style.background = '#cbd5e1';
-            setTimeout(() => {
-                btn.style.transform = '';
-                btn.style.background = originalBg;
+            // 修复：用 CSS 类代替内联样式，防竞态卡死
+            btn.classList.add('is-pressed');
+            if (pressTimeout) clearTimeout(pressTimeout);
+            pressTimeout = setTimeout(() => {
+                btn.classList.remove('is-pressed');
             }, 80);
 
             const action = btn.textContent;
@@ -766,7 +759,6 @@
             } else if (action === '=') {
                 try {
                     if(calcValue.trim() !== '') {
-                        // 核心安全优化：通过正则表达式限制只允许数字和数学运算符
                         if (/^[0-9+\-*/.\s]+$/.test(calcValue)) {
                             let result = new Function('return ' + calcValue)();
                             calcValue = String(Math.round(result * 100000000) / 100000000); 
