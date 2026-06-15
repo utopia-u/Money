@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>阶梯单量单价计算器(极简商务版)</title>
     <style>
         :root {
@@ -25,8 +25,9 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            /* 更新：优化触摸动作，禁用双击缩放并取消 300ms 点击延迟 */
+            /* 防护二：CSS 级禁止双击缩放，优化触摸反馈 */
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -34,6 +35,7 @@
             color: var(--text-main);
             padding: 16px 8px;
             line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
         }
 
         .container {
@@ -163,6 +165,9 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
+            /* 增强：防止双击选中文字 */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .btn-primary { background-color: #eff6ff; color: var(--primary-color); }
@@ -296,6 +301,9 @@
             transition: all 0.1s ease;
             font-weight: 600;
             color: var(--text-main);
+            /* 增强：防止双击计算器按钮选中文字 */
+            user-select: none;
+            -webkit-user-select: none;
         }
         .calc-btn:hover { background: #e2e8f0; }
         .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
@@ -312,7 +320,6 @@
             .grand-total-box .result-value { font-size: 2.6rem; }
             .detail-box { padding: 16px; }
             .detail-box .result-value { font-size: 1.3rem; }
-            /* 若屏幕足够宽，可让计算器与按钮并排等 */
         }
     </style>
 </head>
@@ -433,6 +440,31 @@
 </div>
 
 <script>
+    // --- 防护三：JavaScript 级全局拦截（终极方案，针对 iOS Safari 等环境） ---
+    (function() {
+        // 1. 阻止双指缩放
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 2. 阻止双击放大 (300ms 内连续点击判定)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        // 3. 阻止原生双击事件
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+    })();
+
     // --- 原有：阶梯计算器逻辑 ---
     const imageTiers = [
         { minOrder: 1, price: 3.0 },
