@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>阶梯单量单价计算器(极简商务版)</title>
     <style>
-        /* 保持原有优秀的 CSS 样式不变 */
         :root {
             --primary-color: #3b82f6;
             --primary-hover: #2563eb;
@@ -26,59 +25,286 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* 防护二：CSS 级禁止双击缩放，优化触摸反馈 */
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 16px 8px; line-height: 1.6; -webkit-text-size-adjust: 100%; }
-        .container { max-width: 700px; margin: 0 auto; }
-        header { text-align: center; margin: 16px 0 24px 0; }
-        header h1 { font-size: 1.8rem; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
-        
-        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); border: 1px solid rgba(255, 255, 255, 0.7); }
-        .card-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
-        .card-title .title-tag { display: inline-flex; align-items: center; gap: 6px; }
-        .card-title .title-tag::before { content: ''; display: inline-block; width: 4px; height: 16px; border-radius: 2px; background: var(--primary-color); }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px 8px;
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin: 16px 0 24px 0;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* 卡片基础设计 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .card-title .title-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-title .title-tag::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            border-radius: 2px;
+            background: var(--primary-color);
+        }
         .card-title.accent .title-tag::before { background: var(--accent-color); }
         .card-title.gray .title-tag::before { background: var(--text-muted); }
 
-        .form-group { margin-bottom: 14px; }
+        /* 人性化输入框组合 (带后缀单位) */
+        .form-group {
+            margin-bottom: 14px;
+        }
         .form-group:last-child { margin-bottom: 0; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
-        .input-group { display: flex; align-items: center; position: relative; }
-        .input-group input { width: 100%; padding: 12px 50px 12px 14px; border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 1.05rem; font-weight: 500; color: var(--text-main); background-color: #f8fafc; transition: all 0.2s ease; }
-        .input-group input:focus { outline: none; border-color: var(--primary-color); background-color: #fff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12); }
-        .accent-input input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12); }
-        .input-group .input-suffix { position: absolute; right: 14px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); pointer-events: none; background: transparent; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .btn { padding: 10px 16px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 4px; user-select: none; -webkit-user-select: none; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 50px 12px 14px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        .accent-input input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+        }
+
+        .input-group .input-suffix {
+            position: absolute;
+            right: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* 按钮重构 */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            /* 增强：防止双击选中文字 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         .btn-primary { background-color: #eff6ff; color: var(--primary-color); }
         .btn-primary:hover { background-color: var(--primary-color); color: white; }
+        
         .btn-danger { background-color: #fef2f2; color: var(--danger-color); }
         .btn-danger:hover { background-color: var(--danger-color); color: white; }
+
         .btn-secondary { background-color: #f1f5f9; color: #475569; }
         .btn-secondary:hover { background-color: #e2e8f0; }
-        .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
-        .btn-group { display: flex; gap: 10px; margin-top: 16px; }
 
-        .tier-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 10px; padding: 8px; background: #f8fafc; border-radius: 10px; border: 1px dashed var(--border-color); }
-        .result-panel { display: flex; flex-direction: column; gap: 10px; }
-        .grand-total-box { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 20px; border-radius: 14px; text-align: center; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2); }
+        .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        /* 动态阶梯行样式优化 */
+        .tier-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed var(--border-color);
+        }
+
+        /* 看板设计 */
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .grand-total-box {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+        }
+
         .grand-total-box .result-label { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
         .grand-total-box .result-value { font-size: 2.2rem; font-weight: 800; color: white; margin-top: 4px;}
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .detail-box { background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; text-align: center; }
-        .detail-box .result-value { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
 
-        .error-msg { color: var(--danger-color); background: #fef2f2; border: 1px solid #fecaca; padding: 12px; border-radius: 10px; margin-bottom: 14px; font-size: 0.88rem; font-weight: 500; display: none; }
-        .save-tip { text-align: right; font-size: 0.75rem; color: var(--success-color); margin-top: -12px; margin-bottom: 12px; font-weight: 600; display: none; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
 
-        .calculator-wrapper { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; max-width: 320px; margin: 0 auto; }
-        #calcDisplay { width: 100%; height: 54px; margin-bottom: 12px; text-align: right; font-size: 1.6rem; padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; background: #fff; color: var(--text-main); font-weight: 700; letter-spacing: 1px; }
+        .detail-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .detail-box .result-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .save-tip {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--success-color);
+            margin-top: -12px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* --- 独立计算器样式 --- */
+        .calculator-wrapper {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        #calcDisplay {
+            width: 100%;
+            height: 54px;
+            margin-bottom: 12px;
+            text-align: right;
+            font-size: 1.6rem;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
         #calcDisplay:focus { outline: none; border-color: var(--primary-color); }
-        .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { padding: 14px 0; font-size: 1.2rem; border: 1px solid var(--border-color); border-radius: 8px; background: #fff; cursor: pointer; transition: all 0.1s ease; font-weight: 600; color: var(--text-main); user-select: none; -webkit-user-select: none; }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .calc-btn {
+            padding: 14px 0;
+            font-size: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-weight: 600;
+            color: var(--text-main);
+            /* 增强：防止双击计算器按钮选中文字 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
         .calc-btn:hover { background: #e2e8f0; }
         .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
         .calc-op { background: #eff6ff; color: var(--primary-color); }
@@ -86,6 +312,7 @@
         .calc-equal { background: var(--primary-color); color: #fff; }
         .calc-equal:hover { background: var(--primary-hover); }
 
+        /* PC端自适应布局增强 */
         @media (min-width: 640px) {
             body { padding: 32px 16px; }
             header h1 { font-size: 2.2rem; }
@@ -170,7 +397,8 @@
             <button class="btn btn-primary btn-sm" id="btnAddTier">+ 添加新档位</button>
         </div>
         
-        <div id="tierContainer"></div>
+        <div id="tierContainer">
+        </div>
 
         <div class="btn-group">
             <button class="btn btn-secondary btn-sm" id="btnReset">恢复图片默认规则</button>
@@ -214,16 +442,29 @@
 <script>
     // --- 移动端体验优化：全局拦截与修复 ---
     (function() {
-        document.addEventListener('touchstart', function (event) { if (event.touches.length > 1) event.preventDefault(); }, { passive: false });
+        // 1. 阻止双指缩放
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 2. 阻止双击放大 (300ms 内连续点击判定)
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = Date.now();
-            if (now - lastTouchEnd <= 300) event.preventDefault();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
             lastTouchEnd = now;
         }, { passive: false });
-        document.addEventListener('dblclick', function(event) { event.preventDefault(); }, { passive: false });
-        
-        // 优化：防止 number 输入框滚动鼠标滚轮时意外修改数值
+
+        // 3. 阻止原生双击事件
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+
+        // 4. 防止 number 输入框滚动鼠标滚轮时意外修改数值
         document.addEventListener('wheel', function(event) {
             if (document.activeElement.type === 'number') {
                 document.activeElement.blur();
@@ -231,7 +472,7 @@
         }, { passive: true });
     })();
 
-    // --- 核心逻辑 ---
+    // --- 原有：阶梯计算器逻辑 ---
     const imageTiers = [
         { minOrder: 1, price: 3.0 },
         { minOrder: 600, price: 4.5 },
@@ -270,13 +511,13 @@
                 localData = localStorage.getItem('tier_calculator_storage_v2');
             }
         } catch (e) {
-            console.warn("存储受限，使用内存模式");
+            console.warn("沙盒环境限制，改用纯内存模式预览", e);
         }
 
         if (localData) {
             try {
                 const parsed = JSON.parse(localData);
-                // 优化：增加对象类型安全检查
+                // 安全优化：增加对象类型安全检查
                 if (parsed && typeof parsed === 'object') {
                     totalOrdersInput.value = parsed.totalOrders || '';
                     groupOrdersInput.value = parsed.groupOrders || '';
@@ -289,7 +530,7 @@
                     return;
                 }
             } catch (e) {
-                console.error("缓存数据解析失败，已重置");
+                console.error("缓存数据解析失败，已重置", e);
             }
         }
         loadDefaultImageTiers();
@@ -321,7 +562,7 @@
                 <button class="btn btn-danger btn-sm btn-del">× 删除</button>
             </div>
         `;
-        
+
         // 安全赋值
         row.querySelector('.input-min').value = minOrder;
         row.querySelector('.input-price').value = price;
@@ -497,13 +738,25 @@
         calculate(true);
     });
 
-    // --- 便携计算器漏洞修复：增强正则防护 ---
+    // --- 便携计算器：极速响应与安全验证 ---
     const calcDisplay = document.getElementById('calcDisplay');
     const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
     let calcValue = '';
 
     calcButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        // 核心优化：使用 pointerdown 替代 click，实现接触瞬间即刻响应
+        btn.addEventListener('pointerdown', (event) => {
+            event.preventDefault(); // 阻止原生的 click 派发，防止重复输入和焦点丢失
+            
+            // 极速视觉反馈 (弥补 preventDefault 导致的 :active 伪类失效)
+            const originalBg = btn.style.background;
+            btn.style.transform = 'scale(0.92)';
+            btn.style.background = '#cbd5e1';
+            setTimeout(() => {
+                btn.style.transform = '';
+                btn.style.background = originalBg;
+            }, 80);
+
             const action = btn.textContent;
             
             if (action === 'C') {
@@ -516,7 +769,6 @@
                         // 核心安全优化：通过正则表达式限制只允许数字和数学运算符
                         if (/^[0-9+\-*/.\s]+$/.test(calcValue)) {
                             let result = new Function('return ' + calcValue)();
-                            // 处理精度并转字符串
                             calcValue = String(Math.round(result * 100000000) / 100000000); 
                         } else {
                             throw new Error("Invalid Input");
