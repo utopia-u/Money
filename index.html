@@ -86,6 +86,7 @@
             background: var(--primary-color);
         }
         .card-title.accent .title-tag::before { background: var(--accent-color); }
+        .card-title.gray .title-tag::before { background: var(--text-muted); }
 
         /* 人性化输入框组合 (带后缀单位) */
         .form-group {
@@ -192,7 +193,7 @@
             border: 1px dashed var(--border-color);
         }
 
-        /* 看板设计（最核心优化：结果前置与巨幕化） */
+        /* 看板设计 */
         .result-panel {
             display: flex;
             flex-direction: column;
@@ -254,6 +255,53 @@
             display: none;
         }
 
+        /* --- 独立计算器样式 --- */
+        .calculator-wrapper {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        #calcDisplay {
+            width: 100%;
+            height: 54px;
+            margin-bottom: 12px;
+            text-align: right;
+            font-size: 1.6rem;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        #calcDisplay:focus { outline: none; border-color: var(--primary-color); }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .calc-btn {
+            padding: 14px 0;
+            font-size: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .calc-btn:hover { background: #e2e8f0; }
+        .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
+        .calc-op { background: #eff6ff; color: var(--primary-color); }
+        .calc-clear { background: #fef2f2; color: var(--danger-color); }
+        .calc-equal { background: var(--primary-color); color: #fff; }
+        .calc-equal:hover { background: var(--primary-hover); }
+
         /* PC端自适应布局增强 */
         @media (min-width: 640px) {
             body { padding: 32px 16px; }
@@ -262,6 +310,7 @@
             .grand-total-box .result-value { font-size: 2.6rem; }
             .detail-box { padding: 16px; }
             .detail-box .result-value { font-size: 1.3rem; }
+            /* 若屏幕足够宽，可让计算器与按钮并排等 */
         }
     </style>
 </head>
@@ -340,17 +389,49 @@
         </div>
         
         <div id="tierContainer">
-            </div>
+        </div>
 
         <div class="btn-group">
             <button class="btn btn-secondary btn-sm" id="btnReset">恢复图片默认规则</button>
             <button class="btn btn-secondary btn-sm" id="btnClear" style="margin-left: auto;">清空所有内容</button>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-title gray"><span class="title-tag">便携计算器</span></div>
+        <div class="calculator-wrapper">
+            <input type="text" id="calcDisplay" readonly placeholder="0">
+            <div class="calc-buttons">
+                <button class="calc-btn calc-clear">C</button>
+                <button class="calc-btn calc-clear">⌫</button>
+                <button class="calc-btn calc-op">/</button>
+                <button class="calc-btn calc-op">*</button>
+                
+                <button class="calc-btn">7</button>
+                <button class="calc-btn">8</button>
+                <button class="calc-btn">9</button>
+                <button class="calc-btn calc-op">-</button>
+                
+                <button class="calc-btn">4</button>
+                <button class="calc-btn">5</button>
+                <button class="calc-btn">6</button>
+                <button class="calc-btn calc-op">+</button>
+                
+                <button class="calc-btn">1</button>
+                <button class="calc-btn">2</button>
+                <button class="calc-btn">3</button>
+                <button class="calc-btn calc-equal" style="grid-row: span 2;">=</button>
+                
+                <button class="calc-btn" style="grid-column: span 2;">0</button>
+                <button class="calc-btn">.</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    // 默认数据
+    // --- 原有：阶梯计算器逻辑 ---
     const imageTiers = [
         { minOrder: 1, price: 3.0 },
         { minOrder: 600, price: 4.5 },
@@ -606,6 +687,38 @@
         groupOrdersInput.value = '';
         groupPriceInput.value = '';
         calculate(true);
+    });
+
+    // --- 新增：便携计算器逻辑 ---
+    const calcDisplay = document.getElementById('calcDisplay');
+    const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
+    let calcValue = '';
+
+    calcButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const action = btn.textContent;
+            
+            if (action === 'C') {
+                calcValue = '';
+            } else if (action === '⌫') {
+                calcValue = calcValue.slice(0, -1);
+            } else if (action === '=') {
+                try {
+                    // 使用 Function 构建安全的运算环境
+                    if(calcValue.trim() !== '') {
+                        let result = new Function('return ' + calcValue)();
+                        // 修复浮点数精度问题 (例如 0.1 + 0.2)
+                        calcValue = String(Math.round(result * 100000000) / 100000000); 
+                    }
+                } catch (e) {
+                    calcValue = '错误';
+                }
+            } else {
+                if (calcValue === '错误') calcValue = '';
+                calcValue += action;
+            }
+            calcDisplay.value = calcValue;
+        });
     });
 </script>
 
