@@ -2,593 +2,725 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>骑手辅助工具 - 智能门禁管理与商家导航</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阶梯单量单价计算器(极简商务版)</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #e0e7ff;
-            --secondary: #0ea5e9;
-            --bg-color: #f3f4f6;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-color: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: #e5e7eb;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
         }
 
-        .dark-mode {
-            --primary: #6366f1;
-            --primary-light: #3730a3;
-            --bg-color: #111827;
-            --card-bg: #1f2937;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --border-color: #374151;
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px 8px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin: 16px 0 24px 0;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* 卡片基础设计 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .card-title .title-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-title .title-tag::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            border-radius: 2px;
+            background: var(--primary-color);
+        }
+        .card-title.accent .title-tag::before { background: var(--accent-color); }
+        .card-title.gray .title-tag::before { background: var(--text-muted); }
+
+        /* 人性化输入框组合 (带后缀单位) */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 50px 12px 14px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        .accent-input input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+        }
+
+        .input-group .input-suffix {
+            position: absolute;
+            right: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* 按钮重构 */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-primary { background-color: #eff6ff; color: var(--primary-color); }
+        .btn-primary:hover { background-color: var(--primary-color); color: white; }
         
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; transition: background-color 0.3s ease; padding: 15px; }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .btn-danger { background-color: #fef2f2; color: var(--danger-color); }
+        .btn-danger:hover { background-color: var(--danger-color); color: white; }
 
-        /* Header UI */
-        header { text-align: center; margin-bottom: 30px; position: relative; }
-        .header-top { display: flex; justify-content: flex-end; margin-bottom: -40px; position: relative; z-index: 10;}
-        .theme-toggle { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: var(--transition); }
-        .theme-toggle:hover { transform: scale(1.05); }
-        
-        .logo-icon img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-        h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
-        .logo-text { color: var(--text-muted); font-size: 0.95rem; }
+        .btn-secondary { background-color: #f1f5f9; color: #475569; }
+        .btn-secondary:hover { background-color: #e2e8f0; }
 
-        /* Tabs UI */
-        .tabs { display: flex; background: var(--card-bg); border-radius: var(--radius-lg); padding: 6px; box-shadow: var(--shadow-md); margin-bottom: 25px; gap: 8px; }
-        .tab { flex: 1; padding: 14px; text-align: center; font-weight: 600; font-size: 1rem; color: var(--text-muted); cursor: pointer; border-radius: var(--radius-md); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .tab.active { background: var(--primary); color: white; box-shadow: var(--shadow-sm); }
-        .tab:not(.active):hover { background: var(--primary-light); color: var(--primary); }
-        .tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
 
-        /* Search UI */
-        .search-container { position: sticky; top: 10px; z-index: 100; margin-bottom: 25px; }
-        .search-box { position: relative; background: var(--card-bg); border-radius: 50px; box-shadow: var(--shadow-md); overflow: hidden; border: 2px solid transparent; transition: var(--transition); }
-        .search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
-        .search-box input { width: 100%; padding: 16px 50px; border: none; background: transparent; font-size: 1.05rem; color: var(--text-main); outline: none; }
-        .search-box .fa-search { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .search-box .clear-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--border-color); border: none; width: 26px; height: 26px; border-radius: 50%; color: var(--text-main); cursor: pointer; display: none; align-items: center; justify-content: center; transition: var(--transition); }
-        .search-box .clear-btn.visible { display: flex; }
-        .search-box .clear-btn:hover { background: var(--text-muted); color: white; }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
 
-        /* Grid & Cards */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); overflow: hidden; transition: var(--transition); cursor: pointer; position: relative; }
-        .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: var(--primary-light); }
-        .card-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .card-info h3 { font-size: 1.25rem; margin-bottom: 4px; color: var(--text-main); }
-        .card-info p { font-size: 0.85rem; color: var(--text-muted); }
-        .expand-icon { color: var(--primary); transition: transform 0.3s ease; font-size: 1.2rem; }
-        .card.expanded .expand-icon { transform: rotate(180deg); }
-        
-        .card-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; background: var(--primary-light); padding: 0 20px; }
-        .card.expanded .card-body { max-height: 200px; padding: 20px; border-top: 1px solid var(--border-color); }
-        .password { font-family: 'Courier New', Courier, monospace; font-size: 1.8rem; font-weight: 700; color: var(--primary); text-align: center; letter-spacing: 2px; margin-top: 5px; }
+        /* 动态阶梯行样式优化 */
+        .tier-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed var(--border-color);
+        }
 
-        /* Business Cards */
-        .business-card { background: var(--card-bg); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 25px; border: 1px solid var(--border-color); }
-        .image-carousel { position: relative; width: 100%; height: 280px; background: var(--border-color); overflow: hidden; }
-        .carousel-container { display: flex; height: 100%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        .carousel-slide { min-width: 100%; height: 100%; position: relative; }
-        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.3s; }
-        .carousel-slide img:hover { transform: scale(1.03); }
-        .placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); background: var(--card-bg); opacity: 0.7; }
-        .placeholder i { font-size: 3rem; margin-bottom: 10px; }
-        
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .carousel-btn:hover { background: rgba(0,0,0,0.7); }
-        .carousel-btn.prev { left: 10px; }
-        .carousel-btn.next { right: 10px; }
-        .carousel-indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-        .indicator { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; }
-        .indicator.active { background: white; transform: scale(1.2); }
+        /* 看板设计 */
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-        .business-info { padding: 20px; }
-        .business-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .business-name { font-size: 1.3rem; font-weight: 700; color: var(--text-main); }
-        .business-badge { background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
-        .business-instructions { background: var(--bg-color); border-radius: var(--radius-md); padding: 15px; border-left: 4px solid var(--primary); }
-        .instructions-title { font-weight: 600; color: var(--text-main); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .instructions-steps { padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; }
-        .instructions-steps li { margin-bottom: 5px; }
+        .grand-total-box {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+        }
 
-        /* Empty States & Notices */
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-        .empty-state i { font-size: 4rem; color: var(--border-color); margin-bottom: 15px; }
-        .contribution-notice { display: flex; align-items: center; gap: 15px; background: linear-gradient(to right, var(--primary-light), var(--card-bg)); padding: 15px 20px; border-radius: var(--radius-md); margin-bottom: 25px; border-left: 4px solid var(--primary); }
-        .contribution-notice i { font-size: 1.8rem; color: var(--primary); }
-        
-        /* Modal */
-        .image-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        .image-modal.active { display: flex; opacity: 1; }
-        .modal-content { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .modal-image { max-width: 95vw; max-height: 85vh; object-fit: contain; border-radius: 8px; transition: transform 0.3s; }
-        .modal-close, .modal-nav { position: absolute; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-close { top: 20px; right: 20px; width: 50px; height: 50px; font-size: 1.5rem; }
-        .modal-nav { top: 50%; transform: translateY(-50%); width: 60px; height: 60px; font-size: 2rem; }
-        .modal-nav.prev { left: 20px; }
-        .modal-nav.next { right: 20px; }
-        .modal-controls { position: absolute; bottom: 30px; display: flex; align-items: center; gap: 20px; color: white; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 30px; backdrop-filter: blur(5px); }
+        .grand-total-box .result-label { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
+        .grand-total-box .result-value { font-size: 2.2rem; font-weight: 800; color: white; margin-top: 4px;}
 
-        footer { text-align: center; padding: 30px 0; color: var(--text-muted); font-size: 0.9rem; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
 
-        @media (min-width: 768px) {
-            .image-carousel { height: 400px; }
-            .business-card { display: grid; grid-template-columns: 1fr 1fr; }
-            .business-info { display: flex; flex-direction: column; justify-content: center; }
+        .detail-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .detail-box .result-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .save-tip {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--success-color);
+            margin-top: -12px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* --- 独立计算器样式 --- */
+        .calculator-wrapper {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        #calcDisplay {
+            width: 100%;
+            height: 54px;
+            margin-bottom: 12px;
+            text-align: right;
+            font-size: 1.6rem;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        #calcDisplay:focus { outline: none; border-color: var(--primary-color); }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .calc-btn {
+            padding: 14px 0;
+            font-size: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .calc-btn:hover { background: #e2e8f0; }
+        .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
+        .calc-op { background: #eff6ff; color: var(--primary-color); }
+        .calc-clear { background: #fef2f2; color: var(--danger-color); }
+        .calc-equal { background: var(--primary-color); color: #fff; }
+        .calc-equal:hover { background: var(--primary-hover); }
+
+        /* PC端自适应布局增强 */
+        @media (min-width: 640px) {
+            body { padding: 32px 16px; }
+            header h1 { font-size: 2.2rem; }
+            .grand-total-box { padding: 24px; }
+            .grand-total-box .result-value { font-size: 2.6rem; }
+            .detail-box { padding: 16px; }
+            .detail-box .result-value { font-size: 1.3rem; }
+            /* 若屏幕足够宽，可让计算器与按钮并排等 */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-top">
-                <button class="theme-toggle" id="themeToggle" aria-label="切换主题模式">
-                    <i class="fas fa-moon"></i>
-                </button>
+
+<div class="container">
+    <header>
+        <h1>阶梯单量单价计算器</h1>
+    </header>
+
+    <div id="errorBox" class="error-msg"></div>
+    <div id="saveTip" class="save-tip">✓ 数据已自动同步到本地存储</div>
+
+    <div class="card" style="background: #ffffff;">
+        <div class="result-panel">
+            <div class="grand-total-box">
+                <div class="result-label">统一汇总结算总额</div>
+                <div id="resTotal" class="result-value">￥0.00</div>
             </div>
-            <div class="logo-icon">
-                <img src="https://i.postimg.cc/25nj9NBd/IMG-1841-2-1-1.png" alt="骑手图标">
+            <div class="detail-grid">
+                <div class="detail-box" style="border-top: 3px solid var(--primary-color);">
+                    <div class="result-label" style="color: var(--primary-color); font-size: 0.8rem; font-weight: 700;">常规匹配档位</div>
+                    <div id="resTier" class="result-value">-</div>
+                </div>
+                <div class="detail-box" style="border-top: 3px solid var(--primary-color);">
+                    <div class="result-label" style="color: var(--primary-color); font-size: 0.8rem; font-weight: 700;">常规小计</div>
+                    <div id="resRegularTotal" class="result-value">￥0.00</div>
+                </div>
+                <div class="detail-box" style="border-top: 3px solid var(--accent-color);">
+                    <div class="result-label" style="color: var(--accent-color); font-size: 0.8rem; font-weight: 700;">拼团明细</div>
+                    <div id="resGroupInfo" class="result-value">0单 × ￥0.00</div>
+                </div>
+                <div class="detail-box" style="border-top: 3px solid var(--accent-color);">
+                    <div class="result-label" style="color: var(--accent-color); font-size: 0.8rem; font-weight: 700;">拼团小计</div>
+                    <div id="resGroupTotal" class="result-value">￥0.00</div>
+                </div>
             </div>
-            <h1>骑手辅助工具</h1>
-            <p class="logo-text">门禁管理与商家导航秒查方案</p>
-        </header>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><span class="title-tag">常规业务数据</span></div>
+        <div class="form-group">
+            <label for="totalOrders">常规完成总单量</label>
+            <div class="input-group">
+                <input type="number" id="totalOrders" placeholder="请输入完成单数" min="0" step="1">
+                <span class="input-suffix">单</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title accent"><span class="title-tag">独立拼团选项</span></div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="groupOrders">拼团完成总单量</label>
+                <div class="input-group accent-input">
+                    <input type="number" id="groupOrders" placeholder="无则填0" min="0" step="1">
+                    <span class="input-suffix">单</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="groupPrice">拼团固定单价</label>
+                <div class="input-group accent-input">
+                    <input type="number" id="groupPrice" placeholder="0.00" min="0" step="0.01">
+                    <span class="input-suffix">元/单</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <span class="title-tag">常规阶梯规则配置</span>
+            <button class="btn btn-primary btn-sm" id="btnAddTier">+ 添加新档位</button>
+        </div>
         
-        <div class="contribution-notice">
-            <i class="fas fa-hands-helping"></i>
+        <div id="tierContainer">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-sm" id="btnReset">恢复图片默认规则</button>
+            <button class="btn btn-secondary btn-sm" id="btnClear" style="margin-left: auto;">清空所有内容</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title gray"><span class="title-tag">便携计算器</span></div>
+        <div class="calculator-wrapper">
+            <input type="text" id="calcDisplay" readonly placeholder="0">
+            <div class="calc-buttons">
+                <button class="calc-btn calc-clear">C</button>
+                <button class="calc-btn calc-clear">⌫</button>
+                <button class="calc-btn calc-op">/</button>
+                <button class="calc-btn calc-op">*</button>
+                
+                <button class="calc-btn">7</button>
+                <button class="calc-btn">8</button>
+                <button class="calc-btn">9</button>
+                <button class="calc-btn calc-op">-</button>
+                
+                <button class="calc-btn">4</button>
+                <button class="calc-btn">5</button>
+                <button class="calc-btn">6</button>
+                <button class="calc-btn calc-op">+</button>
+                
+                <button class="calc-btn">1</button>
+                <button class="calc-btn">2</button>
+                <button class="calc-btn">3</button>
+                <button class="calc-btn calc-equal" style="grid-row: span 2;">=</button>
+                
+                <button class="calc-btn" style="grid-column: span 2;">0</button>
+                <button class="calc-btn">.</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- 原有：阶梯计算器逻辑 ---
+    const imageTiers = [
+        { minOrder: 1, price: 3.0 },
+        { minOrder: 600, price: 4.5 },
+        { minOrder: 1000, price: 5.0 },
+        { minOrder: 1200, price: 5.5 },
+        { minOrder: 1500, price: 6.0 }
+    ];
+
+    const totalOrdersInput = document.getElementById('totalOrders');
+    const groupOrdersInput = document.getElementById('groupOrders');
+    const groupPriceInput = document.getElementById('groupPrice');
+    
+    const tierContainer = document.getElementById('tierContainer');
+    const btnAddTier = document.getElementById('btnAddTier');
+    const btnReset = document.getElementById('btnReset');
+    const btnClear = document.getElementById('btnClear');
+    const errorBox = document.getElementById('errorBox');
+    const saveTip = document.getElementById('saveTip');
+
+    const resTier = document.getElementById('resTier');
+    const resRegularTotal = document.getElementById('resRegularTotal');
+    const resGroupInfo = document.getElementById('resGroupInfo');
+    const resGroupTotal = document.getElementById('resGroupTotal');
+    const resTotal = document.getElementById('resTotal');
+
+    let saveTimeout = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initData();
+    });
+
+    function initData() {
+        let localData = null;
+        try {
+            if (window.localStorage) {
+                localData = localStorage.getItem('tier_calculator_storage_v2');
+            }
+        } catch (e) {
+            console.warn("沙盒环境限制，改用纯内存模式预览", e);
+        }
+
+        if (localData) {
+            try {
+                const parsed = JSON.parse(localData);
+                totalOrdersInput.value = parsed.totalOrders || '';
+                groupOrdersInput.value = parsed.groupOrders || '';
+                groupPriceInput.value = parsed.groupPrice || '';
+                tierContainer.innerHTML = '';
+                if(parsed.tiers && parsed.tiers.length > 0) {
+                    parsed.tiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
+                }
+                calculate(false); 
+                return;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadDefaultImageTiers();
+    }
+
+    function loadDefaultImageTiers() {
+        tierContainer.innerHTML = '';
+        imageTiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
+        totalOrdersInput.value = 650; 
+        groupOrdersInput.value = 200; 
+        groupPriceInput.value = 3.5;  
+        calculate(true);
+    }
+
+    function addTierRow(minOrder = '', price = '') {
+        const row = document.createElement('div');
+        row.className = 'tier-row';
+        row.innerHTML = `
+            <div class="input-group">
+                <input type="number" class="input-min" placeholder="最低起算" value="${minOrder}" min="0" step="1">
+                <span class="input-suffix">单起</span>
+            </div>
+            <div class="input-group">
+                <input type="number" class="input-price" placeholder="单价" value="${price}" min="0" step="0.01">
+                <span class="input-suffix">元</span>
+            </div>
             <div>
-                <div style="font-weight: 600; color: var(--text-main);">信息互助社区</div>
-                <div style="font-size: 0.9rem; color: var(--text-muted);">有新密码或新商家？欢迎联系管理员更新，方便大家！</div>
+                <button class="btn btn-danger btn-sm btn-del">× 删除</button>
             </div>
-        </div>
-        
-        <div class="tabs">
-            <div class="tab active" data-target="tab-communities"><i class="fas fa-key"></i> 小区门禁</div>
-            <div class="tab" data-target="tab-businesses"><i class="fas fa-store"></i> 商家指引</div>
-        </div>
-        
-        <div class="tab-content active" id="tab-communities">
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="输入小区名称快速搜索...">
-                    <button class="clear-btn" id="clearSearch"><i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="card-grid" id="cardGrid"></div>
-        </div>
-        
-        <div class="tab-content" id="tab-businesses">
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="businessSearchInput" placeholder="输入商家名称或类型搜索...">
-                    <button class="clear-btn" id="clearBusinessSearch"><i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div id="businessGuide"></div>
-        </div>
-        
-        <footer>
-            <p>骑手辅助工具 © 2025 - 安全骑行，高效配送</p>
-        </footer>
-    </div>
+        `;
 
-    <div class="image-modal" id="imageModal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
-            <button class="modal-nav prev" id="modalPrev"><i class="fas fa-chevron-left"></i></button>
-            <img class="modal-image" id="modalImage" src="" alt="放大预览">
-            <button class="modal-nav next" id="modalNext"><i class="fas fa-chevron-right"></i></button>
-            <div class="modal-controls">
-                <span id="modalCounter">1 / 5</span>
-                <i class="fas fa-search-plus" id="modalZoom" style="cursor: pointer; font-size: 1.2rem;"></i>
-            </div>
-        </div>
-    </div>
+        row.querySelector('.btn-del').addEventListener('click', () => {
+            row.remove();
+            calculate(true);
+        });
 
-    <script>
-        // --- 数据定义区 ---
-        // 核心真实小区数据
-        const realCommunities = [
-            { name: "都市花园", password: "f4 01011234" }, { name: "梅花公寓", password: "#2525" },
-            { name: "中房馨园", password: "*#123456#" }, { name: "春和花园11号楼", password: "0#666888" },
-            { name: "金玉源", password: "9*8525" }, { name: "尚都公馆", password: "789#" },
-            { name: "蓝水湾", password: "#258191#" }, { name: "新华广场", password: "#8888" },
-            { name: "守阳岛", password: "🔑10011234" }, { name: "和平郡府", password: "*111111" },
-            { name: "阿尔卡迪亚", password: "0202全是8#" }, { name: "华夏水晶城", password: "#88889999" }
-        ];
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => calculate(true));
+        });
+
+        tierContainer.appendChild(row);
+    }
+
+    function calculate(shouldSave = true) {
+        showError("");
         
-        // 动态生成剩余空白小区，避免HTML过度冗长
-        const communities = [...realCommunities];
-        for(let i = 1; i <= 88; i++) {
-            communities.push({ name: `待添加小区 ${i}`, password: "暂无数据" });
+        const totalOrdersStr = totalOrdersInput.value.trim();
+        const groupOrdersStr = groupOrdersInput.value.trim();
+        const groupPriceStr = groupPriceInput.value.trim();
+        
+        const rows = tierContainer.querySelectorAll('.tier-row');
+        const currentTiersForSave = [];
+        rows.forEach(row => {
+            currentTiersForSave.push({
+                minOrder: row.querySelector('.input-min').value,
+                price: row.querySelector('.input-price').value
+            });
+        });
+
+        if (shouldSave) {
+            triggerAutoSave(totalOrdersStr, groupOrdersStr, groupPriceStr, currentTiersForSave);
         }
 
-        // 核心真实商家图片映射
-        const businessImages = {
-            1: ['https://i.postimg.cc/3JLJqcm4/IMG-1793.jpg', 'https://i.postimg.cc/Sx2wscZr/IMG-1889.jpg'],
-            2: ['https://i.postimg.cc/GtntSZyw/IMG-1805.jpg', 'https://i.postimg.cc/X7JzX92P/IMG-1884.jpg', 'https://i.postimg.cc/c15c92mD/IMG-1885.jpg']
-        };
-
-        // 核心商家数据（精简版示例，可动态补全）
-        const realBusinesses = [
-            { id: 1, name: "晨亦碗、潮汕牛肉饭（一家店）", type: "餐饮", navigation: ["暂无详细路线", "建议抵达市场后询问保安"] },
-            { id: 2, name: "肉哆哆、椒小仙（一家店）", type: "餐饮", navigation: ["从市场正门进入", "一直走到最西南角即是"] },
-            { id: 3, name: "福满楼餐厅", type: "餐饮", navigation: ["从小区主入口进入", "第二个路口右转", "红色大门，有停车位"] },
-            { id: 31, name: "全家便利店", type: "便利店", navigation: ["小区正门入口处", "保安室对面", "绿色招牌"] },
-            { id: 46, name: "顺丰快递", type: "快递", navigation: ["小区西门快递站", "1号位置", "黑红标志"] }
-        ];
-
-        // 动态补全100个商家
-        const businesses = [...realBusinesses];
-        for(let i = 4; i <= 100; i++) {
-            if(!businesses.find(b => b.id === i)) {
-                businesses.push({ id: i, name: `其它分类商家 ${i}`, type: "其它", navigation: ["暂无指引"] });
-            }
-        }
-
-        // --- 全局状态管理 ---
-        const state = {
-            communitySearch: '',
-            businessSearch: '',
-            expandedCards: new Set(),
-            carouselIndexes: {}, // { businessId: currentIndex }
-            modal: { active: false, images: [], currentIndex: 0, isZoomed: false }
-        };
-
-        // --- DOM 元素引用 ---
-        const DOM = {
-            themeToggle: document.getElementById('themeToggle'),
-            tabs: document.querySelectorAll('.tab'),
-            tabContents: document.querySelectorAll('.tab-content'),
-            
-            searchInput: document.getElementById('searchInput'),
-            clearSearch: document.getElementById('clearSearch'),
-            cardGrid: document.getElementById('cardGrid'),
-            
-            busSearchInput: document.getElementById('businessSearchInput'),
-            clearBusSearch: document.getElementById('clearBusinessSearch'),
-            businessGuide: document.getElementById('businessGuide'),
-
-            modal: document.getElementById('imageModal'),
-            modalImg: document.getElementById('modalImage'),
-            modalClose: document.getElementById('modalClose'),
-            modalPrev: document.getElementById('modalPrev'),
-            modalNext: document.getElementById('modalNext'),
-            modalCounter: document.getElementById('modalCounter'),
-            modalZoom: document.getElementById('modalZoom')
-        };
-
-        // --- 初始化与核心渲染逻辑 ---
-        function init() {
-            // 系统暗色模式检测
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-mode');
-                DOM.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            }
-
-            renderCommunities();
-            renderBusinesses();
-            bindEvents();
-        }
-
-        // 渲染小区列表
-        function renderCommunities() {
-            const filtered = communities.filter(c => c.name.toLowerCase().includes(state.communitySearch.toLowerCase()));
-            
-            if (filtered.length === 0) {
-                DOM.cardGrid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>未找到匹配的小区</h3><p>换个关键词试试吧</p></div>`;
+        let regularSubtotal = 0;
+        let regularTierText = "-";
+        
+        if (totalOrdersStr !== "") {
+            const totalOrders = parseFloat(totalOrdersStr);
+            if (totalOrders < 0 || !Number.isInteger(totalOrders)) {
+                showError("常规总单量需要输入一个正整数！");
+                resetResultDisplay();
                 return;
             }
 
-            DOM.cardGrid.innerHTML = filtered.map((c, index) => {
-                const isPlaceholder = c.name.includes('待添加');
-                const isExpanded = state.expandedCards.has(index);
-                return `
-                    <div class="card ${isExpanded ? 'expanded' : ''}" data-index="${index}">
-                        <div class="card-header">
-                            <div class="card-info">
-                                <h3>${c.name}</h3>
-                                <p>${isPlaceholder ? '门禁信息缺失' : '点击查看密码'}</p>
-                            </div>
-                            <i class="fas fa-chevron-down expand-icon"></i>
-                        </div>
-                        <div class="card-body">
-                            <div style="font-size:0.9rem; color:var(--text-muted); text-align:center;">
-                                <i class="fas fa-key"></i> ${isPlaceholder ? '等待骑手兄弟补充' : '门禁密码'}
-                            </div>
-                            <div class="password" style="${isPlaceholder ? 'color: var(--text-muted); font-size: 1.2rem;' : ''}">${c.password}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+            const validTiersList = [];
+            let hasTierError = false;
 
-        // 渲染商家列表
-        function renderBusinesses() {
-            const filtered = businesses.filter(b => 
-                b.name.toLowerCase().includes(state.businessSearch.toLowerCase()) || 
-                b.type.toLowerCase().includes(state.businessSearch.toLowerCase())
-            );
+            currentTiersForSave.forEach(tier => {
+                if (tier.minOrder === "" || tier.price === "") { hasTierError = true; return; }
+                const minOrder = parseFloat(tier.minOrder);
+                const price = parseFloat(tier.price);
+                if (minOrder < 0 || price < 0 || !Number.isInteger(minOrder)) { hasTierError = true; return; }
+                validTiersList.push({ minOrder, price });
+            });
 
-            if (filtered.length === 0) {
-                DOM.businessGuide.innerHTML = `<div class="empty-state"><i class="fas fa-store-slash"></i><h3>未找到匹配的商家</h3></div>`;
+            if (hasTierError) {
+                showError("规则配置栏中有不合法的单量或单价负数！");
+                resetResultDisplay();
                 return;
             }
 
-            DOM.businessGuide.innerHTML = filtered.map(b => {
-                const images = businessImages[b.id] || [];
-                const hasImages = images.length > 0;
-                // 初始化轮播状态
-                if(hasImages && !state.carouselIndexes[b.id]) state.carouselIndexes[b.id] = 0;
-                
-                let slidesHtml = '';
-                if(hasImages) {
-                    slidesHtml = images.map((img, i) => `
-                        <div class="carousel-slide">
-                            <img src="${img}" alt="${b.name}" class="previewable-img" data-bid="${b.id}" data-index="${i}">
-                        </div>
-                    `).join('');
-                } else {
-                    slidesHtml = `<div class="carousel-slide"><div class="placeholder"><i class="fas fa-camera"></i><p>暂无商家实拍图</p></div></div>`;
-                }
-
-                const indicatorsHtml = hasImages && images.length > 1 ? 
-                    images.map((_, i) => `<span class="indicator ${i===0?'active':''}" data-bid="${b.id}" data-slide="${i}"></span>`).join('') : '';
-                
-                const navBtnsHtml = hasImages && images.length > 1 ? `
-                    <button class="carousel-btn prev" data-bid="${b.id}"><i class="fas fa-chevron-left"></i></button>
-                    <button class="carousel-btn next" data-bid="${b.id}"><i class="fas fa-chevron-right"></i></button>
-                ` : '';
-
-                return `
-                    <div class="business-card">
-                        <div class="image-carousel">
-                            <div class="carousel-container" id="carousel-${b.id}">
-                                ${slidesHtml}
-                            </div>
-                            ${navBtnsHtml}
-                            <div class="carousel-indicators" id="indicators-${b.id}">
-                                ${indicatorsHtml}
-                            </div>
-                        </div>
-                        <div class="business-info">
-                            <div class="business-header">
-                                <h3 class="business-name">${b.name}</h3>
-                                <span class="business-badge">${b.type}</span>
-                            </div>
-                            <div class="business-instructions">
-                                <div class="instructions-title"><i class="fas fa-map-marked-alt"></i> 寻店指引</div>
-                                <ol class="instructions-steps">
-                                    ${b.navigation.map(step => `<li>${step}</li>`).join('')}
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // --- 交互与事件绑定 ---
-        function bindEvents() {
-            // 工具类：防抖函数
-            const debounce = (func, delay) => {
-                let timer;
-                return (...args) => { clearTimeout(timer); timer = setTimeout(() => func(...args), delay); };
-            };
-
-            // 主题切换
-            DOM.themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                DOM.themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            });
-
-            // Tabs 切换
-            DOM.tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    DOM.tabs.forEach(t => t.classList.remove('active'));
-                    DOM.tabContents.forEach(c => c.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById(tab.dataset.target).classList.add('active');
-                });
-            });
-
-            // 搜索交互 (小区)
-            DOM.searchInput.addEventListener('input', debounce((e) => {
-                state.communitySearch = e.target.value.trim();
-                DOM.clearSearch.classList.toggle('visible', state.communitySearch.length > 0);
-                renderCommunities();
-            }, 300));
-
-            DOM.clearSearch.addEventListener('click', () => {
-                DOM.searchInput.value = '';
-                state.communitySearch = '';
-                DOM.clearSearch.classList.remove('visible');
-                renderCommunities();
-            });
-
-            // 搜索交互 (商家)
-            DOM.busSearchInput.addEventListener('input', debounce((e) => {
-                state.businessSearch = e.target.value.trim();
-                DOM.clearBusSearch.classList.toggle('visible', state.businessSearch.length > 0);
-                renderBusinesses();
-            }, 300));
-
-            DOM.clearBusSearch.addEventListener('click', () => {
-                DOM.busSearchInput.value = '';
-                state.businessSearch = '';
-                DOM.clearBusSearch.classList.remove('visible');
-                renderBusinesses();
-            });
-
-            // 小区卡片手风琴折叠 (事件委托)
-            DOM.cardGrid.addEventListener('click', (e) => {
-                const card = e.target.closest('.card');
-                if (!card) return;
-                const index = parseInt(card.dataset.index);
-                
-                if (state.expandedCards.has(index)) {
-                    state.expandedCards.delete(index);
-                    card.classList.remove('expanded');
-                } else {
-                    // 开启互斥：点击一个收起其他的
-                    document.querySelectorAll('.card.expanded').forEach(c => {
-                        c.classList.remove('expanded');
-                        state.expandedCards.delete(parseInt(c.dataset.index));
-                    });
-                    state.expandedCards.add(index);
-                    card.classList.add('expanded');
-                }
-            });
-
-            // 商家轮播与图片点击 (事件委托解决重复绑定和内存泄露)
-            DOM.businessGuide.addEventListener('click', (e) => {
-                // 处理轮播按钮
-                const btn = e.target.closest('.carousel-btn');
-                if (btn) {
-                    const bid = btn.dataset.bid;
-                    const isNext = btn.classList.contains('next');
-                    navigateCarousel(bid, isNext);
-                    return;
-                }
-
-                // 处理指示器点击
-                const indicator = e.target.closest('.indicator');
-                if (indicator) {
-                    const bid = indicator.dataset.bid;
-                    const targetSlide = parseInt(indicator.dataset.slide);
-                    goToSlide(bid, targetSlide);
-                    return;
-                }
-
-                // 处理图片放大预览 (仅含 previewable-img 类的触发)
-                const img = e.target.closest('.previewable-img');
-                if (img) {
-                    const bid = img.dataset.bid;
-                    const index = parseInt(img.dataset.index);
-                    openModal(bid, index);
-                }
-            });
-
-            // 模态框事件
-            DOM.modalClose.addEventListener('click', closeModal);
-            DOM.modal.addEventListener('click', (e) => { if(e.target === DOM.modal) closeModal(); });
-            DOM.modalPrev.addEventListener('click', () => navigateModal(-1));
-            DOM.modalNext.addEventListener('click', () => navigateModal(1));
-            DOM.modalZoom.addEventListener('click', toggleZoom);
-            
-            // 键盘支持
-            document.addEventListener('keydown', (e) => {
-                if (!state.modal.active) return;
-                if (e.key === 'Escape') closeModal();
-                if (e.key === 'ArrowLeft') navigateModal(-1);
-                if (e.key === 'ArrowRight') navigateModal(1);
-            });
-        }
-
-        // --- 轮播图控制逻辑 ---
-        function navigateCarousel(bid, isNext) {
-            const images = businessImages[bid];
-            if(!images) return;
-            let current = state.carouselIndexes[bid] || 0;
-            current = isNext ? (current + 1) % images.length : (current - 1 + images.length) % images.length;
-            goToSlide(bid, current);
-        }
-
-        function goToSlide(bid, slideIndex) {
-            state.carouselIndexes[bid] = slideIndex;
-            const container = document.getElementById(`carousel-${bid}`);
-            const indicators = document.getElementById(`indicators-${bid}`);
-            
-            if(container) {
-                container.style.transform = `translateX(-${slideIndex * 100}%)`;
+            if (validTiersList.length === 0) {
+                showError("提示：请先添加一组常规阶梯计价规则。");
+                resetResultDisplay();
+                return;
             }
-            if(indicators) {
-                Array.from(indicators.children).forEach((ind, i) => {
-                    ind.classList.toggle('active', i === slideIndex);
-                });
+
+            validTiersList.sort((a, b) => a.minOrder - b.minOrder);
+            let matchedIndex = -1;
+            for (let i = 0; i < validTiersList.length; i++) {
+                if (totalOrders >= validTiersList[i].minOrder) { matchedIndex = i; }
+            }
+
+            if (matchedIndex !== -1) {
+                const matchedTier = validTiersList[matchedIndex];
+                regularSubtotal = totalOrders * matchedTier.price;
+                
+                if (matchedIndex === validTiersList.length - 1) {
+                    regularTierText = `${matchedTier.minOrder}单起 (￥${matchedTier.price.toFixed(2)})`;
+                } else {
+                    const nextTier = validTiersList[matchedIndex + 1];
+                    regularTierText = `${matchedTier.minOrder}-${nextTier.minOrder - 1}单 (￥${matchedTier.price.toFixed(2)})`;
+                }
+            } else {
+                regularTierText = "未达任何门槛";
+                regularSubtotal = 0;
             }
         }
 
-        // --- 图片模态框逻辑 ---
-        function openModal(bid, index) {
-            const images = businessImages[bid];
-            // 空数据拦截防崩溃
-            if (!images || images.length === 0) return; 
+        let groupSubtotal = 0;
+        let groupCount = 0;
+        let groupUnitPrice = 0;
 
-            state.modal.active = true;
-            state.modal.images = images;
-            state.modal.currentIndex = index;
-            state.modal.isZoomed = false;
+        if (groupOrdersStr !== "" || groupPriceStr !== "") {
+            groupCount = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+            groupUnitPrice = groupPriceStr === "" ? 0 : parseFloat(groupPriceStr);
 
-            updateModalUI();
-            DOM.modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // 防止背景滚动
+            if (groupCount < 0 || !Number.isInteger(groupCount)) {
+                showError("拼团单量需要输入一个正整数！");
+                resetResultDisplay();
+                return;
+            }
+            if (groupUnitPrice < 0) {
+                showError("拼团固定单价不能为负数！");
+                resetResultDisplay();
+                return;
+            }
+            groupSubtotal = groupCount * groupUnitPrice;
         }
 
-        function closeModal() {
-            state.modal.active = false;
-            DOM.modal.classList.remove('active');
-            document.body.style.overflow = '';
+        const grandTotal = regularSubtotal + groupSubtotal;
+        
+        resTier.textContent = regularTierText;
+        resRegularTotal.textContent = `￥${regularSubtotal.toFixed(2)}`;
+        resGroupInfo.textContent = `${groupCount} 单 × ￥${groupUnitPrice.toFixed(2)}`;
+        resGroupTotal.textContent = `￥${groupSubtotal.toFixed(2)}`;
+        resTotal.textContent = `￥${grandTotal.toFixed(2)}`;
+    }
+
+    function resetResultDisplay() {
+        resTier.textContent = "数据错误";
+        resRegularTotal.textContent = "￥0.00";
+        resGroupInfo.textContent = "0单 × ￥0.00";
+        resGroupTotal.textContent = "￥0.00";
+        resTotal.textContent = "￥0.00";
+    }
+
+    function triggerAutoSave(totalOrders, groupOrders, groupPrice, tiers) {
+        try {
+            if (window.localStorage) {
+                const dataToSave = { totalOrders, groupOrders, groupPrice, tiers };
+                localStorage.setItem('tier_calculator_storage_v2', JSON.stringify(dataToSave));
+                
+                saveTip.style.display = 'block';
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    saveTip.style.display = 'none';
+                }, 1200);
+            }
+        } catch (e) {}
+    }
+
+    function showError(msg) {
+        if (msg) {
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+        } else {
+            errorBox.style.display = 'none';
+        }
+    }
+
+    totalOrdersInput.addEventListener('input', () => calculate(true));
+    groupOrdersInput.addEventListener('input', () => calculate(true));
+    groupPriceInput.addEventListener('input', () => calculate(true));
+    
+    btnAddTier.addEventListener('click', () => {
+        addTierRow();
+        calculate(true);
+    });
+
+    btnReset.addEventListener('click', () => {
+        loadDefaultImageTiers();
+    });
+
+    btnClear.addEventListener('click', () => {
+        tierContainer.innerHTML = '';
+        totalOrdersInput.value = '';
+        groupOrdersInput.value = '';
+        groupPriceInput.value = '';
+        calculate(true);
+    });
+
+    // --- 新增：便携计算器逻辑 ---
+    const calcDisplay = document.getElementById('calcDisplay');
+    const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
+    let calcValue = '';
+
+    calcButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const action = btn.textContent;
             
-            // 重置缩放
-            state.modal.isZoomed = false;
-            DOM.modalImg.style.transform = 'scale(1)';
-        }
+            if (action === 'C') {
+                calcValue = '';
+            } else if (action === '⌫') {
+                calcValue = calcValue.slice(0, -1);
+            } else if (action === '=') {
+                try {
+                    // 使用 Function 构建安全的运算环境
+                    if(calcValue.trim() !== '') {
+                        let result = new Function('return ' + calcValue)();
+                        // 修复浮点数精度问题 (例如 0.1 + 0.2)
+                        calcValue = String(Math.round(result * 100000000) / 100000000); 
+                    }
+                } catch (e) {
+                    calcValue = '错误';
+                }
+            } else {
+                if (calcValue === '错误') calcValue = '';
+                calcValue += action;
+            }
+            calcDisplay.value = calcValue;
+        });
+    });
+</script>
 
-        function navigateModal(direction) {
-            const total = state.modal.images.length;
-            if(total <= 1) return;
-            state.modal.currentIndex = (state.modal.currentIndex + direction + total) % total;
-            
-            // 切换图片时重置缩放
-            state.modal.isZoomed = false;
-            DOM.modalImg.style.transform = 'scale(1)';
-            DOM.modalZoom.className = 'fas fa-search-plus';
-            
-            updateModalUI();
-        }
-
-        function updateModalUI() {
-            DOM.modalImg.src = state.modal.images[state.modal.currentIndex];
-            DOM.modalCounter.textContent = `${state.modal.currentIndex + 1} / ${state.modal.images.length}`;
-            
-            // 若只有一张图，隐藏左右箭头
-            const showNav = state.modal.images.length > 1;
-            DOM.modalPrev.style.display = showNav ? 'flex' : 'none';
-            DOM.modalNext.style.display = showNav ? 'flex' : 'none';
-        }
-
-        function toggleZoom() {
-            state.modal.isZoomed = !state.modal.isZoomed;
-            DOM.modalImg.style.transform = state.modal.isZoomed ? 'scale(1.8)' : 'scale(1)';
-            DOM.modalImg.style.cursor = state.modal.isZoomed ? 'zoom-out' : 'zoom-in';
-            DOM.modalZoom.className = state.modal.isZoomed ? 'fas fa-search-minus' : 'fas fa-search-plus';
-        }
-
-        // 启动应用
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
 </body>
 </html>
