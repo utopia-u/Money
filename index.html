@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>阶梯单量单价计算器(极简商务版)</title>
     <style>
         :root {
@@ -18,6 +18,11 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
+        }
+
+        /* 全局应用 touch-action，禁止双击放大的手势，同时消除点击延迟 */
+        html, body {
+            touch-action: manipulation;
         }
 
         * {
@@ -310,7 +315,6 @@
             .grand-total-box .result-value { font-size: 2.6rem; }
             .detail-box { padding: 16px; }
             .detail-box .result-value { font-size: 1.3rem; }
-            /* 若屏幕足够宽，可让计算器与按钮并排等 */
         }
     </style>
 </head>
@@ -431,7 +435,7 @@
 </div>
 
 <script>
-    // --- 原有：阶梯计算器逻辑 ---
+    // --- 阶梯计算器逻辑 ---
     const imageTiers = [
         { minOrder: 1, price: 3.0 },
         { minOrder: 600, price: 4.5 },
@@ -689,7 +693,7 @@
         calculate(true);
     });
 
-    // --- 新增：便携计算器逻辑 ---
+    // --- 便携计算器逻辑 ---
     const calcDisplay = document.getElementById('calcDisplay');
     const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
     let calcValue = '';
@@ -704,10 +708,8 @@
                 calcValue = calcValue.slice(0, -1);
             } else if (action === '=') {
                 try {
-                    // 使用 Function 构建安全的运算环境
                     if(calcValue.trim() !== '') {
                         let result = new Function('return ' + calcValue)();
-                        // 修复浮点数精度问题 (例如 0.1 + 0.2)
                         calcValue = String(Math.round(result * 100000000) / 100000000); 
                     }
                 } catch (e) {
