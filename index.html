@@ -309,9 +309,9 @@
             border-color: var(--accent-color) !important;
         }
 
-        .quick-chip .chip-del-btn {
+        .quick-chip .chip-del-btn, .quick-chip .chip-edit-btn {
             font-size: 0.75rem;
-            opacity: 0.7;
+            opacity: 0.75;
             padding: 0 2px;
             border-radius: 50%;
             display: inline-flex;
@@ -319,7 +319,7 @@
             justify-content: center;
         }
 
-        .quick-chip .chip-del-btn:hover {
+        .quick-chip .chip-del-btn:hover, .quick-chip .chip-edit-btn:hover {
             opacity: 1;
             background: rgba(0, 0, 0, 0.15);
         }
@@ -329,6 +329,35 @@
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
             padding: 12px 14px;
+        }
+
+        .goal-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .goal-stat-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px 4px;
+        }
+
+        .goal-stat-item .stat-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        .goal-stat-item .stat-value {
+            font-size: 0.88rem;
+            font-weight: 800;
+            margin-top: 2px;
+            display: block;
         }
 
         .goal-progress-bar-bg {
@@ -355,7 +384,7 @@
 
         /* 历史打卡列表 */
         .earnings-history-list {
-            max-height: 160px;
+            max-height: 170px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -607,7 +636,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-target text-danger fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">攒钱目标与存入进度</span>
+                                <span class="text-xs fw-bold text-primary">攒钱目标与智能进度分析</span>
                             </div>
                             <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255,68,0,0.3);" onclick="openAddGoalModal()">+ 新增目标</button>
                         </div>
@@ -622,9 +651,20 @@
                             <div class="goal-progress-bar-bg mb-2">
                                 <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center text-xs text-secondary fw-bold" style="font-size: 0.73rem;">
-                                <span>打卡已存入: <strong id="goalSavedAmount" class="text-success">￥0.00</strong></span>
-                                <span id="goalPercentText">完成度 0%</span>
+
+                            <div class="goal-stats-grid">
+                                <div class="goal-stat-item">
+                                    <span class="stat-label">打卡已存入</span>
+                                    <span class="stat-value text-success" id="goalSavedAmount">￥0.00</span>
+                                </div>
+                                <div class="goal-stat-item">
+                                    <span class="stat-label">完成百分比</span>
+                                    <span class="stat-value text-primary" id="goalPercentText">0%</span>
+                                </div>
+                                <div class="goal-stat-item">
+                                    <span class="stat-label">按日均预计还需</span>
+                                    <span class="stat-value text-warning" id="goalEstDays">-- 天</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -636,13 +676,14 @@
                                 <span class="text-xs fw-bold text-primary">打卡收益记录（存入目标）</span>
                             </div>
                             <div class="d-flex gap-1.5">
-                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">+ 打卡收益存入目标</button>
-                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空天数</button>
+                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">+ 打卡存入目标</button>
+                                <button type="button" class="quick-chip" style="background: var(--bg-body);" onclick="openCustomDepositModal()">+ 自定义金额/备注</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空记录</button>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-3" style="background: var(--bg-body); border: 1px solid var(--border-color);">
-                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡天数: <span id="historyCount" class="text-primary">0</span> 天</span>
+                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡 <span id="historyCount" class="text-primary">0</span> 天 (日均: <span id="dailyAvgText" class="text-primary">￥0.00</span>)</span>
                             <span class="text-xs fw-bold text-secondary">打卡总累计: <span id="accumulatedTotal" class="fs-6 fw-extrabold text-success ms-1">￥0.00</span></span>
                         </div>
 
@@ -775,10 +816,11 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6">新增攒钱目标</h5>
+                    <h5 class="modal-title fw-bold fs-6" id="goalModalTitle">新增攒钱目标</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" id="editGoalIndex" value="-1">
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">目标名字/名称</label>
                         <input type="text" id="goalModalName" class="form-control" placeholder="例如: 买新手机、换新电动车" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
@@ -790,7 +832,32 @@
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveGoalFromModal()">添加目标</button>
+                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveGoalFromModal()">保存目标</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="customDepositModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold fs-6">自定义存入/记录收益</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">存入金额 (元，支出请输入负数如 -50)</label>
+                        <input type="number" step="0.01" id="customDepositAmount" class="form-control" placeholder="例如: 200" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">备注说明 (可选)</label>
+                        <input type="text" id="customDepositMemo" class="form-control" placeholder="例如: 跑单外外加冲单奖励" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="saveCustomDeposit()">确认存入</button>
                 </div>
             </div>
         </div>
@@ -805,7 +872,7 @@
             { minOrder: 1300, price: 6.5 }
         ];
 
-        // 攒钱大目标对象数组：{ name: "名称", amount: 金额 }
+        // 攒钱大目标对象数组
         let bigGoals = [
             { name: "应急备用金", amount: 1000 },
             { name: "买新手机", amount: 3000 },
@@ -813,7 +880,7 @@
         ];
         let selectedGoalIndex = 1;
 
-        // 打卡收益历史记录（本地永久保存）
+        // 打卡收益历史记录（本地永久保存，带备注支持）
         let earningsHistory = [];
         let currentCalculatedTotal = 0;
 
@@ -826,7 +893,7 @@
                 } catch (e) {}
             }
 
-            // 加载目标数据（适配兼容旧格式数值数组与新格式对象数组）
+            // 加载目标数据
             const savedGoals = localStorage.getItem('custom_big_goals_v3');
             if (savedGoals) {
                 try {
@@ -891,24 +958,29 @@
             const container = document.getElementById('earningsHistoryList');
             const historyCountEl = document.getElementById('historyCount');
             const accumulatedTotalEl = document.getElementById('accumulatedTotal');
+            const dailyAvgText = document.getElementById('dailyAvgText');
 
             if (!container || !historyCountEl || !accumulatedTotalEl) return;
 
             const totalSum = getTotalPunchedInEarnings();
+            const daysCount = earningsHistory.length;
+            const avg = daysCount > 0 ? (totalSum / daysCount) : 0;
 
-            historyCountEl.textContent = earningsHistory.length;
+            historyCountEl.textContent = daysCount;
             accumulatedTotalEl.textContent = `￥${totalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            if (dailyAvgText) dailyAvgText.textContent = `￥${avg.toFixed(2)}`;
 
-            if (earningsHistory.length === 0) {
-                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡收益存入目标”吧！</span>';
+            if (daysCount === 0) {
+                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡存入目标”吧！</span>';
             } else {
                 let html = '';
                 earningsHistory.forEach((item, index) => {
+                    const memoHtml = item.memo ? `<span class="badge bg-light text-secondary ms-2 border">${item.memo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
-                            <span class="item-date"><i class="ph ph-calendar me-1"></i>${item.date}</span>
+                            <span class="item-date"><i class="ph ph-calendar me-1"></i>${item.date}${memoHtml}</span>
                             <div class="d-flex align-items-center gap-3">
-                                <span class="item-amount">+￥${item.amount.toFixed(2)}</span>
+                                <span class="item-amount">${item.amount >= 0 ? '+' : ''}￥${item.amount.toFixed(2)}</span>
                                 <button type="button" class="btn btn-sm p-0 text-danger" onclick="deleteEarningsRecord(${index})" title="删除该条记录"><i class="ph ph-trash"></i></button>
                             </div>
                         </div>
@@ -931,7 +1003,6 @@
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-            // 检查今日是否已打卡过
             const existingIdx = earningsHistory.findIndex(item => item.date === dateStr);
             if (existingIdx !== -1) {
                 if (confirm(`今日（${dateStr}）已有打卡记录 ￥${earningsHistory[existingIdx].amount.toFixed(2)}，是否用当前最新收益 ￥${currentCalculatedTotal.toFixed(2)} 替换更新并存入目标？`)) {
@@ -942,7 +1013,8 @@
             } else {
                 earningsHistory.unshift({
                     date: dateStr,
-                    amount: currentCalculatedTotal
+                    amount: currentCalculatedTotal,
+                    memo: "今日跑单结算"
                 });
             }
 
@@ -950,8 +1022,41 @@
             renderEarningsHistory();
         };
 
+        window.openCustomDepositModal = function() {
+            document.getElementById('customDepositAmount').value = '';
+            document.getElementById('customDepositMemo').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('customDepositModal'));
+            modal.show();
+        };
+
+        window.saveCustomDeposit = function() {
+            const amount = parseFloat(document.getElementById('customDepositAmount').value);
+            const memo = document.getElementById('customDepositMemo').value.trim();
+
+            if (isNaN(amount) || amount === 0) {
+                alert('请输入有效的金额！');
+                return;
+            }
+
+            const now = new Date();
+            const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            earningsHistory.unshift({
+                date: timeStr,
+                amount: amount,
+                memo: memo || "补充入账"
+            });
+
+            persistEarningsHistory();
+            renderEarningsHistory();
+
+            const modalEl = document.getElementById('customDepositModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        };
+
         window.deleteEarningsRecord = function(index) {
-            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡收益记录吗？删除后目标累计存入金额也会同步扣减。`)) {
+            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？删除后目标累计金额也会同步扣减。`)) {
                 earningsHistory.splice(index, 1);
                 persistEarningsHistory();
                 renderEarningsHistory();
@@ -988,6 +1093,7 @@
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
                         <span>${goal.name} (￥${goal.amount})</span>
+                        <span class="chip-edit-btn" onclick="openEditGoalModal(event, ${idx})" title="编辑目标"><i class="ph ph-pencil-simple"></i></span>
                         <span class="chip-del-btn" onclick="removeGoal(event, ${idx})" title="删除目标"><i class="ph ph-x"></i></span>
                     </div>
                 `;
@@ -1008,26 +1114,46 @@
         };
 
         window.openAddGoalModal = function() {
+            document.getElementById('goalModalTitle').textContent = "新增攒钱目标";
+            document.getElementById('editGoalIndex').value = "-1";
             document.getElementById('goalModalName').value = '';
             document.getElementById('goalModalAmount').value = '';
             const modal = new bootstrap.Modal(document.getElementById('goalModal'));
             modal.show();
         };
 
+        window.openEditGoalModal = function(event, idx) {
+            event.stopPropagation();
+            const goal = bigGoals[idx];
+            if (!goal) return;
+            document.getElementById('goalModalTitle').textContent = "修改攒钱目标";
+            document.getElementById('editGoalIndex').value = idx;
+            document.getElementById('goalModalName').value = goal.name;
+            document.getElementById('goalModalAmount').value = goal.amount;
+            const modal = new bootstrap.Modal(document.getElementById('goalModal'));
+            modal.show();
+        };
+
         window.saveGoalFromModal = function() {
+            const editIdx = parseInt(document.getElementById('editGoalIndex').value, 10);
             let name = document.getElementById('goalModalName').value.trim();
             const amount = parseFloat(document.getElementById('goalModalAmount').value);
 
             if (isNaN(amount) || amount <= 0) {
-                alert('请输入有效的目标金额！');
+                alert('请输入有效的攒钱目标金额！');
                 return;
             }
 
-            if (!name) {
-                name = `目标 ￥${amount}`;
+            if (!name) name = `目标 ￥${amount}`;
+
+            if (editIdx === -1) {
+                // 新增
+                bigGoals.push({ name: name, amount: amount });
+            } else {
+                // 编辑
+                bigGoals[editIdx] = { name: name, amount: amount };
             }
 
-            bigGoals.push({ name: name, amount: amount });
             bigGoals.sort((a, b) => a.amount - b.amount);
             selectedGoalIndex = bigGoals.findIndex(g => g.name === name && g.amount === amount);
             if (selectedGoalIndex === -1) selectedGoalIndex = 0;
@@ -1056,15 +1182,16 @@
             }
         };
 
-        // 打卡后的金额直接保存在“打卡已存入”中，并实时计算与攒钱目标的差距
+        // 实时人性化估算与目标展示
         function updateGoalProgress() {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
             const progressBarFill = document.getElementById('goalProgressBarFill');
             const goalSavedAmount = document.getElementById('goalSavedAmount');
             const goalPercentText = document.getElementById('goalPercentText');
+            const goalEstDays = document.getElementById('goalEstDays');
 
-            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText) return;
+            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText || !goalEstDays) return;
 
             const totalSaved = getTotalPunchedInEarnings();
             goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
@@ -1074,7 +1201,8 @@
                 goalDiffStatusText.textContent = "请新建目标";
                 goalDiffStatusText.className = "text-xs fw-bold text-secondary";
                 progressBarFill.style.width = "0%";
-                goalPercentText.textContent = "完成度 0%";
+                goalPercentText.textContent = "0%";
+                goalEstDays.textContent = "-- 天";
                 return;
             }
 
@@ -1085,17 +1213,32 @@
             const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
 
             progressBarFill.style.width = `${pct}%`;
-            goalPercentText.textContent = `完成度 ${pct.toFixed(1)}%`;
+            goalPercentText.textContent = `${pct.toFixed(1)}%`;
+
+            // 计算日均收入估算剩余天数
+            const daysCount = earningsHistory.length;
+            const avgDailyEarnings = daysCount > 0 ? (totalSaved / daysCount) : 0;
 
             if (diff <= 0) {
                 const over = Math.abs(diff);
-                goalDiffStatusText.textContent = `🎉 已达成【${currentGoal.name}】！超额存入 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.textContent = `🎉 已达成！超额存入 ￥${over.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
+                goalEstDays.textContent = "已完成🎉";
+                goalEstDays.className = "stat-value text-success";
             } else {
-                goalDiffStatusText.textContent = `距离【${currentGoal.name}】还差 ￥${diff.toFixed(2)}`;
+                goalDiffStatusText.textContent = `还差 ￥${diff.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
                 progressBarFill.classList.remove('completed');
+
+                if (avgDailyEarnings > 0) {
+                    const estDays = Math.ceil(diff / avgDailyEarnings);
+                    goalEstDays.textContent = `约 ${estDays} 天`;
+                    goalEstDays.className = "stat-value text-warning";
+                } else {
+                    goalEstDays.textContent = "-- 天";
+                    goalEstDays.className = "stat-value text-secondary";
+                }
             }
         }
 
