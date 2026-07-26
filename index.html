@@ -353,6 +353,37 @@
             background: linear-gradient(90deg, #10B981, #059669);
         }
 
+        /* 历史打卡列表 */
+        .earnings-history-list {
+            max-height: 160px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .earnings-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 7px 12px;
+            font-size: 0.78rem;
+        }
+
+        .earnings-history-item .item-date {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .earnings-history-item .item-amount {
+            font-weight: 800;
+            color: #10B981;
+            font-size: 0.9rem;
+        }
+
         .tier-roadmap-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -544,7 +575,7 @@
                     <div class="calc-bento-card mb-3 p-3">
                         <div class="grand-total-hero">
                             <div class="hero-header-row">
-                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 当前累计预估结算</span>
+                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 本次/今日结算收益</span>
                                 <span id="resTierBadge" class="hero-badge hero-badge-accent">匹配中...</span>
                             </div>
 
@@ -576,7 +607,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-target text-danger fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">长期攒钱/挣钱大目标</span>
+                                <span class="text-xs fw-bold text-primary">攒钱目标与存入进度</span>
                             </div>
                             <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255,68,0,0.3);" onclick="openAddGoalModal()">+ 新增目标</button>
                         </div>
@@ -592,10 +623,31 @@
                                 <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center text-xs text-secondary fw-bold" style="font-size: 0.73rem;">
-                                <span>当前跑单已赚: <strong id="goalEarnedCurrent" class="text-primary">￥0.00</strong></span>
+                                <span>打卡已存入: <strong id="goalSavedAmount" class="text-success">￥0.00</strong></span>
                                 <span id="goalPercentText">完成度 0%</span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="calc-bento-card mb-3 p-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-1.5">
+                                <i class="ph ph-coins text-warning fs-6"></i>
+                                <span class="text-xs fw-bold text-primary">打卡收益记录（存入目标）</span>
+                            </div>
+                            <div class="d-flex gap-1.5">
+                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">+ 打卡收益存入目标</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空天数</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-3" style="background: var(--bg-body); border: 1px solid var(--border-color);">
+                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡天数: <span id="historyCount" class="text-primary">0</span> 天</span>
+                            <span class="text-xs fw-bold text-secondary">打卡总累计: <span id="accumulatedTotal" class="fs-6 fw-extrabold text-success ms-1">￥0.00</span></span>
+                        </div>
+
+                        <div class="earnings-history-list" id="earningsHistoryList">
+                            </div>
                     </div>
 
                     <div class="row g-2 mb-3">
@@ -723,7 +775,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6">新增攒钱/挣钱大目标</h5>
+                    <h5 class="modal-title fw-bold fs-6">新增攒钱大目标</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
                 </div>
                 <div class="modal-body">
@@ -753,6 +805,10 @@
         let bigGoals = [1000, 3000, 5000];
         let selectedGoalIndex = 1;
 
+        // 打卡收益历史记录（本地永久保存）
+        let earningsHistory = [];
+        let currentCalculatedTotal = 0;
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
             if (savedTiers) {
@@ -771,6 +827,15 @@
                         selectedGoalIndex = parsed.selectedIndex ?? 0;
                         if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = 0;
                     }
+                } catch (e) {}
+            }
+
+            // 读取历史打卡数据
+            const savedHistory = localStorage.getItem('custom_earnings_history_v2');
+            if (savedHistory) {
+                try {
+                    const parsed = JSON.parse(savedHistory);
+                    if (Array.isArray(parsed)) earningsHistory = parsed;
                 } catch (e) {}
             }
 
@@ -796,6 +861,97 @@
 
             initCalculatorData();
         });
+
+        // 打卡历史存储与渲染
+        function persistEarningsHistory() {
+            try {
+                localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory));
+            } catch (e) {}
+        }
+
+        function getTotalPunchedInEarnings() {
+            return earningsHistory.reduce((sum, item) => sum + (item.amount || 0), 0);
+        }
+
+        function renderEarningsHistory() {
+            const container = document.getElementById('earningsHistoryList');
+            const historyCountEl = document.getElementById('historyCount');
+            const accumulatedTotalEl = document.getElementById('accumulatedTotal');
+
+            if (!container || !historyCountEl || !accumulatedTotalEl) return;
+
+            const totalSum = getTotalPunchedInEarnings();
+
+            historyCountEl.textContent = earningsHistory.length;
+            accumulatedTotalEl.textContent = `￥${totalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            if (earningsHistory.length === 0) {
+                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡收益存入目标”吧！</span>';
+            } else {
+                let html = '';
+                earningsHistory.forEach((item, index) => {
+                    html += `
+                        <div class="earnings-history-item">
+                            <span class="item-date"><i class="ph ph-calendar me-1"></i>${item.date}</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="item-amount">+￥${item.amount.toFixed(2)}</span>
+                                <button type="button" class="btn btn-sm p-0 text-danger" onclick="deleteEarningsRecord(${index})" title="删除该条记录"><i class="ph ph-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // 更新目标完成进度（基于已打卡的总存入金额）
+            updateGoalProgress();
+        }
+
+        // 打卡功能：将当前结算金额直接打卡并存入目标
+        window.recordTodayEarnings = function() {
+            if (currentCalculatedTotal <= 0) {
+                alert('当前计算得出的收益为 0，请先输入有效的单量进行核算！');
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+            // 检查今日是否已打卡过
+            const existingIdx = earningsHistory.findIndex(item => item.date === dateStr);
+            if (existingIdx !== -1) {
+                if (confirm(`今日（${dateStr}）已有打卡记录 ￥${earningsHistory[existingIdx].amount.toFixed(2)}，是否用当前最新收益 ￥${currentCalculatedTotal.toFixed(2)} 替换更新并存入目标？`)) {
+                    earningsHistory[existingIdx].amount = currentCalculatedTotal;
+                } else {
+                    return;
+                }
+            } else {
+                earningsHistory.unshift({
+                    date: dateStr,
+                    amount: currentCalculatedTotal
+                });
+            }
+
+            persistEarningsHistory();
+            renderEarningsHistory();
+        };
+
+        window.deleteEarningsRecord = function(index) {
+            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡收益记录吗？删除后目标累计存入金额也会同步扣减。`)) {
+                earningsHistory.splice(index, 1);
+                persistEarningsHistory();
+                renderEarningsHistory();
+            }
+        };
+
+        window.clearEarningsHistory = function() {
+            if (earningsHistory.length === 0) return;
+            if (confirm('确定要清空所有已打卡存入的收益历史吗？清空后目标进度将归零。')) {
+                earningsHistory = [];
+                persistEarningsHistory();
+                renderEarningsHistory();
+            }
+        };
 
         function persistGoals() {
             try {
@@ -834,7 +990,7 @@
             selectedGoalIndex = idx;
             persistGoals();
             renderGoalChips();
-            calculate(false);
+            updateGoalProgress();
         };
 
         window.openAddGoalModal = function() {
@@ -862,7 +1018,7 @@
             if (modal) modal.hide();
 
             renderGoalChips();
-            calculate(true);
+            updateGoalProgress();
         };
 
         window.removeGoal = function(event, idx) {
@@ -874,47 +1030,48 @@
                 }
                 persistGoals();
                 renderGoalChips();
-                calculate(true);
+                updateGoalProgress();
             }
         };
 
-        // 直接根据每跑一单计算出的总收益，实时比对并计算距离目标的差距
-        function updateGoalProgress(grandTotal) {
+        // 打卡后的金额直接保存在“打卡已存入”中，并实时计算与攒钱大目标的差距
+        function updateGoalProgress() {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
             const progressBarFill = document.getElementById('goalProgressBarFill');
-            const goalEarnedCurrent = document.getElementById('goalEarnedCurrent');
+            const goalSavedAmount = document.getElementById('goalSavedAmount');
             const goalPercentText = document.getElementById('goalPercentText');
 
-            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalEarnedCurrent || !goalPercentText) return;
+            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText) return;
+
+            const totalSaved = getTotalPunchedInEarnings();
+            goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
 
             if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
                 goalTitleText.textContent = "未设定大目标";
                 goalDiffStatusText.textContent = "请新建目标";
                 goalDiffStatusText.className = "text-xs fw-bold text-secondary";
                 progressBarFill.style.width = "0%";
-                goalEarnedCurrent.textContent = `￥${grandTotal.toFixed(2)}`;
                 goalPercentText.textContent = "完成度 0%";
                 return;
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
             goalTitleText.textContent = `目标金额: ￥${currentGoal.toFixed(2)}`;
-            goalEarnedCurrent.textContent = `￥${grandTotal.toFixed(2)}`;
 
-            const diff = currentGoal - grandTotal;
-            const pct = Math.min(100, Math.max(0, (grandTotal / currentGoal) * 100));
+            const diff = currentGoal - totalSaved;
+            const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal) * 100));
 
             progressBarFill.style.width = `${pct}%`;
             goalPercentText.textContent = `完成度 ${pct.toFixed(1)}%`;
 
             if (diff <= 0) {
                 const over = Math.abs(diff);
-                goalDiffStatusText.textContent = `🎉 已达成大目标！超额 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.textContent = `🎉 打卡已达成大目标！超额存入 ￥${over.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
             } else {
-                goalDiffStatusText.textContent = `还差 ￥${diff.toFixed(2)}`;
+                goalDiffStatusText.textContent = `距离目标还差 ￥${diff.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
                 progressBarFill.classList.remove('completed');
             }
@@ -1044,7 +1201,6 @@
             return clean;
         };
 
-        // 每加一单直接记入，并实时保存至本地
         window.addTotalOrders = (amount) => {
             if (!totalOrdersInput) return;
             let cur = parseInt(totalOrdersInput.value || '0', 10);
@@ -1075,6 +1231,7 @@
 
         function initCalculatorData() {
             renderGoalChips();
+            renderEarningsHistory();
 
             let localData = null;
             try {
@@ -1178,6 +1335,7 @@
             const groupUnitPrice = 3.20;
             const groupSubtotal = groupOrdersNum * groupUnitPrice;
             const grandTotal = regularSubtotal + groupSubtotal;
+            currentCalculatedTotal = grandTotal;
 
             resTotalNum.textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -1186,8 +1344,6 @@
             }
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
-            // 跑单收益实时更新至攒钱大目标比对卡片中
-            updateGoalProgress(grandTotal);
         }
 
         function updateProgressEngine(regularOrders, matchedIndex) {
@@ -1232,12 +1388,12 @@
         }
 
         function resetResultDisplay() {
+            currentCalculatedTotal = 0;
             if (resTotalNum && resTierBadge) {
                 resTotalNum.textContent = "0.00";
                 resTierBadge.textContent = "数据有误";
             }
             renderTierCards(-1, 0);
-            updateGoalProgress(0);
         }
 
         function showError(msg) {
