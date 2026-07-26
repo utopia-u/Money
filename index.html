@@ -276,6 +276,7 @@
 
         .quick-chip-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 6px;
             margin-top: 10px;
         }
@@ -289,6 +290,9 @@
             padding: 6px 12px;
             border-radius: var(--radius-pill);
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s ease;
         }
 
@@ -296,6 +300,56 @@
             background: var(--accent-light);
             color: var(--accent-color);
             border-color: rgba(255, 68, 0, 0.3);
+        }
+
+        .quick-chip.active {
+            background: var(--accent-color) !important;
+            color: #FFFFFF !important;
+            border-color: var(--accent-color) !important;
+        }
+
+        .quick-chip .chip-del-btn {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            padding: 0 2px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-chip .chip-del-btn:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .goal-banner-card {
+            background: var(--bg-body);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+        }
+
+        .goal-progress-bar-bg {
+            height: 10px;
+            background: rgba(0,0,0,0.06);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .goal-progress-bar-bg {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .goal-progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6600, #FF3300);
+            border-radius: var(--radius-pill);
+            transition: width 0.3s ease;
+        }
+
+        .goal-progress-bar-fill.completed {
+            background: linear-gradient(90deg, #10B981, #059669);
         }
 
         .tier-roadmap-grid {
@@ -512,6 +566,29 @@
                         </div>
                     </div>
 
+                    <div class="calc-bento-card mb-4 p-3 p-md-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="ph ph-target text-danger fs-5"></i>
+                                <span class="text-sm fw-bold text-primary">每天赚钱目标设定</span>
+                            </div>
+                            <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255,68,0,0.3);" onclick="openAddGoalModal()">+ 新增目标</button>
+                        </div>
+
+                        <div class="quick-chip-group mb-3" id="goalChipsContainer">
+                            </div>
+
+                        <div class="goal-banner-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
+                                <span class="text-xs fw-bold" id="goalDiffStatusText">还差 ￥0.00</span>
+                            </div>
+                            <div class="goal-progress-bar-bg">
+                                <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row g-3 mb-4">
                         <div class="col-12 col-md-6">
                             <div class="calc-bento-card p-3 p-md-4">
@@ -626,6 +703,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="goalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold fs-6">新增每日收入目标</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">目标金额 (元/天)</label>
+                        <input type="number" id="goalModalAmount" class="form-control" placeholder="例如: 300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveGoalFromModal()">添加目标</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let imageTiers = [
@@ -635,17 +733,33 @@
             { minOrder: 1300, price: 6.5 }
         ];
 
+        let dailyGoals = [200, 300, 500];
+        let selectedGoalIndex = 1; // 默认选中 300
+
         document.addEventListener('DOMContentLoaded', () => {
+            // 加载阶梯
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
             if (savedTiers) {
                 try {
                     const parsed = JSON.parse(savedTiers);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        imageTiers = parsed;
+                    if (Array.isArray(parsed) && parsed.length > 0) imageTiers = parsed;
+                } catch (e) {}
+            }
+
+            // 加载目标列表及选中项
+            const savedGoals = localStorage.getItem('custom_daily_goals_v1');
+            if (savedGoals) {
+                try {
+                    const parsed = JSON.parse(savedGoals);
+                    if (Array.isArray(parsed.goals) && parsed.goals.length > 0) {
+                        dailyGoals = parsed.goals;
+                        selectedGoalIndex = parsed.selectedIndex ?? 0;
+                        if (selectedGoalIndex >= dailyGoals.length) selectedGoalIndex = 0;
                     }
                 } catch (e) {}
             }
 
+            // 主题切换
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {
                 const themeIcon = themeToggle.querySelector('i');
@@ -669,6 +783,124 @@
             initCalculatorData();
         });
 
+        // 目标管理逻辑
+        function persistGoals() {
+            try {
+                localStorage.setItem('custom_daily_goals_v1', JSON.stringify({
+                    goals: dailyGoals,
+                    selectedIndex: selectedGoalIndex
+                }));
+            } catch (e) {}
+        }
+
+        function renderGoalChips() {
+            const container = document.getElementById('goalChipsContainer');
+            if (!container) return;
+
+            dailyGoals.sort((a, b) => a - b);
+
+            let html = '';
+            dailyGoals.forEach((goal, idx) => {
+                const isSelected = (idx === selectedGoalIndex);
+                html += `
+                    <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
+                        <span>￥${goal}</span>
+                        <span class="chip-del-btn" onclick="removeGoal(event, ${idx})" title="删除目标"><i class="ph ph-x"></i></span>
+                    </div>
+                `;
+            });
+
+            if (dailyGoals.length === 0) {
+                html = '<span class="text-xs text-secondary">暂无目标，点击右上角新增</span>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        window.selectGoal = function(idx) {
+            selectedGoalIndex = idx;
+            persistGoals();
+            renderGoalChips();
+            calculate(false);
+        };
+
+        window.openAddGoalModal = function() {
+            document.getElementById('goalModalAmount').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('goalModal'));
+            modal.show();
+        };
+
+        window.saveGoalFromModal = function() {
+            const amount = parseFloat(document.getElementById('goalModalAmount').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('请输入有效的增赚目标金额！');
+                return;
+            }
+
+            if (!dailyGoals.includes(amount)) {
+                dailyGoals.push(amount);
+                dailyGoals.sort((a, b) => a - b);
+                selectedGoalIndex = dailyGoals.indexOf(amount);
+                persistGoals();
+            }
+
+            const modalEl = document.getElementById('goalModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            renderGoalChips();
+            calculate(true);
+        };
+
+        window.removeGoal = function(event, idx) {
+            event.stopPropagation();
+            if (confirm(`确定删除 ￥${dailyGoals[idx]} 目标吗？`)) {
+                dailyGoals.splice(idx, 1);
+                if (selectedGoalIndex >= dailyGoals.length) {
+                    selectedGoalIndex = Math.max(0, dailyGoals.length - 1);
+                }
+                persistGoals();
+                renderGoalChips();
+                calculate(true);
+            }
+        };
+
+        function updateGoalProgress(grandTotal) {
+            const goalTitleText = document.getElementById('goalTitleText');
+            const goalDiffStatusText = document.getElementById('goalDiffStatusText');
+            const progressBarFill = document.getElementById('goalProgressBarFill');
+
+            if (!goalTitleText || !goalDiffStatusText || !progressBarFill) return;
+
+            if (dailyGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= dailyGoals.length) {
+                goalTitleText.textContent = "未设定目标";
+                goalDiffStatusText.textContent = "请新建目标";
+                goalDiffStatusText.className = "text-xs fw-bold text-secondary";
+                progressBarFill.style.width = "0%";
+                return;
+            }
+
+            const currentGoal = dailyGoals[selectedGoalIndex];
+            goalTitleText.textContent = `每日目标: ￥${currentGoal.toFixed(2)}`;
+
+            const diff = currentGoal - grandTotal;
+            const pct = Math.min(100, Math.max(0, (grandTotal / currentGoal) * 100));
+
+            progressBarFill.style.width = `${pct}%`;
+
+            if (diff <= 0) {
+                const over = Math.abs(diff);
+                goalDiffStatusText.textContent = `🎉 已达标！超额 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.className = "text-xs fw-bold text-success";
+                progressBarFill.classList.add('completed');
+            } else {
+                goalDiffStatusText.textContent = `距离目标还差 ￥${diff.toFixed(2)}`;
+                goalDiffStatusText.className = "text-xs fw-bold text-danger";
+                progressBarFill.classList.remove('completed');
+            }
+        }
+
+        // 阶梯卡片渲染
         function renderTierCards(matchedIndex, regularOrdersNum) {
             const container = document.getElementById('tierRoadmapGrid');
             if (!container) return;
@@ -822,6 +1054,8 @@
         };
 
         function initCalculatorData() {
+            renderGoalChips();
+
             let localData = null;
             try {
                 if (window.localStorage) {
@@ -932,6 +1166,7 @@
             }
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
+            updateGoalProgress(grandTotal);
         }
 
         function updateProgressEngine(regularOrders, matchedIndex) {
@@ -981,6 +1216,7 @@
                 resTierBadge.textContent = "数据有误";
             }
             renderTierCards(-1, 0);
+            updateGoalProgress(0);
         }
 
         function showError(msg) {
