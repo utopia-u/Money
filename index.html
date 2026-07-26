@@ -601,9 +601,14 @@
                                     <span class="input-suffix">单</span>
                                 </div>
                                 <div class="quick-chip-group">
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(1)">+1</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(5)">+5</button>
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(10)">+10</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(20)">+20</button>
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(50)">+50</button>
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(100)">+100</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(200)">+200</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(500)">+500</button>
                                     <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearOrders()">清空</button>
                                 </div>
                             </div>
@@ -620,9 +625,12 @@
                                     <span class="input-suffix">单</span>
                                 </div>
                                 <div class="quick-chip-group">
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(1)">+1</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(2)">+2</button>
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(5)">+5</button>
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(10)">+10</button>
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(20)">+20</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(50)">+50</button>
                                     <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置拼团</button>
                                 </div>
                             </div>
@@ -734,10 +742,9 @@
         ];
 
         let dailyGoals = [200, 300, 500];
-        let selectedGoalIndex = 1; // 默认选中 300
+        let selectedGoalIndex = 1;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 加载阶梯
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
             if (savedTiers) {
                 try {
@@ -746,7 +753,6 @@
                 } catch (e) {}
             }
 
-            // 加载目标列表及选中项
             const savedGoals = localStorage.getItem('custom_daily_goals_v1');
             if (savedGoals) {
                 try {
@@ -759,7 +765,6 @@
                 } catch (e) {}
             }
 
-            // 主题切换
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {
                 const themeIcon = themeToggle.querySelector('i');
@@ -783,7 +788,6 @@
             initCalculatorData();
         });
 
-        // 目标管理逻辑
         function persistGoals() {
             try {
                 localStorage.setItem('custom_daily_goals_v1', JSON.stringify({
@@ -833,7 +837,7 @@
         window.saveGoalFromModal = function() {
             const amount = parseFloat(document.getElementById('goalModalAmount').value);
             if (isNaN(amount) || amount <= 0) {
-                alert('请输入有效的增赚目标金额！');
+                alert('请输入有效的目标金额！');
                 return;
             }
 
@@ -900,7 +904,6 @@
             }
         }
 
-        // 阶梯卡片渲染
         function renderTierCards(matchedIndex, regularOrdersNum) {
             const container = document.getElementById('tierRoadmapGrid');
             if (!container) return;
