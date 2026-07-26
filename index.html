@@ -2,251 +2,451 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>阶梯单量单价计算器(极简商务版)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>阶梯单量单价计算器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const currentHour = new Date().getHours();
+            const isNightTime = currentHour >= 19 || currentHour < 6;
+            if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     <style>
         :root {
-            --primary-color: #3b82f6;
-            --primary-hover: #2563eb;
-            --accent-color: #8b5cf6;
-            --accent-hover: #7c3aed;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --danger-hover: #dc2626;
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            --font-display-num: 'Bebas Neue', var(--font-sans);
+
+            --bg-body: #F7F5F2;
+            --bg-surface-rgb: 255, 255, 255;
+            --bg-surface: rgb(var(--bg-surface-rgb));
+            --text-primary: #1A1C21;
+            --text-secondary: #6B7280;
+            
+            --accent-color: #FF4400;
+            --accent-light: #FFF2EB;
+            --accent-text: #FF4400; 
+            
+            --danger-color: #EF4444;
+            --danger-bg: #FEF2F2;
+            --danger-text: #B91C1C;
+            --success-color: #10B981;
+            --success-bg: #ECFDF5;
+
+            --radius-xl: 32px;        
+            --radius-lg: 20px;        
+            --radius-md: 14px;        
+            --radius-sm: 8px;         
+            --radius-pill: 9999px;    
+
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --border-color: rgba(0, 0, 0, 0.06);
         }
 
-        /* 全局应用 touch-action，禁止双击放大的手势，同时消除点击延迟 */
+        [data-theme="dark"] {
+            --bg-body: #0D0C0A;
+            --bg-surface-rgb: 24, 22, 20;
+            --bg-surface: rgb(var(--bg-surface-rgb));
+            --text-primary: #F3F4F6; 
+            --text-secondary: #9CA3AF; 
+            --accent-color: #FF4400;
+            --accent-light: rgba(255, 68, 0, 0.15);
+            --accent-text: #FF4400; 
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --danger-text: #FCA5A5;
+            --success-bg: rgba(16, 185, 129, 0.15);
+            --card-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
         html, body {
             touch-action: manipulation;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 16px 8px;
-            line-height: 1.6;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: var(--font-sans) !important;
+            padding: 16px;
+            padding-bottom: calc(32px + var(--safe-bottom));
         }
 
-        .container {
-            max-width: 700px;
+        .app-layout {
+            max-width: 1100px;
             margin: 0 auto;
         }
 
-        header {
-            text-align: center;
-            margin: 16px 0 24px 0;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            color: var(--text-main);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        /* 卡片基础设计 */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-        }
-
-        .card-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 16px;
+        .app-header {
+            padding: 16px 24px; 
+            background: var(--bg-surface);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--text-main);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
         }
 
-        .card-title .title-tag {
+        .section-card {
+            background: var(--bg-surface);
+            padding: 28px;
+            border-radius: var(--radius-xl); 
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .calc-bento-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .calc-bento-card {
+            background: rgba(30, 27, 25, 0.6);
+        }
+
+        .grand-total-hero {
+            background: linear-gradient(135deg, #059669 0%, #10B981 50%, #047857 100%);
+            color: #FFFFFF;
+            padding: 24px 22px;
+            border-radius: var(--radius-lg);
+            position: relative;
+            box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.4);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+        }
+
+        .hero-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            background: rgba(0, 0, 0, 0.16);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .card-title .title-tag::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 16px;
-            border-radius: 2px;
-            background: var(--primary-color);
-        }
-        .card-title.accent .title-tag::before { background: var(--accent-color); }
-        .card-title.gray .title-tag::before { background: var(--text-muted); }
-
-        /* 人性化输入框组合 (带后缀单位) */
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group:last-child { margin-bottom: 0; }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-main);
+        .hero-badge-accent {
+            background: rgba(255, 255, 255, 0.22);
         }
 
-        .input-group {
+        .hero-amount-wrapper {
+            margin: 16px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-currency-symbol {
+            font-size: 1.6rem;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        .hero-amount-number {
+            font-family: var(--font-display-num) !important;
+            font-size: 3.4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .hero-progress-box {
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-progress-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .hero-progress-fill {
+            height: 100%;
+            background: #FFFFFF;
+            border-radius: var(--radius-pill);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .hero-progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .formula-preview-pill {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .formula-preview-pill .formula-code {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .calc-input-group {
             display: flex;
             align-items: center;
             position: relative;
+            width: 100%;
         }
 
-        .input-group input {
+        .calc-input-group input {
             width: 100%;
-            padding: 12px 50px 12px 14px;
+            height: 52px;
+            padding: 8px 50px 8px 16px;
             border: 1.5px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: var(--text-main);
-            background-color: #f8fafc;
+            border-radius: var(--radius-md);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            background-color: var(--bg-body);
             transition: all 0.2s ease;
         }
 
-        .input-group input:focus {
+        .calc-input-group input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-        }
-
-        .accent-input input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+            background-color: var(--bg-surface);
+            box-shadow: 0 0 0 4px var(--accent-light);
         }
 
-        .input-group .input-suffix {
+        .calc-input-group .input-suffix {
             position: absolute;
-            right: 14px;
+            right: 16px;
             font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 800;
+            color: var(--text-secondary);
             pointer-events: none;
-            background: transparent;
         }
 
-        .grid-2 {
+        .quick-chip-group {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .quick-chip {
+            border: 1px solid var(--border-color);
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-chip:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-color: rgba(255, 68, 0, 0.3);
+        }
+
+        .tier-roadmap-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
-        /* 按钮重构 */
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
+        @media (min-width: 576px) {
+            .tier-roadmap-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .tier-card {
+            background: var(--bg-body);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 12px;
+            text-align: center;
+            position: relative;
             transition: all 0.2s ease;
-            display: inline-flex;
+        }
+
+        .tier-card .tier-range {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .tier-card .tier-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .tier-card.is-active {
+            background: var(--accent-light) !important;
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 8px 22px -6px rgba(255, 68, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .tier-card.is-active .tier-range {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .tier-card.is-active .tier-price {
+            color: var(--accent-color);
+        }
+
+        .tier-card.is-active::after {
+            content: '✓ 当前档位';
+            position: absolute;
+            top: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--accent-color);
+            color: #FFFFFF;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(255, 68, 0, 0.3);
+        }
+
+        .calculator-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            box-shadow: var(--card-shadow);
+        }
+
+        #calcDisplay {
+            width: 100%;
+            height: 56px;
+            margin-bottom: 16px;
+            text-align: right;
+            font-size: 1.6rem;
+            padding: 8px 18px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            height: 52px;
+            font-size: 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-body);
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            transition: background 0.15s ease, transform 0.1s ease;
         }
 
-        .btn-primary { background-color: #eff6ff; color: var(--primary-color); }
-        .btn-primary:hover { background-color: var(--primary-color); color: white; }
-        
-        .btn-danger { background-color: #fef2f2; color: var(--danger-color); }
-        .btn-danger:hover { background-color: var(--danger-color); color: white; }
-
-        .btn-secondary { background-color: #f1f5f9; color: #475569; }
-        .btn-secondary:hover { background-color: #e2e8f0; }
-
-        .btn-sm { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
+        .calc-btn:active {
+            transform: scale(0.95);
         }
 
-        /* 动态阶梯行样式优化 */
-        .tier-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: #f8fafc;
-            border-radius: 10px;
-            border: 1px dashed var(--border-color);
+        .calc-op {
+            background: var(--accent-light);
+            color: var(--accent-text);
+            font-weight: 800;
+            border-color: rgba(255, 68, 0, 0.15);
         }
 
-        /* 看板设计 */
-        .result-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .calc-clear {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            font-weight: 800;
+            border-color: rgba(239, 68, 68, 0.15);
         }
 
-        .grand-total-box {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 14px;
-            text-align: center;
-            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
-        }
-
-        .grand-total-box .result-label { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
-        .grand-total-box .result-value { font-size: 2.2rem; font-weight: 800; color: white; margin-top: 4px;}
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .detail-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .detail-box .result-value {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 2px;
+        .calc-equal {
+            background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
+            color: #FFFFFF;
+            font-weight: 800;
+            border: none;
+            box-shadow: 0 6px 16px rgba(255, 68, 0, 0.25);
         }
 
         .error-msg {
-            color: var(--danger-color);
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            font-size: 0.88rem;
-            font-weight: 500;
+            color: var(--danger-text);
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
             display: none;
         }
 
@@ -254,475 +454,604 @@
             text-align: right;
             font-size: 0.75rem;
             color: var(--success-color);
-            margin-top: -12px;
+            margin-top: -6px;
             margin-bottom: 12px;
-            font-weight: 600;
+            font-weight: 800;
             display: none;
-        }
-
-        /* --- 独立计算器样式 --- */
-        .calculator-wrapper {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            max-width: 320px;
-            margin: 0 auto;
-        }
-        #calcDisplay {
-            width: 100%;
-            height: 54px;
-            margin-bottom: 12px;
-            text-align: right;
-            font-size: 1.6rem;
-            padding: 8px 12px;
-            border: 1.5px solid var(--border-color);
-            border-radius: 8px;
-            background: #fff;
-            color: var(--text-main);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        #calcDisplay:focus { outline: none; border-color: var(--primary-color); }
-        .calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-        .calc-btn {
-            padding: 14px 0;
-            font-size: 1.2rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: #fff;
-            cursor: pointer;
-            transition: all 0.1s ease;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .calc-btn:hover { background: #e2e8f0; }
-        .calc-btn:active { background: #cbd5e1; transform: scale(0.96); }
-        .calc-op { background: #eff6ff; color: var(--primary-color); }
-        .calc-clear { background: #fef2f2; color: var(--danger-color); }
-        .calc-equal { background: var(--primary-color); color: #fff; }
-        .calc-equal:hover { background: var(--primary-hover); }
-
-        /* PC端自适应布局增强 */
-        @media (min-width: 640px) {
-            body { padding: 32px 16px; }
-            header h1 { font-size: 2.2rem; }
-            .grand-total-box { padding: 24px; }
-            .grand-total-box .result-value { font-size: 2.6rem; }
-            .detail-box { padding: 16px; }
-            .detail-box .result-value { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>阶梯单量单价计算器</h1>
-    </header>
-
-    <div id="errorBox" class="error-msg"></div>
-    <div id="saveTip" class="save-tip">✓ 数据已自动同步到本地存储</div>
-
-    <div class="card" style="background: #ffffff;">
-        <div class="result-panel">
-            <div class="grand-total-box">
-                <div class="result-label">统一汇总结算总额</div>
-                <div id="resTotal" class="result-value">￥0.00</div>
+    <div class="app-layout">
+        <header class="app-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="icon-box" style="width: 36px; height: 36px; border-radius: 10px;"><i class="ph ph-calculator fs-5"></i></div>
+                <h4 class="mb-0 fw-bold fs-5">阶梯单量单价计算器</h4>
             </div>
-            <div class="detail-grid">
-                <div class="detail-box" style="border-top: 3px solid var(--primary-color);">
-                    <div class="result-label" style="color: var(--primary-color); font-size: 0.8rem; font-weight: 700;">常规匹配档位</div>
-                    <div id="resTier" class="result-value">-</div>
+            <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
+                    style="width: 44px; height: 44px; background-color: var(--bg-body); color: var(--text-primary); border: 1px solid var(--border-color);" aria-label="切换深浅主题">
+                <i class="ph ph-moon fs-5" style="transition: transform 0.2s ease;"></i>
+            </button>
+        </header>
+
+        <section class="section-card">
+            <div id="errorBox" class="error-msg"></div>
+            <div id="saveTip" class="save-tip">✓ 数据已自动同步至本地存储</div>
+
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                    <div class="calc-bento-card mb-4 p-3 p-md-4">
+                        <div class="grand-total-hero">
+                            <div class="hero-header-row">
+                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 统一汇总预估结算</span>
+                                <span id="resTierBadge" class="hero-badge hero-badge-accent">匹配中...</span>
+                            </div>
+
+                            <div class="hero-amount-wrapper">
+                                <span class="hero-currency-symbol">¥</span>
+                                <span id="resTotalNum" class="hero-amount-number">0.00</span>
+                            </div>
+
+                            <div class="hero-progress-box">
+                                <div class="hero-progress-track">
+                                    <div id="tierProgressFill" class="hero-progress-fill"></div>
+                                </div>
+                                <div class="hero-progress-info">
+                                    <span id="tierProgressLabel">常规单量进度</span>
+                                    <span id="tierProgressDetail">0 单</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="formula-preview-pill">
+                                <span><i class="ph ph-receipt me-1"></i> 核算公式</span>
+                                <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="calc-bento-card p-3 p-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="text-sm fw-bold text-secondary mb-0">完成总单量</label>
+                                    <span id="regularOrdersBadge" class="badge bg-light text-secondary text-xs border" style="font-weight:800;">常规: 0单</span>
+                                </div>
+                                <div class="calc-input-group">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="totalOrders" placeholder="0">
+                                    <span class="input-suffix">单</span>
+                                </div>
+                                <div class="quick-chip-group">
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(10)">+10</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(50)">+50</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(100)">+100</button>
+                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearOrders()">清空</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="calc-bento-card p-3 p-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="text-sm fw-bold text-secondary mb-0">拼团完成单量</label>
+                                    <span class="text-xs fw-bold text-secondary opacity-75">固定单价 ￥3.20</span>
+                                </div>
+                                <div class="calc-input-group">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="groupOrders" placeholder="0">
+                                    <span class="input-suffix">单</span>
+                                </div>
+                                <div class="quick-chip-group">
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(5)">+5</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(10)">+10</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(20)">+20</button>
+                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置拼团</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calc-bento-card p-3 p-md-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-chart-bar me-1"></i> 常规阶梯档位标准表</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255, 68, 0, 0.3);" onclick="openAddTierModal()">+ 添加档位</button>
+                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block">支持自定义增删改</span>
+                            </div>
+                        </div>
+                        <div class="tier-roadmap-grid" id="tierRoadmapGrid"></div>
+                    </div>
                 </div>
-                <div class="detail-box" style="border-top: 3px solid var(--primary-color);">
-                    <div class="result-label" style="color: var(--primary-color); font-size: 0.8rem; font-weight: 700;">常规小计</div>
-                    <div id="resRegularTotal" class="result-value">￥0.00</div>
+
+                <div class="col-12 col-lg-4 d-flex justify-content-center">
+                    <div class="w-100" style="max-width: 350px;">
+                        <div class="text-center mb-2"><span class="text-xs fw-bold text-secondary"><i class="ph ph-calculator me-1"></i> 便捷快速核算辅助盘</span></div>
+                        <div class="calculator-wrapper">
+                            <input type="text" id="calcDisplay" readonly placeholder="0">
+                            <div class="calc-buttons">
+                                <button class="calc-btn calc-clear">C</button>
+                                <button class="calc-btn calc-clear">⌫</button>
+                                <button class="calc-btn calc-op">/</button>
+                                <button class="calc-btn calc-op">*</button>
+                                
+                                <button class="calc-btn">7</button>
+                                <button class="calc-btn">8</button>
+                                <button class="calc-btn">9</button>
+                                <button class="calc-btn calc-op">-</button>
+                                
+                                <button class="calc-btn">4</button>
+                                <button class="calc-btn">5</button>
+                                <button class="calc-btn">6</button>
+                                <button class="calc-btn calc-op">+</button>
+                                
+                                <button class="calc-btn">1</button>
+                                <button class="calc-btn">2</button>
+                                <button class="calc-btn">3</button>
+                                <button class="calc-btn calc-equal" style="grid-row: span 2; height: 100%;">=</button>
+                                
+                                <button class="calc-btn" style="grid-column: span 2;">0</button>
+                                <button class="calc-btn">.</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-box" style="border-top: 3px solid var(--accent-color);">
-                    <div class="result-label" style="color: var(--accent-color); font-size: 0.8rem; font-weight: 700;">拼团明细</div>
-                    <div id="resGroupInfo" class="result-value">0单 × ￥0.00</div>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal fade" id="tierModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold fs-6" id="tierModalTitle">添加/修改阶梯档位</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
                 </div>
-                <div class="detail-box" style="border-top: 3px solid var(--accent-color);">
-                    <div class="result-label" style="color: var(--accent-color); font-size: 0.8rem; font-weight: 700;">拼团小计</div>
-                    <div id="resGroupTotal" class="result-value">￥0.00</div>
+                <div class="modal-body">
+                    <input type="hidden" id="editTierIndex" value="-1">
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">起步单量 (最小单数)</label>
+                        <input type="number" id="tierModalMinOrder" class="form-control" placeholder="例如: 1300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">单价 (元/单)</label>
+                        <input type="number" step="0.01" id="tierModalPrice" class="form-control" placeholder="例如: 6.50" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveTierFromModal()">保存档位</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-title"><span class="title-tag">常规业务数据</span></div>
-        <div class="form-group">
-            <label for="totalOrders">常规完成总单量</label>
-            <div class="input-group">
-                <input type="number" id="totalOrders" placeholder="请输入完成单数" min="0" step="1">
-                <span class="input-suffix">单</span>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let imageTiers = [
+            { minOrder: 1, price: 4.0 },
+            { minOrder: 600, price: 5.0 },
+            { minOrder: 1000, price: 5.5 },
+            { minOrder: 1300, price: 6.5 }
+        ];
 
-    <div class="card">
-        <div class="card-title accent"><span class="title-tag">独立拼团选项</span></div>
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="groupOrders">拼团完成总单量</label>
-                <div class="input-group accent-input">
-                    <input type="number" id="groupOrders" placeholder="无则填0" min="0" step="1">
-                    <span class="input-suffix">单</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="groupPrice">拼团固定单价</label>
-                <div class="input-group accent-input">
-                    <input type="number" id="groupPrice" placeholder="0.00" min="0" step="0.01">
-                    <span class="input-suffix">元/单</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">
-            <span class="title-tag">常规阶梯规则配置</span>
-            <button class="btn btn-primary btn-sm" id="btnAddTier">+ 添加新档位</button>
-        </div>
-        
-        <div id="tierContainer">
-        </div>
-
-        <div class="btn-group">
-            <button class="btn btn-secondary btn-sm" id="btnReset">恢复图片默认规则</button>
-            <button class="btn btn-secondary btn-sm" id="btnClear" style="margin-left: auto;">清空所有内容</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title gray"><span class="title-tag">便携计算器</span></div>
-        <div class="calculator-wrapper">
-            <input type="text" id="calcDisplay" readonly placeholder="0">
-            <div class="calc-buttons">
-                <button class="calc-btn calc-clear">C</button>
-                <button class="calc-btn calc-clear">⌫</button>
-                <button class="calc-btn calc-op">/</button>
-                <button class="calc-btn calc-op">*</button>
-                
-                <button class="calc-btn">7</button>
-                <button class="calc-btn">8</button>
-                <button class="calc-btn">9</button>
-                <button class="calc-btn calc-op">-</button>
-                
-                <button class="calc-btn">4</button>
-                <button class="calc-btn">5</button>
-                <button class="calc-btn">6</button>
-                <button class="calc-btn calc-op">+</button>
-                
-                <button class="calc-btn">1</button>
-                <button class="calc-btn">2</button>
-                <button class="calc-btn">3</button>
-                <button class="calc-btn calc-equal" style="grid-row: span 2;">=</button>
-                
-                <button class="calc-btn" style="grid-column: span 2;">0</button>
-                <button class="calc-btn">.</button>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    // --- 阶梯计算器逻辑 ---
-    const imageTiers = [
-        { minOrder: 1, price: 3.0 },
-        { minOrder: 600, price: 4.5 },
-        { minOrder: 1000, price: 5.0 },
-        { minOrder: 1200, price: 5.5 },
-        { minOrder: 1500, price: 6.0 }
-    ];
-
-    const totalOrdersInput = document.getElementById('totalOrders');
-    const groupOrdersInput = document.getElementById('groupOrders');
-    const groupPriceInput = document.getElementById('groupPrice');
-    
-    const tierContainer = document.getElementById('tierContainer');
-    const btnAddTier = document.getElementById('btnAddTier');
-    const btnReset = document.getElementById('btnReset');
-    const btnClear = document.getElementById('btnClear');
-    const errorBox = document.getElementById('errorBox');
-    const saveTip = document.getElementById('saveTip');
-
-    const resTier = document.getElementById('resTier');
-    const resRegularTotal = document.getElementById('resRegularTotal');
-    const resGroupInfo = document.getElementById('resGroupInfo');
-    const resGroupTotal = document.getElementById('resGroupTotal');
-    const resTotal = document.getElementById('resTotal');
-
-    let saveTimeout = null;
-
-    window.addEventListener('DOMContentLoaded', () => {
-        initData();
-    });
-
-    function initData() {
-        let localData = null;
-        try {
-            if (window.localStorage) {
-                localData = localStorage.getItem('tier_calculator_storage_v2');
-            }
-        } catch (e) {
-            console.warn("沙盒环境限制，改用纯内存模式预览", e);
-        }
-
-        if (localData) {
-            try {
-                const parsed = JSON.parse(localData);
-                totalOrdersInput.value = parsed.totalOrders || '';
-                groupOrdersInput.value = parsed.groupOrders || '';
-                groupPriceInput.value = parsed.groupPrice || '';
-                tierContainer.innerHTML = '';
-                if(parsed.tiers && parsed.tiers.length > 0) {
-                    parsed.tiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
-                }
-                calculate(false); 
-                return;
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        loadDefaultImageTiers();
-    }
-
-    function loadDefaultImageTiers() {
-        tierContainer.innerHTML = '';
-        imageTiers.forEach(tier => addTierRow(tier.minOrder, tier.price));
-        totalOrdersInput.value = 650; 
-        groupOrdersInput.value = 200; 
-        groupPriceInput.value = 3.5;  
-        calculate(true);
-    }
-
-    function addTierRow(minOrder = '', price = '') {
-        const row = document.createElement('div');
-        row.className = 'tier-row';
-        row.innerHTML = `
-            <div class="input-group">
-                <input type="number" class="input-min" placeholder="最低起算" value="${minOrder}" min="0" step="1">
-                <span class="input-suffix">单起</span>
-            </div>
-            <div class="input-group">
-                <input type="number" class="input-price" placeholder="单价" value="${price}" min="0" step="0.01">
-                <span class="input-suffix">元</span>
-            </div>
-            <div>
-                <button class="btn btn-danger btn-sm btn-del">× 删除</button>
-            </div>
-        `;
-
-        row.querySelector('.btn-del').addEventListener('click', () => {
-            row.remove();
-            calculate(true);
-        });
-
-        row.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', () => calculate(true));
-        });
-
-        tierContainer.appendChild(row);
-    }
-
-    function calculate(shouldSave = true) {
-        showError("");
-        
-        const totalOrdersStr = totalOrdersInput.value.trim();
-        const groupOrdersStr = groupOrdersInput.value.trim();
-        const groupPriceStr = groupPriceInput.value.trim();
-        
-        const rows = tierContainer.querySelectorAll('.tier-row');
-        const currentTiersForSave = [];
-        rows.forEach(row => {
-            currentTiersForSave.push({
-                minOrder: row.querySelector('.input-min').value,
-                price: row.querySelector('.input-price').value
-            });
-        });
-
-        if (shouldSave) {
-            triggerAutoSave(totalOrdersStr, groupOrdersStr, groupPriceStr, currentTiersForSave);
-        }
-
-        let regularSubtotal = 0;
-        let regularTierText = "-";
-        
-        if (totalOrdersStr !== "") {
-            const totalOrders = parseFloat(totalOrdersStr);
-            if (totalOrders < 0 || !Number.isInteger(totalOrders)) {
-                showError("常规总单量需要输入一个正整数！");
-                resetResultDisplay();
-                return;
-            }
-
-            const validTiersList = [];
-            let hasTierError = false;
-
-            currentTiersForSave.forEach(tier => {
-                if (tier.minOrder === "" || tier.price === "") { hasTierError = true; return; }
-                const minOrder = parseFloat(tier.minOrder);
-                const price = parseFloat(tier.price);
-                if (minOrder < 0 || price < 0 || !Number.isInteger(minOrder)) { hasTierError = true; return; }
-                validTiersList.push({ minOrder, price });
-            });
-
-            if (hasTierError) {
-                showError("规则配置栏中有不合法的单量或单价负数！");
-                resetResultDisplay();
-                return;
-            }
-
-            if (validTiersList.length === 0) {
-                showError("提示：请先添加一组常规阶梯计价规则。");
-                resetResultDisplay();
-                return;
-            }
-
-            validTiersList.sort((a, b) => a.minOrder - b.minOrder);
-            let matchedIndex = -1;
-            for (let i = 0; i < validTiersList.length; i++) {
-                if (totalOrders >= validTiersList[i].minOrder) { matchedIndex = i; }
-            }
-
-            if (matchedIndex !== -1) {
-                const matchedTier = validTiersList[matchedIndex];
-                regularSubtotal = totalOrders * matchedTier.price;
-                
-                if (matchedIndex === validTiersList.length - 1) {
-                    regularTierText = `${matchedTier.minOrder}单起 (￥${matchedTier.price.toFixed(2)})`;
-                } else {
-                    const nextTier = validTiersList[matchedIndex + 1];
-                    regularTierText = `${matchedTier.minOrder}-${nextTier.minOrder - 1}单 (￥${matchedTier.price.toFixed(2)})`;
-                }
-            } else {
-                regularTierText = "未达任何门槛";
-                regularSubtotal = 0;
-            }
-        }
-
-        let groupSubtotal = 0;
-        let groupCount = 0;
-        let groupUnitPrice = 0;
-
-        if (groupOrdersStr !== "" || groupPriceStr !== "") {
-            groupCount = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
-            groupUnitPrice = groupPriceStr === "" ? 0 : parseFloat(groupPriceStr);
-
-            if (groupCount < 0 || !Number.isInteger(groupCount)) {
-                showError("拼团单量需要输入一个正整数！");
-                resetResultDisplay();
-                return;
-            }
-            if (groupUnitPrice < 0) {
-                showError("拼团固定单价不能为负数！");
-                resetResultDisplay();
-                return;
-            }
-            groupSubtotal = groupCount * groupUnitPrice;
-        }
-
-        const grandTotal = regularSubtotal + groupSubtotal;
-        
-        resTier.textContent = regularTierText;
-        resRegularTotal.textContent = `￥${regularSubtotal.toFixed(2)}`;
-        resGroupInfo.textContent = `${groupCount} 单 × ￥${groupUnitPrice.toFixed(2)}`;
-        resGroupTotal.textContent = `￥${groupSubtotal.toFixed(2)}`;
-        resTotal.textContent = `￥${grandTotal.toFixed(2)}`;
-    }
-
-    function resetResultDisplay() {
-        resTier.textContent = "数据错误";
-        resRegularTotal.textContent = "￥0.00";
-        resGroupInfo.textContent = "0单 × ￥0.00";
-        resGroupTotal.textContent = "￥0.00";
-        resTotal.textContent = "￥0.00";
-    }
-
-    function triggerAutoSave(totalOrders, groupOrders, groupPrice, tiers) {
-        try {
-            if (window.localStorage) {
-                const dataToSave = { totalOrders, groupOrders, groupPrice, tiers };
-                localStorage.setItem('tier_calculator_storage_v2', JSON.stringify(dataToSave));
-                
-                saveTip.style.display = 'block';
-                if (saveTimeout) clearTimeout(saveTimeout);
-                saveTimeout = setTimeout(() => {
-                    saveTip.style.display = 'none';
-                }, 1200);
-            }
-        } catch (e) {}
-    }
-
-    function showError(msg) {
-        if (msg) {
-            errorBox.textContent = msg;
-            errorBox.style.display = 'block';
-        } else {
-            errorBox.style.display = 'none';
-        }
-    }
-
-    totalOrdersInput.addEventListener('input', () => calculate(true));
-    groupOrdersInput.addEventListener('input', () => calculate(true));
-    groupPriceInput.addEventListener('input', () => calculate(true));
-    
-    btnAddTier.addEventListener('click', () => {
-        addTierRow();
-        calculate(true);
-    });
-
-    btnReset.addEventListener('click', () => {
-        loadDefaultImageTiers();
-    });
-
-    btnClear.addEventListener('click', () => {
-        tierContainer.innerHTML = '';
-        totalOrdersInput.value = '';
-        groupOrdersInput.value = '';
-        groupPriceInput.value = '';
-        calculate(true);
-    });
-
-    // --- 便携计算器逻辑 ---
-    const calcDisplay = document.getElementById('calcDisplay');
-    const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
-    let calcValue = '';
-
-    calcButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const action = btn.textContent;
-            
-            if (action === 'C') {
-                calcValue = '';
-            } else if (action === '⌫') {
-                calcValue = calcValue.slice(0, -1);
-            } else if (action === '=') {
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTiers = localStorage.getItem('custom_image_tiers_v2');
+            if (savedTiers) {
                 try {
-                    if(calcValue.trim() !== '') {
-                        let result = new Function('return ' + calcValue)();
-                        calcValue = String(Math.round(result * 100000000) / 100000000); 
+                    const parsed = JSON.parse(savedTiers);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        imageTiers = parsed;
                     }
-                } catch (e) {
-                    calcValue = '错误';
-                }
-            } else {
-                if (calcValue === '错误') calcValue = '';
-                calcValue += action;
+                } catch (e) {}
             }
-            calcDisplay.value = calcValue;
-        });
-    });
-</script>
 
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const themeIcon = themeToggle.querySelector('i');
+                if (themeIcon && document.documentElement.getAttribute('data-theme') === 'dark') {
+                    themeIcon.classList.replace('ph-moon', 'ph-sun');
+                }
+                themeToggle.addEventListener('click', () => {
+                    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    if (themeIcon) {
+                        themeIcon.style.transform = 'scale(0) rotate(180deg)';
+                        setTimeout(() => {
+                            themeIcon.className = newTheme === 'dark' ? 'ph ph-sun' : 'ph ph-moon';
+                            themeIcon.style.transform = 'scale(1) rotate(0deg)';
+                        }, 150);
+                    }
+                });
+            }
+
+            initCalculatorData();
+        });
+
+        function renderTierCards(matchedIndex, regularOrdersNum) {
+            const container = document.getElementById('tierRoadmapGrid');
+            if (!container) return;
+
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
+
+            let html = '';
+            imageTiers.forEach((tier, index) => {
+                const isActive = (index === matchedIndex && regularOrdersNum > 0);
+                let rangeText = '';
+                const nextTier = imageTiers[index + 1];
+                if (!nextTier) {
+                    rangeText = `${tier.minOrder} 单及以上`;
+                } else {
+                    const upper = nextTier.minOrder - 1;
+                    if (upper < tier.minOrder) {
+                        rangeText = `${tier.minOrder} 单起`;
+                    } else {
+                        rangeText = `${tier.minOrder} ~ ${upper} 单`;
+                    }
+                }
+
+                html += `
+                    <div class="tier-card ${isActive ? 'is-active' : ''}">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="tier-range">${rangeText}</span>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm p-0 text-secondary" style="font-size:0.9rem;" onclick="openEditTier(${index})" title="修改档位"><i class="ph ph-pencil-simple"></i></button>
+                                <button type="button" class="btn btn-sm p-0 text-danger" style="font-size:0.9rem;" onclick="removeTier(${index})" title="删除档位"><i class="ph ph-trash"></i></button>
+                            </div>
+                        </div>
+                        <span class="tier-price">￥${tier.price.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function persistTiers() {
+            try {
+                localStorage.setItem('custom_image_tiers_v2', JSON.stringify(imageTiers));
+            } catch (e) {}
+        }
+
+        window.openAddTierModal = function() {
+            document.getElementById('tierModalTitle').textContent = '添加新阶梯档位';
+            document.getElementById('editTierIndex').value = '-1';
+            document.getElementById('tierModalMinOrder').value = '';
+            document.getElementById('tierModalPrice').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            modal.show();
+        };
+
+        window.openEditTier = function(index) {
+            const tier = imageTiers[index];
+            if (!tier) return;
+            document.getElementById('tierModalTitle').textContent = '修改阶梯档位';
+            document.getElementById('editTierIndex').value = index;
+            document.getElementById('tierModalMinOrder').value = tier.minOrder;
+            document.getElementById('tierModalPrice').value = tier.price;
+            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            modal.show();
+        };
+
+        window.saveTierFromModal = function() {
+            const index = parseInt(document.getElementById('editTierIndex').value, 10);
+            const minOrderVal = parseInt(document.getElementById('tierModalMinOrder').value, 10);
+            const priceVal = parseFloat(document.getElementById('tierModalPrice').value);
+
+            if (isNaN(minOrderVal) || minOrderVal < 0 || isNaN(priceVal) || priceVal < 0) {
+                alert('请输入有效的单量和单价！');
+                return;
+            }
+
+            if (index === -1) {
+                imageTiers.push({ minOrder: minOrderVal, price: priceVal });
+            } else {
+                imageTiers[index] = { minOrder: minOrderVal, price: priceVal };
+            }
+
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
+            persistTiers();
+
+            const modalEl = document.getElementById('tierModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            calculate(true);
+        };
+
+        window.removeTier = function(index) {
+            if (imageTiers.length <= 1) {
+                alert('至少需要保留一个阶梯档位！');
+                return;
+            }
+            if (confirm(`确定要删除该档位吗？`)) {
+                imageTiers.splice(index, 1);
+                persistTiers();
+                calculate(true);
+            }
+        };
+
+        const totalOrdersInput = document.getElementById('totalOrders');
+        const groupOrdersInput = document.getElementById('groupOrders');
+        const regularOrdersBadge = document.getElementById('regularOrdersBadge');
+        const errorBox = document.getElementById('errorBox');
+        const saveTip = document.getElementById('saveTip');
+
+        const resTotalNum = document.getElementById('resTotalNum');
+        const resTierBadge = document.getElementById('resTierBadge');
+        const tierProgressFill = document.getElementById('tierProgressFill');
+        const tierProgressLabel = document.getElementById('tierProgressLabel');
+        const tierProgressDetail = document.getElementById('tierProgressDetail');
+        const formulaPreview = document.getElementById('formulaPreview');
+
+        let saveTimeout = null;
+
+        const sanitizeInput = (val) => {
+            if (!val) return '';
+            let clean = String(val).replace(/[^\d]/g, ''); 
+            if (clean.length > 5) clean = clean.slice(0, 5); 
+            return clean;
+        };
+
+        window.addTotalOrders = (amount) => {
+            if (!totalOrdersInput) return;
+            let cur = parseInt(totalOrdersInput.value || '0', 10);
+            if (isNaN(cur)) cur = 0;
+            totalOrdersInput.value = String(cur + amount);
+            calculate(true);
+        };
+
+        window.clearOrders = () => {
+            if (!totalOrdersInput) return;
+            totalOrdersInput.value = '0';
+            calculate(true);
+        };
+
+        window.addGroupOrders = (amount) => {
+            if (!groupOrdersInput) return;
+            let cur = parseInt(groupOrdersInput.value || '0', 10);
+            if (isNaN(cur)) cur = 0;
+            groupOrdersInput.value = String(cur + amount);
+            calculate(true);
+        };
+
+        window.clearGroupOrders = () => {
+            if (!groupOrdersInput) return;
+            groupOrdersInput.value = '0';
+            calculate(true);
+        };
+
+        function initCalculatorData() {
+            let localData = null;
+            try {
+                if (window.localStorage) {
+                    localData = localStorage.getItem('tier_calculator_storage_v2');
+                }
+            } catch (e) {}
+
+            if (localData && totalOrdersInput && groupOrdersInput) {
+                try {
+                    const parsed = JSON.parse(localData);
+                    totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
+                    groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
+                    calculate(false); 
+                    return;
+                } catch (e) {}
+            }
+            if (totalOrdersInput && groupOrdersInput) {
+                totalOrdersInput.value = '0';
+                groupOrdersInput.value = '0';
+                calculate(true);
+            }
+        }
+
+        function calculate(shouldSave = true) {
+            showError("");
+            if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
+            
+            const totalOrdersStr = totalOrdersInput.value.trim();
+            const groupOrdersStr = groupOrdersInput.value.trim();
+            
+            if (shouldSave) {
+                try {
+                    if (window.localStorage) {
+                        const dataToSave = { totalOrders: totalOrdersStr, groupOrders: groupOrdersStr };
+                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify(dataToSave));
+                        if (saveTip) {
+                            saveTip.style.display = 'block';
+                            if (saveTimeout) clearTimeout(saveTimeout);
+                            saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 1200);
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr);
+            let groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+
+            if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) {
+                if (totalOrdersStr !== "") {
+                    showError("完成总单量需要输入非负整数！");
+                    resetResultDisplay();
+                    return;
+                }
+            }
+
+            if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) {
+                if (groupOrdersStr !== "") {
+                    showError("拼团单量需要输入非负整数！");
+                    resetResultDisplay();
+                    return;
+                }
+            }
+
+            if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") {
+                showError(`拼团单量（${groupOrdersNum}单）不能大于完成总单量（${totalOrdersNum}单）！`);
+                resetResultDisplay();
+                return;
+            }
+
+            const regularOrdersNum = Math.max(0, totalOrdersNum - groupOrdersNum);
+
+            if (regularOrdersBadge) {
+                regularOrdersBadge.textContent = `常规: ${regularOrdersNum}单`;
+            }
+
+            let regularSubtotal = 0;
+            let matchedIndex = -1;
+
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
+
+            if (regularOrdersNum >= 1) {
+                for (let i = 0; i < imageTiers.length; i++) {
+                    if (regularOrdersNum >= imageTiers[i].minOrder) { 
+                        matchedIndex = i; 
+                    }
+                }
+            }
+
+            renderTierCards(matchedIndex, regularOrdersNum);
+
+            let currentPrice = 0;
+            if (matchedIndex !== -1 && regularOrdersNum > 0) {
+                currentPrice = imageTiers[matchedIndex].price;
+                regularSubtotal = regularOrdersNum * currentPrice;
+                resTierBadge.textContent = `⚡ 常规: ￥${currentPrice.toFixed(2)}/单`;
+            } else {
+                resTierBadge.textContent = regularOrdersNum === 0 ? "未达门槛 (0单)" : "未达门槛";
+            }
+
+            const groupUnitPrice = 3.20;
+            const groupSubtotal = groupOrdersNum * groupUnitPrice;
+            const grandTotal = regularSubtotal + groupSubtotal;
+
+            resTotalNum.textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            if (formulaPreview) {
+                formulaPreview.textContent = `常规 ${regularOrdersNum}单 × ￥${currentPrice.toFixed(2)} + 拼团 ${groupOrdersNum}单 × ￥${groupUnitPrice.toFixed(2)}`;
+            }
+
+            updateProgressEngine(regularOrdersNum, matchedIndex);
+        }
+
+        function updateProgressEngine(regularOrders, matchedIndex) {
+            if (!tierProgressFill || !tierProgressLabel || !tierProgressDetail) return;
+
+            let progressPct = 100;
+            let labelText = "";
+            let detailText = "";
+
+            if (imageTiers.length === 0) {
+                tierProgressFill.style.width = '0%';
+                tierProgressLabel.textContent = '请先添加档位';
+                tierProgressDetail.textContent = '0 单';
+                return;
+            }
+
+            let nextTier = imageTiers.find(t => t.minOrder > regularOrders);
+
+            if (matchedIndex === -1) {
+                const firstTier = imageTiers[0];
+                progressPct = Math.min(100, Math.max(0, (regularOrders / firstTier.minOrder) * 100));
+                const remaining = firstTier.minOrder - regularOrders;
+                labelText = `距升至 ￥${firstTier.price.toFixed(2)}/单 档位`;
+                detailText = `还差 ${remaining} 单`;
+            } else if (nextTier) {
+                const currentTier = imageTiers[matchedIndex];
+                const span = nextTier.minOrder - currentTier.minOrder;
+                const currentProgress = regularOrders - currentTier.minOrder;
+                progressPct = Math.min(100, Math.max(0, (currentProgress / span) * 100));
+                const remaining = nextTier.minOrder - regularOrders;
+                labelText = `距升至 ￥${nextTier.price.toFixed(2)}/单 档位`;
+                detailText = `还差 ${remaining} 单`;
+            } else {
+                progressPct = 100;
+                labelText = `🎉 已解锁最高单价档位`;
+                detailText = `￥${imageTiers[imageTiers.length - 1].price.toFixed(2)} / 单`;
+            }
+
+            tierProgressFill.style.width = `${progressPct}%`;
+            tierProgressLabel.textContent = labelText;
+            tierProgressDetail.textContent = detailText;
+        }
+
+        function resetResultDisplay() {
+            if (resTotalNum && resTierBadge) {
+                resTotalNum.textContent = "0.00";
+                resTierBadge.textContent = "数据有误";
+            }
+            renderTierCards(-1, 0);
+        }
+
+        function showError(msg) {
+            if (!errorBox) return;
+            if (msg) { errorBox.textContent = msg; errorBox.style.display = 'block'; } 
+            else { errorBox.style.display = 'none'; }
+        }
+
+        if (totalOrdersInput && groupOrdersInput) {
+            totalOrdersInput.addEventListener('input', (e) => {
+                e.target.value = sanitizeInput(e.target.value);
+                calculate(true);
+            });
+            groupOrdersInput.addEventListener('input', (e) => {
+                e.target.value = sanitizeInput(e.target.value);
+                calculate(true);
+            });
+        }
+
+        const calcDisplay = document.getElementById('calcDisplay');
+        const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
+        let calcValue = '';
+        const operators = ['+', '-', '*', '/'];
+
+        const sanitizeCalcExpression = (expr) => {
+            return expr.replace(/(^|[\+\-\*\/])0+(?=\d)/g, '$1');
+        };
+
+        calcButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!calcDisplay) return;
+                const action = btn.textContent;
+                
+                if (action === 'C') {
+                    calcValue = '';
+                } else if (action === '⌫') {
+                    calcValue = calcValue === '错误' ? '' : calcValue.slice(0, -1);
+                } else if (action === '=') {
+                    if (calcValue === '' || calcValue === '错误' || operators.includes(calcValue.slice(-1))) return;
+                    try {
+                        const cleanedExpr = sanitizeCalcExpression(calcValue);
+                        if (!/^[0-9+\-*/. ]+$/.test(cleanedExpr)) throw new Error('Invalid Math String');
+                        let result = new Function('return ' + cleanedExpr)();
+                        if (!isFinite(result)) throw new Error('Infinity');
+                        calcValue = String(Math.round(result * 1000000) / 1000000); 
+                    } catch (e) {
+                        calcValue = '错误';
+                    }
+                } else {
+                    if (calcValue === '错误') calcValue = '';
+                    const lastChar = calcValue.slice(-1);
+                    
+                    if (operators.includes(action)) {
+                        if (calcValue === '') return;
+                        if (operators.includes(lastChar)) {
+                            calcValue = calcValue.slice(0, -1) + action;
+                        } else {
+                            calcValue += action;
+                        }
+                    } 
+                    else if (action === '.') {
+                        const parts = calcValue.split(/[\+\-\*\/]/);
+                        if (parts[parts.length - 1].includes('.')) return;
+                        calcValue += action;
+                    } else {
+                        calcValue += action;
+                    }
+                }
+                calcDisplay.value = calcValue;
+            });
+        });
+    </script>
 </body>
 </html>
