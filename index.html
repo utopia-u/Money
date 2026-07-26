@@ -616,7 +616,7 @@
 
                         <div class="goal-banner-card">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标金额: ￥0.00</span>
+                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
                                 <span class="text-xs fw-bold text-danger" id="goalDiffStatusText">还差 ￥0.00</span>
                             </div>
                             <div class="goal-progress-bar-bg mb-2">
@@ -775,12 +775,16 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6">新增攒钱大目标</h5>
+                    <h5 class="modal-title fw-bold fs-6">新增攒钱目标</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">目标金额 (元，如 2000, 5000, 10000)</label>
+                        <label class="form-label text-xs fw-bold text-secondary">目标名字/名称</label>
+                        <input type="text" id="goalModalName" class="form-control" placeholder="例如: 买新手机、换新电动车" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">目标金额 (元)</label>
                         <input type="number" id="goalModalAmount" class="form-control" placeholder="例如: 3000" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                 </div>
@@ -801,8 +805,12 @@
             { minOrder: 1300, price: 6.5 }
         ];
 
-        // 攒钱大目标（如几千上万元）
-        let bigGoals = [1000, 3000, 5000];
+        // 攒钱大目标对象数组：{ name: "名称", amount: 金额 }
+        let bigGoals = [
+            { name: "应急备用金", amount: 1000 },
+            { name: "买新手机", amount: 3000 },
+            { name: "换新电动车", amount: 5000 }
+        ];
         let selectedGoalIndex = 1;
 
         // 打卡收益历史记录（本地永久保存）
@@ -818,12 +826,18 @@
                 } catch (e) {}
             }
 
-            const savedGoals = localStorage.getItem('custom_big_goals_v2');
+            // 加载目标数据（适配兼容旧格式数值数组与新格式对象数组）
+            const savedGoals = localStorage.getItem('custom_big_goals_v3');
             if (savedGoals) {
                 try {
                     const parsed = JSON.parse(savedGoals);
                     if (Array.isArray(parsed.goals) && parsed.goals.length > 0) {
-                        bigGoals = parsed.goals;
+                        bigGoals = parsed.goals.map((item, idx) => {
+                            if (typeof item === 'number') {
+                                return { name: `目标 ${idx + 1}`, amount: item };
+                            }
+                            return item;
+                        });
                         selectedGoalIndex = parsed.selectedIndex ?? 0;
                         if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = 0;
                     }
@@ -955,7 +969,7 @@
 
         function persistGoals() {
             try {
-                localStorage.setItem('custom_big_goals_v2', JSON.stringify({
+                localStorage.setItem('custom_big_goals_v3', JSON.stringify({
                     goals: bigGoals,
                     selectedIndex: selectedGoalIndex
                 }));
@@ -966,14 +980,14 @@
             const container = document.getElementById('goalChipsContainer');
             if (!container) return;
 
-            bigGoals.sort((a, b) => a - b);
+            bigGoals.sort((a, b) => a.amount - b.amount);
 
             let html = '';
             bigGoals.forEach((goal, idx) => {
                 const isSelected = (idx === selectedGoalIndex);
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
-                        <span>￥${goal}</span>
+                        <span>${goal.name} (￥${goal.amount})</span>
                         <span class="chip-del-btn" onclick="removeGoal(event, ${idx})" title="删除目标"><i class="ph ph-x"></i></span>
                     </div>
                 `;
@@ -994,24 +1008,31 @@
         };
 
         window.openAddGoalModal = function() {
+            document.getElementById('goalModalName').value = '';
             document.getElementById('goalModalAmount').value = '';
             const modal = new bootstrap.Modal(document.getElementById('goalModal'));
             modal.show();
         };
 
         window.saveGoalFromModal = function() {
+            let name = document.getElementById('goalModalName').value.trim();
             const amount = parseFloat(document.getElementById('goalModalAmount').value);
+
             if (isNaN(amount) || amount <= 0) {
-                alert('请输入有效的攒钱目标金额！');
+                alert('请输入有效的目标金额！');
                 return;
             }
 
-            if (!bigGoals.includes(amount)) {
-                bigGoals.push(amount);
-                bigGoals.sort((a, b) => a - b);
-                selectedGoalIndex = bigGoals.indexOf(amount);
-                persistGoals();
+            if (!name) {
+                name = `目标 ￥${amount}`;
             }
+
+            bigGoals.push({ name: name, amount: amount });
+            bigGoals.sort((a, b) => a.amount - b.amount);
+            selectedGoalIndex = bigGoals.findIndex(g => g.name === name && g.amount === amount);
+            if (selectedGoalIndex === -1) selectedGoalIndex = 0;
+
+            persistGoals();
 
             const modalEl = document.getElementById('goalModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
@@ -1023,7 +1044,8 @@
 
         window.removeGoal = function(event, idx) {
             event.stopPropagation();
-            if (confirm(`确定删除 ￥${bigGoals[idx]} 目标吗？`)) {
+            const goal = bigGoals[idx];
+            if (confirm(`确定要删除【${goal.name}】(￥${goal.amount}) 攒钱目标吗？`)) {
                 bigGoals.splice(idx, 1);
                 if (selectedGoalIndex >= bigGoals.length) {
                     selectedGoalIndex = Math.max(0, bigGoals.length - 1);
@@ -1034,7 +1056,7 @@
             }
         };
 
-        // 打卡后的金额直接保存在“打卡已存入”中，并实时计算与攒钱大目标的差距
+        // 打卡后的金额直接保存在“打卡已存入”中，并实时计算与攒钱目标的差距
         function updateGoalProgress() {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
@@ -1048,7 +1070,7 @@
             goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
 
             if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
-                goalTitleText.textContent = "未设定大目标";
+                goalTitleText.textContent = "未设定目标";
                 goalDiffStatusText.textContent = "请新建目标";
                 goalDiffStatusText.className = "text-xs fw-bold text-secondary";
                 progressBarFill.style.width = "0%";
@@ -1057,21 +1079,21 @@
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
-            goalTitleText.textContent = `目标金额: ￥${currentGoal.toFixed(2)}`;
+            goalTitleText.textContent = `${currentGoal.name}: ￥${currentGoal.amount.toFixed(2)}`;
 
-            const diff = currentGoal - totalSaved;
-            const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal) * 100));
+            const diff = currentGoal.amount - totalSaved;
+            const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
 
             progressBarFill.style.width = `${pct}%`;
             goalPercentText.textContent = `完成度 ${pct.toFixed(1)}%`;
 
             if (diff <= 0) {
                 const over = Math.abs(diff);
-                goalDiffStatusText.textContent = `🎉 打卡已达成大目标！超额存入 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.textContent = `🎉 已达成【${currentGoal.name}】！超额存入 ￥${over.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
             } else {
-                goalDiffStatusText.textContent = `距离目标还差 ￥${diff.toFixed(2)}`;
+                goalDiffStatusText.textContent = `距离【${currentGoal.name}】还差 ￥${diff.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
                 progressBarFill.classList.remove('completed');
             }
