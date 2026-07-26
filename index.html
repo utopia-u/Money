@@ -42,13 +42,14 @@
             --success-color: #10B981;
             --success-bg: #ECFDF5;
 
-            --radius-xl: 20px;        
-            --radius-lg: 14px;        
-            --radius-md: 10px;        
-            --radius-sm: 6px;         
+            /* 极致圆润超椭圆圆角 */
+            --radius-xl: 32px;        
+            --radius-lg: 22px;        
+            --radius-md: 16px;        
+            --radius-sm: 10px;         
             --radius-pill: 9999px;    
 
-            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02);
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --border-color: rgba(0, 0, 0, 0.06);
@@ -66,7 +67,7 @@
             --danger-bg: rgba(239, 68, 68, 0.15);
             --danger-text: #FCA5A5;
             --success-bg: rgba(16, 185, 129, 0.15);
-            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
             --border-color: rgba(255, 255, 255, 0.08);
         }
 
@@ -81,8 +82,8 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: var(--font-sans) !important;
-            padding: 10px;
-            padding-bottom: calc(20px + var(--safe-bottom));
+            padding: 12px;
+            padding-bottom: calc(24px + var(--safe-bottom));
         }
 
         .app-layout {
@@ -91,7 +92,7 @@
         }
 
         .app-header {
-            padding: 10px 16px; 
+            padding: 12px 20px; 
             background: var(--bg-surface);
             display: flex;
             justify-content: space-between;
@@ -104,7 +105,7 @@
 
         .section-card {
             background: var(--bg-surface);
-            padding: 16px 18px;
+            padding: 20px 22px;
             border-radius: var(--radius-xl); 
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
@@ -113,9 +114,9 @@
         .calc-bento-card {
             background: var(--bg-surface);
             border-radius: var(--radius-lg);
-            padding: 14px 16px;
+            padding: 16px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
             position: relative;
             overflow: hidden;
         }
@@ -127,12 +128,12 @@
         .grand-total-hero {
             background: linear-gradient(135deg, #059669 0%, #10B981 50%, #047857 100%);
             color: #FFFFFF;
-            padding: 16px;
+            padding: 18px 20px;
             border-radius: var(--radius-lg);
             position: relative;
-            box-shadow: 0 10px 24px -6px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 12px 28px -6px rgba(16, 185, 129, 0.35);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             width: 100%;
         }
 
@@ -148,10 +149,10 @@
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: rgba(0, 0, 0, 0.16);
             backdrop-filter: blur(8px);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: var(--radius-pill);
             font-size: 0.75rem;
             font-weight: 700;
@@ -163,7 +164,7 @@
         }
 
         .hero-amount-wrapper {
-            margin: 8px 0;
+            margin: 10px 0;
             display: flex;
             align-items: baseline;
             gap: 4px;
@@ -172,14 +173,14 @@
         }
 
         .hero-currency-symbol {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             opacity: 0.9;
         }
 
         .hero-amount-number {
             font-family: var(--font-display-num) !important;
-            font-size: 2.6rem;
+            font-size: 2.8rem;
             font-weight: 800;
             letter-spacing: -1px;
             line-height: 1;
@@ -190,13 +191,13 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: var(--radius-md);
-            padding: 8px 12px;
+            padding: 10px 14px;
             position: relative;
             z-index: 2;
         }
 
         .hero-progress-track {
-            height: 6px;
+            height: 7px;
             background: rgba(255, 255, 255, 0.25);
             border-radius: var(--radius-pill);
             overflow: hidden;
@@ -224,8 +225,8 @@
             background: var(--bg-body);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 8px 12px;
-            font-size: 0.8rem;
+            padding: 10px 14px;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-secondary);
             display: flex;
@@ -247,11 +248,11 @@
 
         .calc-input-group input {
             width: 100%;
-            height: 42px;
-            padding: 6px 42px 6px 12px;
+            height: 44px;
+            padding: 6px 44px 6px 14px;
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: var(--text-primary);
             background-color: var(--bg-body);
@@ -267,8 +268,8 @@
 
         .calc-input-group .input-suffix {
             position: absolute;
-            right: 12px;
-            font-size: 0.8rem;
+            right: 14px;
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--text-secondary);
             pointer-events: none;
@@ -277,7 +278,7 @@
         .quick-chip-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 6px;
             margin-top: 8px;
         }
 
@@ -287,7 +288,7 @@
             color: var(--text-primary);
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: var(--radius-pill);
             cursor: pointer;
             display: inline-flex;
@@ -327,11 +328,11 @@
             background: var(--bg-body);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 10px 12px;
+            padding: 12px 14px;
         }
 
         .goal-progress-bar-bg {
-            height: 8px;
+            height: 9px;
             background: rgba(0,0,0,0.06);
             border-radius: var(--radius-pill);
             overflow: hidden;
@@ -355,7 +356,7 @@
         .tier-roadmap-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         @media (min-width: 576px) {
@@ -368,7 +369,7 @@
             background: var(--bg-body);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 8px 10px;
+            padding: 10px 12px;
             text-align: center;
             position: relative;
             transition: all 0.2s ease;
@@ -383,7 +384,7 @@
         }
 
         .tier-card .tier-price {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-primary);
         }
@@ -391,7 +392,7 @@
         .tier-card.is-active {
             background: var(--accent-light) !important;
             border-color: var(--accent-color) !important;
-            box-shadow: 0 4px 14px -4px rgba(255, 68, 0, 0.25);
+            box-shadow: 0 4px 16px -4px rgba(255, 68, 0, 0.25);
             transform: translateY(-1px);
         }
 
@@ -412,9 +413,9 @@
             transform: translateX(50%);
             background: var(--accent-color);
             color: #FFFFFF;
-            font-size: 0.6rem;
+            font-size: 0.62rem;
             font-weight: 800;
-            padding: 1px 7px;
+            padding: 1px 8px;
             border-radius: var(--radius-pill);
             white-space: nowrap;
             box-shadow: 0 2px 4px rgba(255, 68, 0, 0.25);
@@ -423,8 +424,8 @@
         .calculator-wrapper {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 16px;
+            border-radius: var(--radius-xl);
+            padding: 18px;
             width: 100%;
             max-width: 320px;
             margin: 0 auto;
@@ -433,10 +434,10 @@
 
         #calcDisplay {
             width: 100%;
-            height: 44px;
-            margin-bottom: 10px;
+            height: 46px;
+            margin-bottom: 12px;
             text-align: right;
-            font-size: 1.4rem;
+            font-size: 1.45rem;
             padding: 6px 14px;
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
@@ -452,8 +453,8 @@
         }
 
         .calc-btn {
-            height: 42px;
-            font-size: 1.1rem;
+            height: 44px;
+            font-size: 1.15rem;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             background: var(--bg-body);
@@ -490,6 +491,7 @@
             font-weight: 800;
             border: none;
             box-shadow: 0 4px 12px rgba(255, 68, 0, 0.25);
+            border-radius: var(--radius-md);
         }
 
         .error-msg {
@@ -513,6 +515,10 @@
             font-weight: 800;
             display: none;
         }
+
+        .modal-content {
+            border-radius: var(--radius-xl) !important;
+        }
     </style>
 </head>
 <body>
@@ -520,7 +526,7 @@
     <div class="app-layout">
         <header class="app-header">
             <div class="d-flex align-items-center gap-2">
-                <div class="icon-box" style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center;"><i class="ph ph-calculator fs-6"></i></div>
+                <div class="icon-box" style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center;"><i class="ph ph-calculator fs-6"></i></div>
                 <h4 class="mb-0 fw-bold fs-6">阶梯单量单价计算器</h4>
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
@@ -538,7 +544,7 @@
                     <div class="calc-bento-card mb-3 p-3">
                         <div class="grand-total-hero">
                             <div class="hero-header-row">
-                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 统一汇总预估结算</span>
+                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 当前累计预估结算</span>
                                 <span id="resTierBadge" class="hero-badge hero-badge-accent">匹配中...</span>
                             </div>
 
@@ -570,7 +576,7 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-target text-danger fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">每天赚钱目标设定</span>
+                                <span class="text-xs fw-bold text-primary">长期攒钱/挣钱大目标</span>
                             </div>
                             <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255,68,0,0.3);" onclick="openAddGoalModal()">+ 新增目标</button>
                         </div>
@@ -578,12 +584,16 @@
                         <div class="quick-chip-group mb-2" id="goalChipsContainer"></div>
 
                         <div class="goal-banner-card">
-                            <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
-                                <span class="text-xs fw-bold" id="goalDiffStatusText">还差 ￥0.00</span>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标金额: ￥0.00</span>
+                                <span class="text-xs fw-bold text-danger" id="goalDiffStatusText">还差 ￥0.00</span>
                             </div>
-                            <div class="goal-progress-bar-bg">
+                            <div class="goal-progress-bar-bg mb-2">
                                 <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center text-xs text-secondary fw-bold" style="font-size: 0.73rem;">
+                                <span>当前跑单已赚: <strong id="goalEarnedCurrent" class="text-primary">￥0.00</strong></span>
+                                <span id="goalPercentText">完成度 0%</span>
                             </div>
                         </div>
                     </div>
@@ -593,21 +603,20 @@
                             <div class="calc-bento-card p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1.5">
                                     <label class="text-xs fw-bold text-secondary mb-0">完成总单量</label>
-                                    <span id="regularOrdersBadge" class="badge bg-light text-secondary text-xs border" style="font-weight:800;">常规: 0单</span>
+                                    <span id="regularOrdersBadge" class="badge bg-light text-secondary text-xs border" style="font-weight:800; border-radius: var(--radius-pill);">常规: 0单</span>
                                 </div>
                                 <div class="calc-input-group">
                                     <input type="text" inputmode="numeric" pattern="[0-9]*" id="totalOrders" placeholder="0">
                                     <span class="input-suffix">单</span>
                                 </div>
                                 <div class="quick-chip-group">
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(1)">+1</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(5)">+5</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(10)">+10</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(20)">+20</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(50)">+50</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(100)">+100</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(200)">+200</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(500)">+500</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(1)">+1单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(5)">+5单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(10)">+10单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(20)">+20单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(50)">+50单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(100)">+100单</button>
+                                    <button type="button" class="quick-chip" onclick="addTotalOrders(200)">+200单</button>
                                     <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearOrders()">清空</button>
                                 </div>
                             </div>
@@ -624,12 +633,12 @@
                                     <span class="input-suffix">单</span>
                                 </div>
                                 <div class="quick-chip-group">
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(1)">+1</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(2)">+2</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(5)">+5</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(10)">+10</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(20)">+20</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(50)">+50</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(1)">+1单</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(2)">+2单</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(5)">+5单</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(10)">+10单</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(20)">+20单</button>
+                                    <button type="button" class="quick-chip" onclick="addGroupOrders(50)">+50单</button>
                                     <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置拼团</button>
                                 </div>
                             </div>
@@ -641,7 +650,7 @@
                             <span class="text-xs fw-bold text-secondary"><i class="ph ph-chart-bar me-1"></i> 常规阶梯档位标准表</span>
                             <div class="d-flex align-items-center gap-2">
                                 <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255, 68, 0, 0.3);" onclick="openAddTierModal()">+ 添加档位</button>
-                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block">支持自定义增删改</span>
+                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block" style="border-radius: var(--radius-pill);">支持自定义增删改</span>
                             </div>
                         </div>
                         <div class="tier-roadmap-grid" id="tierRoadmapGrid"></div>
@@ -686,7 +695,7 @@
 
     <div class="modal fade" id="tierModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold fs-6" id="tierModalTitle">添加/修改阶梯档位</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
@@ -695,11 +704,11 @@
                     <input type="hidden" id="editTierIndex" value="-1">
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">起步单量 (最小单数)</label>
-                        <input type="number" id="tierModalMinOrder" class="form-control" placeholder="例如: 1300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                        <input type="number" id="tierModalMinOrder" class="form-control" placeholder="例如: 1300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">单价 (元/单)</label>
-                        <input type="number" step="0.01" id="tierModalPrice" class="form-control" placeholder="例如: 6.50" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                        <input type="number" step="0.01" id="tierModalPrice" class="form-control" placeholder="例如: 6.50" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -712,15 +721,15 @@
 
     <div class="modal fade" id="goalModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6">新增每日收入目标</h5>
+                    <h5 class="modal-title fw-bold fs-6">新增攒钱/挣钱大目标</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">目标金额 (元/天)</label>
-                        <input type="number" id="goalModalAmount" class="form-control" placeholder="例如: 300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color);">
+                        <label class="form-label text-xs fw-bold text-secondary">目标金额 (元，如 2000, 5000, 10000)</label>
+                        <input type="number" id="goalModalAmount" class="form-control" placeholder="例如: 3000" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -740,7 +749,8 @@
             { minOrder: 1300, price: 6.5 }
         ];
 
-        let dailyGoals = [200, 300, 500];
+        // 攒钱大目标（如几千上万元）
+        let bigGoals = [1000, 3000, 5000];
         let selectedGoalIndex = 1;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -752,14 +762,14 @@
                 } catch (e) {}
             }
 
-            const savedGoals = localStorage.getItem('custom_daily_goals_v1');
+            const savedGoals = localStorage.getItem('custom_big_goals_v2');
             if (savedGoals) {
                 try {
                     const parsed = JSON.parse(savedGoals);
                     if (Array.isArray(parsed.goals) && parsed.goals.length > 0) {
-                        dailyGoals = parsed.goals;
+                        bigGoals = parsed.goals;
                         selectedGoalIndex = parsed.selectedIndex ?? 0;
-                        if (selectedGoalIndex >= dailyGoals.length) selectedGoalIndex = 0;
+                        if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = 0;
                     }
                 } catch (e) {}
             }
@@ -789,8 +799,8 @@
 
         function persistGoals() {
             try {
-                localStorage.setItem('custom_daily_goals_v1', JSON.stringify({
-                    goals: dailyGoals,
+                localStorage.setItem('custom_big_goals_v2', JSON.stringify({
+                    goals: bigGoals,
                     selectedIndex: selectedGoalIndex
                 }));
             } catch (e) {}
@@ -800,10 +810,10 @@
             const container = document.getElementById('goalChipsContainer');
             if (!container) return;
 
-            dailyGoals.sort((a, b) => a - b);
+            bigGoals.sort((a, b) => a - b);
 
             let html = '';
-            dailyGoals.forEach((goal, idx) => {
+            bigGoals.forEach((goal, idx) => {
                 const isSelected = (idx === selectedGoalIndex);
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
@@ -813,7 +823,7 @@
                 `;
             });
 
-            if (dailyGoals.length === 0) {
+            if (bigGoals.length === 0) {
                 html = '<span class="text-xs text-secondary">暂无目标，点击右上角新增</span>';
             }
 
@@ -836,14 +846,14 @@
         window.saveGoalFromModal = function() {
             const amount = parseFloat(document.getElementById('goalModalAmount').value);
             if (isNaN(amount) || amount <= 0) {
-                alert('请输入有效的目标金额！');
+                alert('请输入有效的攒钱目标金额！');
                 return;
             }
 
-            if (!dailyGoals.includes(amount)) {
-                dailyGoals.push(amount);
-                dailyGoals.sort((a, b) => a - b);
-                selectedGoalIndex = dailyGoals.indexOf(amount);
+            if (!bigGoals.includes(amount)) {
+                bigGoals.push(amount);
+                bigGoals.sort((a, b) => a - b);
+                selectedGoalIndex = bigGoals.indexOf(amount);
                 persistGoals();
             }
 
@@ -857,10 +867,10 @@
 
         window.removeGoal = function(event, idx) {
             event.stopPropagation();
-            if (confirm(`确定删除 ￥${dailyGoals[idx]} 目标吗？`)) {
-                dailyGoals.splice(idx, 1);
-                if (selectedGoalIndex >= dailyGoals.length) {
-                    selectedGoalIndex = Math.max(0, dailyGoals.length - 1);
+            if (confirm(`确定删除 ￥${bigGoals[idx]} 目标吗？`)) {
+                bigGoals.splice(idx, 1);
+                if (selectedGoalIndex >= bigGoals.length) {
+                    selectedGoalIndex = Math.max(0, bigGoals.length - 1);
                 }
                 persistGoals();
                 renderGoalChips();
@@ -868,36 +878,43 @@
             }
         };
 
+        // 直接根据每跑一单计算出的总收益，实时比对并计算距离目标的差距
         function updateGoalProgress(grandTotal) {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
             const progressBarFill = document.getElementById('goalProgressBarFill');
+            const goalEarnedCurrent = document.getElementById('goalEarnedCurrent');
+            const goalPercentText = document.getElementById('goalPercentText');
 
-            if (!goalTitleText || !goalDiffStatusText || !progressBarFill) return;
+            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalEarnedCurrent || !goalPercentText) return;
 
-            if (dailyGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= dailyGoals.length) {
-                goalTitleText.textContent = "未设定目标";
+            if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
+                goalTitleText.textContent = "未设定大目标";
                 goalDiffStatusText.textContent = "请新建目标";
                 goalDiffStatusText.className = "text-xs fw-bold text-secondary";
                 progressBarFill.style.width = "0%";
+                goalEarnedCurrent.textContent = `￥${grandTotal.toFixed(2)}`;
+                goalPercentText.textContent = "完成度 0%";
                 return;
             }
 
-            const currentGoal = dailyGoals[selectedGoalIndex];
-            goalTitleText.textContent = `每日目标: ￥${currentGoal.toFixed(2)}`;
+            const currentGoal = bigGoals[selectedGoalIndex];
+            goalTitleText.textContent = `目标金额: ￥${currentGoal.toFixed(2)}`;
+            goalEarnedCurrent.textContent = `￥${grandTotal.toFixed(2)}`;
 
             const diff = currentGoal - grandTotal;
             const pct = Math.min(100, Math.max(0, (grandTotal / currentGoal) * 100));
 
             progressBarFill.style.width = `${pct}%`;
+            goalPercentText.textContent = `完成度 ${pct.toFixed(1)}%`;
 
             if (diff <= 0) {
                 const over = Math.abs(diff);
-                goalDiffStatusText.textContent = `🎉 已达标！超额 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.textContent = `🎉 已达成大目标！超额 ￥${over.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
             } else {
-                goalDiffStatusText.textContent = `距离目标还差 ￥${diff.toFixed(2)}`;
+                goalDiffStatusText.textContent = `还差 ￥${diff.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
                 progressBarFill.classList.remove('completed');
             }
@@ -1027,6 +1044,7 @@
             return clean;
         };
 
+        // 每加一单直接记入，并实时保存至本地
         window.addTotalOrders = (amount) => {
             if (!totalOrdersInput) return;
             let cur = parseInt(totalOrdersInput.value || '0', 10);
@@ -1168,6 +1186,7 @@
             }
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
+            // 跑单收益实时更新至攒钱大目标比对卡片中
             updateGoalProgress(grandTotal);
         }
 
