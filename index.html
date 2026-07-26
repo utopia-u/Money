@@ -26,7 +26,7 @@
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
             --font-display-num: 'Bebas Neue', var(--font-sans);
 
-            --bg-body: #F7F5F2;
+            --bg-body: #F4F1EC;
             --bg-surface-rgb: 255, 255, 255;
             --bg-surface: rgb(var(--bg-surface-rgb));
             --text-primary: #1A1C21;
@@ -43,20 +43,20 @@
             --success-bg: #ECFDF5;
 
             /* 极致圆润超椭圆圆角 */
-            --radius-xl: 32px;        
-            --radius-lg: 22px;        
-            --radius-md: 16px;        
-            --radius-sm: 10px;         
+            --radius-xl: 28px;        
+            --radius-lg: 20px;        
+            --radius-md: 14px;        
+            --radius-sm: 8px;         
             --radius-pill: 9999px;    
 
-            --card-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -2px rgba(0, 0, 0, 0.02);
+            --card-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.03), 0 2px 6px -2px rgba(0, 0, 0, 0.02);
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --border-color: rgba(0, 0, 0, 0.06);
         }
 
         [data-theme="dark"] {
-            --bg-body: #0D0C0A;
+            --bg-body: #0E0D0B;
             --bg-surface-rgb: 24, 22, 20;
             --bg-surface: rgb(var(--bg-surface-rgb));
             --text-primary: #F3F4F6; 
@@ -67,7 +67,7 @@
             --danger-bg: rgba(239, 68, 68, 0.15);
             --danger-text: #FCA5A5;
             --success-bg: rgba(16, 185, 129, 0.15);
-            --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
             --border-color: rgba(255, 255, 255, 0.08);
         }
 
@@ -82,30 +82,30 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: var(--font-sans) !important;
-            padding: 12px;
+            padding: 10px;
             padding-bottom: calc(24px + var(--safe-bottom));
         }
 
         .app-layout {
-            max-width: 1000px;
+            max-width: 980px;
             margin: 0 auto;
         }
 
         .app-header {
-            padding: 12px 20px; 
+            padding: 10px 16px; 
             background: var(--bg-surface);
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-radius: var(--radius-lg);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
         }
 
         .section-card {
             background: var(--bg-surface);
-            padding: 20px 22px;
+            padding: 16px;
             border-radius: var(--radius-xl); 
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
@@ -114,11 +114,12 @@
         .calc-bento-card {
             background: var(--bg-surface);
             border-radius: var(--radius-lg);
-            padding: 16px;
+            padding: 14px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.015);
             position: relative;
             overflow: hidden;
+            margin-bottom: 10px;
         }
 
         [data-theme="dark"] .calc-bento-card {
@@ -128,10 +129,10 @@
         .grand-total-hero {
             background: linear-gradient(135deg, #059669 0%, #10B981 50%, #047857 100%);
             color: #FFFFFF;
-            padding: 18px 20px;
+            padding: 16px;
             border-radius: var(--radius-lg);
             position: relative;
-            box-shadow: 0 12px 28px -6px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 10px 24px -6px rgba(16, 185, 129, 0.35);
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.22);
             width: 100%;
@@ -141,7 +142,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             position: relative;
             z-index: 2;
         }
@@ -149,12 +150,12 @@
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: rgba(0, 0, 0, 0.16);
             backdrop-filter: blur(8px);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: var(--radius-pill);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -164,7 +165,7 @@
         }
 
         .hero-amount-wrapper {
-            margin: 10px 0;
+            margin: 8px 0;
             display: flex;
             align-items: baseline;
             gap: 4px;
@@ -173,14 +174,14 @@
         }
 
         .hero-currency-symbol {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             opacity: 0.9;
         }
 
         .hero-amount-number {
             font-family: var(--font-display-num) !important;
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             font-weight: 800;
             letter-spacing: -1px;
             line-height: 1;
@@ -191,17 +192,17 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: var(--radius-md);
-            padding: 10px 14px;
+            padding: 8px 12px;
             position: relative;
             z-index: 2;
         }
 
         .hero-progress-track {
-            height: 7px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.25);
             border-radius: var(--radius-pill);
             overflow: hidden;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .hero-progress-fill {
@@ -216,7 +217,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.95);
         }
@@ -225,8 +226,8 @@
             background: var(--bg-body);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 10px 14px;
-            font-size: 0.82rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-secondary);
             display: flex;
@@ -248,8 +249,8 @@
 
         .calc-input-group input {
             width: 100%;
-            height: 44px;
-            padding: 6px 44px 6px 14px;
+            height: 42px;
+            padding: 4px 40px 4px 12px;
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
             font-size: 1.05rem;
@@ -268,8 +269,8 @@
 
         .calc-input-group .input-suffix {
             position: absolute;
-            right: 14px;
-            font-size: 0.82rem;
+            right: 12px;
+            font-size: 0.8rem;
             font-weight: 800;
             color: var(--text-secondary);
             pointer-events: none;
@@ -278,22 +279,22 @@
         .quick-chip-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 5px;
+            margin-top: 6px;
         }
 
         .quick-chip {
             border: 1px solid var(--border-color);
             background: var(--bg-body);
             color: var(--text-primary);
-            font-size: 0.75rem;
+            font-size: 0.73rem;
             font-weight: 700;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: var(--radius-pill);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             transition: all 0.2s ease;
         }
 
@@ -310,7 +311,7 @@
         }
 
         .quick-chip .chip-del-btn, .quick-chip .chip-edit-btn {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             opacity: 0.75;
             padding: 0 2px;
             border-radius: 50%;
@@ -328,14 +329,14 @@
             background: var(--bg-body);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 12px 14px;
+            padding: 10px 12px;
         }
 
         .goal-stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
             text-align: center;
         }
 
@@ -343,25 +344,25 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            padding: 6px 4px;
+            padding: 5px 3px;
         }
 
         .goal-stat-item .stat-label {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: var(--text-secondary);
             display: block;
         }
 
         .goal-stat-item .stat-value {
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 800;
-            margin-top: 2px;
+            margin-top: 1px;
             display: block;
         }
 
         .goal-progress-bar-bg {
-            height: 9px;
+            height: 8px;
             background: rgba(0,0,0,0.06);
             border-radius: var(--radius-pill);
             overflow: hidden;
@@ -382,13 +383,12 @@
             background: linear-gradient(90deg, #10B981, #059669);
         }
 
-        /* 历史打卡列表 */
         .earnings-history-list {
-            max-height: 170px;
+            max-height: 150px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .earnings-history-item {
@@ -398,8 +398,8 @@
             background: var(--bg-body);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 7px 12px;
-            font-size: 0.78rem;
+            padding: 6px 10px;
+            font-size: 0.75rem;
         }
 
         .earnings-history-item .item-date {
@@ -410,13 +410,13 @@
         .earnings-history-item .item-amount {
             font-weight: 800;
             color: #10B981;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .tier-roadmap-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         @media (min-width: 576px) {
@@ -429,14 +429,14 @@
             background: var(--bg-body);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 10px 12px;
+            padding: 8px 10px;
             text-align: center;
             position: relative;
             transition: all 0.2s ease;
         }
 
         .tier-card .tier-range {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--text-secondary);
             display: block;
@@ -444,7 +444,7 @@
         }
 
         .tier-card .tier-price {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: var(--text-primary);
         }
@@ -452,7 +452,7 @@
         .tier-card.is-active {
             background: var(--accent-light) !important;
             border-color: var(--accent-color) !important;
-            box-shadow: 0 4px 16px -4px rgba(255, 68, 0, 0.25);
+            box-shadow: 0 4px 14px -4px rgba(255, 68, 0, 0.25);
             transform: translateY(-1px);
         }
 
@@ -473,9 +473,9 @@
             transform: translateX(50%);
             background: var(--accent-color);
             color: #FFFFFF;
-            font-size: 0.62rem;
+            font-size: 0.6rem;
             font-weight: 800;
-            padding: 1px 8px;
+            padding: 1px 7px;
             border-radius: var(--radius-pill);
             white-space: nowrap;
             box-shadow: 0 2px 4px rgba(255, 68, 0, 0.25);
@@ -485,7 +485,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-xl);
-            padding: 18px;
+            padding: 14px;
             width: 100%;
             max-width: 320px;
             margin: 0 auto;
@@ -494,11 +494,11 @@
 
         #calcDisplay {
             width: 100%;
-            height: 46px;
-            margin-bottom: 12px;
+            height: 44px;
+            margin-bottom: 10px;
             text-align: right;
-            font-size: 1.45rem;
-            padding: 6px 14px;
+            font-size: 1.4rem;
+            padding: 4px 12px;
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
             background: var(--bg-body);
@@ -509,12 +509,12 @@
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .calc-btn {
-            height: 44px;
-            font-size: 1.15rem;
+            height: 40px;
+            font-size: 1.1rem;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             background: var(--bg-body);
@@ -550,7 +550,7 @@
             color: #FFFFFF;
             font-weight: 800;
             border: none;
-            box-shadow: 0 4px 12px rgba(255, 68, 0, 0.25);
+            box-shadow: 0 4px 10px rgba(255, 68, 0, 0.25);
             border-radius: var(--radius-md);
         }
 
@@ -560,18 +560,18 @@
             border: 1px solid rgba(239, 68, 68, 0.2);
             padding: 8px 12px;
             border-radius: var(--radius-md);
-            margin-bottom: 10px;
-            font-size: 0.8rem;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
             font-weight: 700;
             display: none;
         }
 
         .save-tip {
             text-align: right;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--success-color);
-            margin-top: -4px;
-            margin-bottom: 8px;
+            margin-top: -2px;
+            margin-bottom: 6px;
             font-weight: 800;
             display: none;
         }
@@ -586,11 +586,11 @@
     <div class="app-layout">
         <header class="app-header">
             <div class="d-flex align-items-center gap-2">
-                <div class="icon-box" style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center;"><i class="ph ph-calculator fs-6"></i></div>
+                <div class="icon-box" style="width: 30px; height: 30px; border-radius: 8px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center;"><i class="ph ph-calculator fs-6"></i></div>
                 <h4 class="mb-0 fw-bold fs-6">阶梯单量单价计算器</h4>
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
-                    style="width: 36px; height: 36px; background-color: var(--bg-body); color: var(--text-primary); border: 1px solid var(--border-color);" aria-label="切换深浅主题">
+                    style="width: 34px; height: 34px; background-color: var(--bg-body); color: var(--text-primary); border: 1px solid var(--border-color);" aria-label="切换深浅主题">
                 <i class="ph ph-moon fs-6" style="transition: transform 0.2s ease;"></i>
             </button>
         </header>
@@ -599,9 +599,9 @@
             <div id="errorBox" class="error-msg"></div>
             <div id="saveTip" class="save-tip">✓ 数据已自动同步至本地存储</div>
 
-            <div class="row g-3">
+            <div class="row g-2">
                 <div class="col-12 col-lg-8">
-                    <div class="calc-bento-card mb-3 p-3">
+                    <div class="calc-bento-card p-3">
                         <div class="grand-total-hero">
                             <div class="hero-header-row">
                                 <span class="hero-badge"><i class="ph ph-sparkle"></i> 本次/今日结算收益</span>
@@ -632,7 +632,7 @@
                         </div>
                     </div>
 
-                    <div class="calc-bento-card mb-3 p-3">
+                    <div class="calc-bento-card p-3">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-target text-danger fs-6"></i>
@@ -669,29 +669,28 @@
                         </div>
                     </div>
 
-                    <div class="calc-bento-card mb-3 p-3">
+                    <div class="calc-bento-card p-3">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-coins text-warning fs-6"></i>
                                 <span class="text-xs fw-bold text-primary">打卡收益记录（存入目标）</span>
                             </div>
                             <div class="d-flex gap-1.5">
-                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">+ 打卡存入目标</button>
-                                <button type="button" class="quick-chip" style="background: var(--bg-body);" onclick="openCustomDepositModal()">+ 自定义金额/备注</button>
-                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空记录</button>
+                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">+ 打卡存入</button>
+                                <button type="button" class="quick-chip" style="background: var(--bg-body);" onclick="openCustomDepositModal()">+ 自定义</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空</button>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-3" style="background: var(--bg-body); border: 1px solid var(--border-color);">
                             <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡 <span id="historyCount" class="text-primary">0</span> 天 (日均: <span id="dailyAvgText" class="text-primary">￥0.00</span>)</span>
-                            <span class="text-xs fw-bold text-secondary">打卡总累计: <span id="accumulatedTotal" class="fs-6 fw-extrabold text-success ms-1">￥0.00</span></span>
+                            <span class="text-xs fw-bold text-secondary">总累计: <span id="accumulatedTotal" class="fs-6 fw-extrabold text-success ms-1">￥0.00</span></span>
                         </div>
 
-                        <div class="earnings-history-list" id="earningsHistoryList">
-                            </div>
+                        <div class="earnings-history-list" id="earningsHistoryList"></div>
                     </div>
 
-                    <div class="row g-2 mb-3">
+                    <div class="row g-2">
                         <div class="col-12 col-md-6">
                             <div class="calc-bento-card p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1.5">
@@ -709,7 +708,6 @@
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(20)">+20单</button>
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(50)">+50单</button>
                                     <button type="button" class="quick-chip" onclick="addTotalOrders(100)">+100单</button>
-                                    <button type="button" class="quick-chip" onclick="addTotalOrders(200)">+200单</button>
                                     <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearOrders()">清空</button>
                                 </div>
                             </div>
@@ -731,19 +729,18 @@
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(5)">+5单</button>
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(10)">+10单</button>
                                     <button type="button" class="quick-chip" onclick="addGroupOrders(20)">+20单</button>
-                                    <button type="button" class="quick-chip" onclick="addGroupOrders(50)">+50单</button>
-                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置拼团</button>
+                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="calc-bento-card p-3">
+                    <div class="calc-bento-card p-3 mt-2">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="text-xs fw-bold text-secondary"><i class="ph ph-chart-bar me-1"></i> 常规阶梯档位标准表</span>
                             <div class="d-flex align-items-center gap-2">
                                 <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255, 68, 0, 0.3);" onclick="openAddTierModal()">+ 添加档位</button>
-                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block" style="border-radius: var(--radius-pill);">支持自定义增删改</span>
+                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block" style="border-radius: var(--radius-pill);">支持增删改</span>
                             </div>
                         </div>
                         <div class="tier-roadmap-grid" id="tierRoadmapGrid"></div>
@@ -752,7 +749,7 @@
 
                 <div class="col-12 col-lg-4 d-flex justify-content-center">
                     <div class="w-100" style="max-width: 320px;">
-                        <div class="text-center mb-1.5"><span class="text-xs fw-bold text-secondary"><i class="ph ph-calculator me-1"></i> 便捷快速核算辅助盘</span></div>
+                        <div class="text-center mb-1"><span class="text-xs fw-bold text-secondary"><i class="ph ph-calculator me-1"></i> 便捷快速核算辅助盘</span></div>
                         <div class="calculator-wrapper">
                             <input type="text" id="calcDisplay" readonly placeholder="0">
                             <div class="calc-buttons">
@@ -847,12 +844,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">存入金额 (元，支出请输入负数如 -50)</label>
+                        <label class="form-label text-xs fw-bold text-secondary">存入金额 (元，支出输入负数如 -50)</label>
                         <input type="number" step="0.01" id="customDepositAmount" class="form-control" placeholder="例如: 200" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">备注说明 (可选)</label>
-                        <input type="text" id="customDepositMemo" class="form-control" placeholder="例如: 跑单外外加冲单奖励" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <input type="text" id="customDepositMemo" class="form-control" placeholder="例如: 外加奖励、雨天补贴" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -872,7 +869,6 @@
             { minOrder: 1300, price: 6.5 }
         ];
 
-        // 攒钱大目标对象数组
         let bigGoals = [
             { name: "应急备用金", amount: 1000 },
             { name: "买新手机", amount: 3000 },
@@ -880,7 +876,6 @@
         ];
         let selectedGoalIndex = 1;
 
-        // 打卡收益历史记录（本地永久保存，带备注支持）
         let earningsHistory = [];
         let currentCalculatedTotal = 0;
 
@@ -893,7 +888,6 @@
                 } catch (e) {}
             }
 
-            // 加载目标数据
             const savedGoals = localStorage.getItem('custom_big_goals_v3');
             if (savedGoals) {
                 try {
@@ -911,7 +905,6 @@
                 } catch (e) {}
             }
 
-            // 读取历史打卡数据
             const savedHistory = localStorage.getItem('custom_earnings_history_v2');
             if (savedHistory) {
                 try {
@@ -943,7 +936,6 @@
             initCalculatorData();
         });
 
-        // 打卡历史存储与渲染
         function persistEarningsHistory() {
             try {
                 localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory));
@@ -971,7 +963,7 @@
             if (dailyAvgText) dailyAvgText.textContent = `￥${avg.toFixed(2)}`;
 
             if (daysCount === 0) {
-                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡存入目标”吧！</span>';
+                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡存入”吧！</span>';
             } else {
                 let html = '';
                 earningsHistory.forEach((item, index) => {
@@ -989,11 +981,9 @@
                 container.innerHTML = html;
             }
 
-            // 更新目标完成进度（基于已打卡的总存入金额）
             updateGoalProgress();
         }
 
-        // 打卡功能：将当前结算金额直接打卡并存入目标
         window.recordTodayEarnings = function() {
             if (currentCalculatedTotal <= 0) {
                 alert('当前计算得出的收益为 0，请先输入有效的单量进行核算！');
@@ -1056,7 +1046,7 @@
         };
 
         window.deleteEarningsRecord = function(index) {
-            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？删除后目标累计金额也会同步扣减。`)) {
+            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？`)) {
                 earningsHistory.splice(index, 1);
                 persistEarningsHistory();
                 renderEarningsHistory();
@@ -1065,7 +1055,7 @@
 
         window.clearEarningsHistory = function() {
             if (earningsHistory.length === 0) return;
-            if (confirm('确定要清空所有已打卡存入的收益历史吗？清空后目标进度将归零。')) {
+            if (confirm('确定要清空所有已打卡存入的收益历史吗？')) {
                 earningsHistory = [];
                 persistEarningsHistory();
                 renderEarningsHistory();
@@ -1147,10 +1137,8 @@
             if (!name) name = `目标 ￥${amount}`;
 
             if (editIdx === -1) {
-                // 新增
                 bigGoals.push({ name: name, amount: amount });
             } else {
-                // 编辑
                 bigGoals[editIdx] = { name: name, amount: amount };
             }
 
@@ -1182,7 +1170,6 @@
             }
         };
 
-        // 实时人性化估算与目标展示
         function updateGoalProgress() {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
@@ -1215,7 +1202,6 @@
             progressBarFill.style.width = `${pct}%`;
             goalPercentText.textContent = `${pct.toFixed(1)}%`;
 
-            // 计算日均收入估算剩余天数
             const daysCount = earningsHistory.length;
             const avgDailyEarnings = daysCount > 0 ? (totalSaved / daysCount) : 0;
 
