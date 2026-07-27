@@ -721,17 +721,17 @@
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <div class="d-flex align-items-center gap-1.5">
                                 <i class="ph ph-coins text-warning fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">打卡收益记录（连胜存钱）</span>
+                                <span class="text-xs fw-bold text-primary">打卡收益记录（叠加存钱）</span>
                             </div>
                             <div class="d-flex gap-1.5">
-                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">🎉 打卡存入</button>
+                                <button type="button" class="quick-chip" style="background: #10B981; color: #fff; border-color: #10B981;" onclick="recordTodayEarnings()">🎉 叠加打卡存入</button>
                                 <button type="button" class="quick-chip" style="background: var(--bg-body);" onclick="openCustomDepositModal()">+ 自定义</button>
                                 <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空</button>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-3" style="background: var(--bg-body); border: 1px solid var(--border-color);">
-                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡 <span id="historyCount" class="text-primary">0</span> 天 (日均: <span id="dailyAvgText" class="text-primary">￥0.00</span>)</span>
+                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡 <span id="historyCount" class="text-primary">0</span> 次 (日均: <span id="dailyAvgText" class="text-primary">￥0.00</span>)</span>
                             <span class="text-xs fw-bold text-secondary">打卡总存入: <span id="accumulatedTotal" class="fs-6 fw-extrabold text-success ms-1">￥0.00</span></span>
                         </div>
 
@@ -940,7 +940,6 @@
         let currentCalculatedTotal = 0;
         let streakDays = 0;
 
-        // 跑单激励金句
         const motivationQuotes = [
             "每一单的汗水，都在为你的目标铺路！",
             "今天多跑几单，离心仪的目标又近一步！",
@@ -950,7 +949,6 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 随机设置激励金句
             const quoteEl = document.getElementById('motivationQuote');
             if (quoteEl) {
                 const randomQ = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
@@ -1012,22 +1010,17 @@
             initCalculatorData();
         });
 
-        // 连胜打卡天数计算
         function calculateStreak() {
             if (earningsHistory.length === 0) return 0;
             
-            // 提取所有唯一打卡日期 sorted
             const dates = [...new Set(earningsHistory.map(item => item.date.split(' ')[0]))].sort().reverse();
             if (dates.length === 0) return 0;
 
             let count = 1;
             const today = new Date();
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            
             let lastDate = new Date(dates[0]);
             const diffDaysWithToday = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
             
-            // 如果最近打卡日期大于1天（即超过昨天未打卡），则中断
             if (diffDaysWithToday > 1) {
                 return 0;
             }
@@ -1045,7 +1038,6 @@
             return count;
         }
 
-        // 触发彩带礼花
         function fireConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
@@ -1076,7 +1068,10 @@
 
             const totalSum = getTotalPunchedInEarnings();
             const daysCount = earningsHistory.length;
-            const avg = daysCount > 0 ? (totalSum / daysCount) : 0;
+            
+            // 计算独立打卡日期的天数进行日均核算
+            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
+            const avg = uniqueDays > 0 ? (totalSum / uniqueDays) : 0;
 
             historyCountEl.textContent = daysCount;
             accumulatedTotalEl.textContent = `￥${totalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1110,7 +1105,7 @@
             updateGoalProgress();
         }
 
-        // 一键打卡存入收益并放礼花
+        // 每次打卡直接叠加，不覆盖旧数值！
         window.recordTodayEarnings = function() {
             if (currentCalculatedTotal <= 0) {
                 alert('当前计算得出的收益为 0，请先输入有效的单量进行核算！');
@@ -1118,27 +1113,23 @@
             }
 
             const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-            const existingIdx = earningsHistory.findIndex(item => item.date.startsWith(dateStr));
-            if (existingIdx !== -1) {
-                if (confirm(`今日已有打卡记录 ￥${earningsHistory[existingIdx].amount.toFixed(2)}，是否用当前最新收益 ￥${currentCalculatedTotal.toFixed(2)} 替换更新并存入目标？`)) {
-                    earningsHistory[existingIdx].amount = currentCalculatedTotal;
-                    fireConfetti();
-                } else {
-                    return;
-                }
-            } else {
-                earningsHistory.unshift({
-                    date: dateStr,
-                    amount: currentCalculatedTotal,
-                    memo: "跑单结算"
-                });
-                fireConfetti();
-            }
+            // 叠加存入：新增一条打卡记录，直接累加存入目标
+            earningsHistory.unshift({
+                date: timeStr,
+                amount: currentCalculatedTotal,
+                memo: "跑单打卡存入"
+            });
 
+            fireConfetti();
             persistEarningsHistory();
             renderEarningsHistory();
+
+            // 友好提示，并将输入框自动重置清零，方便进行下一轮跑单记录与叠加
+            if (totalOrdersInput) totalOrdersInput.value = '0';
+            if (groupOrdersInput) groupOrdersInput.value = '0';
+            calculate(true);
         };
 
         window.openCustomDepositModal = function() {
@@ -1312,7 +1303,6 @@
             }
         };
 
-        // 具象化换算：按单价与日均估算还需跑多少单/多少天
         function updateGoalProgress() {
             const goalTitleText = document.getElementById('goalTitleText');
             const goalDiffStatusText = document.getElementById('goalDiffStatusText');
@@ -1347,20 +1337,18 @@
             progressBarFill.style.width = `${pct}%`;
             goalPercentText.textContent = `${pct.toFixed(1)}%`;
 
-            // 计算预计还需跑多少单与多少天
-            const avgUnitPrice = 5.0; // 默认平均每单5元预估
-            const daysCount = earningsHistory.length;
-            const avgDailyEarnings = daysCount > 0 ? (totalSaved / daysCount) : 0;
+            const avgUnitPrice = 5.0; // 默认平均每单 5 元预估
+            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
+            const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
 
             if (diff <= 0) {
                 const over = Math.abs(diff);
-                goalDiffStatusText.textContent = `🎉 已达成！超额 ￥${over.toFixed(2)}`;
+                goalDiffStatusText.textContent = `🎉 已达成！超额存入 ￥${over.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
                 goalEstOrders.textContent = "已达成";
                 goalEstDays.textContent = "已完成🎉";
                 goalEstDays.className = "stat-value text-success";
-                fireConfetti();
             } else {
                 goalDiffStatusText.textContent = `还差 ￥${diff.toFixed(2)}`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
