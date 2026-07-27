@@ -118,7 +118,7 @@
             font-weight: 800;
         }
 
-        /* 跑单金句栏 */
+        /* 跑单金句无缝横向跑马灯 */
         .motivation-banner {
             background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
             color: #FFFFFF;
@@ -128,15 +128,43 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 10px;
-            font-size: 0.78rem;
-            font-weight: 700;
             box-shadow: 0 4px 14px rgba(255, 68, 0, 0.25);
-            cursor: pointer;
-            user-select: none;
+            overflow: hidden;
+            position: relative;
         }
 
-        .motivation-banner:active {
-            transform: scale(0.99);
+        .marquee-container {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            height: 22px;
+        }
+
+        .marquee-track {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            will-change: transform;
+            animation: marquee-scroll 28s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused; /* 触摸/悬停时暂停滚动 */
+        }
+
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-item {
+            display: inline-flex;
+            align-items: center;
+            padding-right: 40px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.2px;
         }
 
         /* 防摆烂战况警告卡片 */
@@ -438,7 +466,6 @@
             padding: 10px 12px;
         }
 
-        /* 目标封面大图与动态视觉解封样式 */
         .goal-cover-img-wrapper {
             position: relative;
             width: 64px;
@@ -457,7 +484,6 @@
             transition: filter 0.3s ease;
         }
 
-        /* 锁定的蒙版，存钱越多图片越清晰 */
         .goal-cover-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -772,12 +798,12 @@
 <body>
 
     <div class="app-layout">
-        <div class="motivation-banner" onclick="rotateMotivationQuote()" title="点击换一句激励语">
-            <div class="d-flex align-items-center me-2 overflow-hidden">
-                <i class="ph ph-lightning me-1 flex-shrink-0"></i>
-                <span id="motivationQuote" class="text-truncate">每一单的汗水，都在为你的目标铺路！加油！</span>
+        <div class="motivation-banner">
+            <div class="marquee-container me-2 position-relative">
+                <div class="marquee-track" id="motivationMarquee">
+                    </div>
             </div>
-            <span class="badge bg-white text-danger border rounded-pill flex-shrink-0" id="streakBadgeTop"><i class="ph ph-fire text-danger me-1"></i> 连胜 0 天</span>
+            <span class="badge bg-white text-danger border rounded-pill flex-shrink-0" id="streakBadgeTop" style="z-index: 2;"><i class="ph ph-fire text-danger me-1"></i> 连胜 0 天</span>
         </div>
 
         <div class="anti-slacking-card is-slacking" id="antiSlackingCard">
@@ -1138,17 +1164,15 @@
             "再坚持几单！胜利就在眼前，今天绝不摆烂！"
         ];
 
-        // 纯原生 Web Audio API 动态合成“金币入账/击响音效”
         function playChaChingSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // 声音 1：高频金币响声
                 const osc1 = ctx.createOscillator();
                 const gain1 = ctx.createGain();
                 osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(987.77, ctx.currentTime); // B5
-                osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.08); // E6
+                osc1.frequency.setValueAtTime(987.77, ctx.currentTime); 
+                osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.08); 
                 gain1.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
                 osc1.connect(gain1);
@@ -1156,12 +1180,11 @@
                 osc1.start();
                 osc1.stop(ctx.currentTime + 0.35);
 
-                // 声音 2：清脆和弦重音
                 setTimeout(() => {
                     const osc2 = ctx.createOscillator();
                     const gain2 = ctx.createGain();
                     osc2.type = 'triangle';
-                    osc2.frequency.setValueAtTime(1567.98, ctx.currentTime); // G6
+                    osc2.frequency.setValueAtTime(1567.98, ctx.currentTime); 
                     gain2.gain.setValueAtTime(0.12, ctx.currentTime);
                     gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
                     osc2.connect(gain2);
@@ -1173,7 +1196,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            rotateMotivationQuote();
+            initMotivationMarquee();
             startMidnightCountdown();
 
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
@@ -1232,15 +1255,20 @@
             initCalculatorData();
         });
 
-        function rotateMotivationQuote() {
-            const quoteEl = document.getElementById('motivationQuote');
-            if (quoteEl) {
-                const randomQ = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
-                quoteEl.textContent = randomQ;
-            }
+        // 初始化跑马灯字幕（无缝拼接滚动）
+        function initMotivationMarquee() {
+            const marqueeTrack = document.getElementById('motivationMarquee');
+            if (!marqueeTrack) return;
+
+            let itemsHtml = '';
+            motivationQuotes.forEach(q => {
+                itemsHtml += `<span class="marquee-item"><i class="ph ph-lightning text-warning me-1"></i>${q}</span>`;
+            });
+
+            // 复制一遍实现无缝连贯无缝滚动
+            marqueeTrack.innerHTML = itemsHtml + itemsHtml;
         }
 
-        // 倒计时至零点提示
         function startMidnightCountdown() {
             function updateClock() {
                 const now = new Date();
@@ -1395,7 +1423,6 @@
                 streakBadgeTop.innerHTML = `<i class="ph ph-fire text-danger me-1"></i> 连胜 ${streakDays} 天`;
             }
 
-            // 更新防摆烂看板状态
             updateAntiSlackingStatus();
 
             if (daysCount === 0) {
@@ -1420,7 +1447,6 @@
             updateGoalProgress();
         }
 
-        // 实时防摆烂状态判定与话术
         function updateAntiSlackingStatus() {
             const card = document.getElementById('antiSlackingCard');
             const badge = document.getElementById('slackingStatusBadge');
@@ -1446,7 +1472,6 @@
                 text.textContent = `今天尚未打卡！已连胜 ${streakDays} 天，不跑单连胜战果将归零！`;
             }
 
-            // 损失计算
             if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
                 const currentGoal = bigGoals[selectedGoalIndex];
                 const totalSaved = getTotalPunchedInEarnings();
@@ -1457,7 +1482,7 @@
 
                 if (diff > 0) {
                     const lostDays = (avgDailyEarnings > 0) ? (1).toFixed(1) : 1;
-                    costText.innerHTML = `💡 今日若摆烂代价：将直接导致你的【${currentGoal.name}】被迫延后 <strong class="text-danger money-font-style">${lostDays} 天</strong> 拿拿到手！`;
+                    costText.innerHTML = `💡 今日若摆烂代价：将直接导致你的【${currentGoal.name}】被迫延后 <strong class="text-danger money-font-style">${lostDays} 天</strong> 才能拿到！`;
                 } else {
                     costText.innerHTML = `🎉 当前目标已达成！快点击右上角“+新增目标”，解锁下一个梦想！`;
                 }
@@ -1707,7 +1732,6 @@
             const diff = currentGoal.amount - totalSaved;
             const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
 
-            // 图片解封蒙版渲染
             if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
                 if (currentGoal.image) {
                     goalCoverImg.src = currentGoal.image;
