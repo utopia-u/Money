@@ -27,7 +27,6 @@
         :root {
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
             --font-display-num: 'Bebas Neue', var(--font-sans);
-            /* 专为金融/金钱数字打造的高高级感字体 */
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
             --bg-body: #F4F1EC;
@@ -96,7 +95,6 @@
             margin: 0 auto;
         }
 
-        /* 财富渐变文字类（让攒钱数字充满诱惑） */
         .money-text-gradient {
             background: linear-gradient(135deg, #059669 0%, #10B981 100%);
             -webkit-background-clip: text;
@@ -374,11 +372,29 @@
             background: rgba(0, 0, 0, 0.15);
         }
 
+        .chip-thumb-img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
         .goal-banner-card {
             background: var(--bg-body);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
             padding: 10px 12px;
+        }
+
+        /* 目标封面展示大图样式 */
+        .goal-cover-img {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            flex-shrink: 0;
         }
 
         .goal-stats-grid {
@@ -654,6 +670,25 @@
             background: var(--accent-light);
         }
 
+        .image-preview-container {
+            width: 100%;
+            height: 100px;
+            border-radius: var(--radius-md);
+            border: 1.5px dashed var(--border-color);
+            background: var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .modal-content {
             border-radius: var(--radius-xl) !important;
         }
@@ -730,12 +765,17 @@
                         <div class="quick-chip-group mb-2" id="goalChipsContainer"></div>
 
                         <div class="goal-banner-card">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
-                                <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
-                            </div>
-                            <div class="goal-progress-bar-bg mb-2">
-                                <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <img id="goalCoverImg" src="" class="goal-cover-img" style="display: none;" alt="目标卡片图片">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
+                                        <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
+                                    </div>
+                                    <div class="goal-progress-bar-bg">
+                                        <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="goal-stats-grid">
@@ -908,8 +948,22 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editGoalIndex" value="-1">
+                    
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">选择图标</label>
+                        <label class="form-label text-xs fw-bold text-secondary">心仪目标图片（可选，更加有干劲！）</label>
+                        <div class="image-preview-container mb-2" id="goalImagePreviewBox">
+                            <span class="text-xs text-secondary" id="goalImagePlaceholder"><i class="ph ph-image me-1"></i> 未上传图片</span>
+                            <img id="goalPreviewImg" src="" style="display: none;" alt="预览图">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <input type="file" id="goalImageInput" class="d-none" accept="image/*" onchange="handleGoalImageUpload(event)">
+                            <button type="button" class="quick-chip w-100 justify-content-center" onclick="document.getElementById('goalImageInput').click()"><i class="ph ph-upload-simple me-1"></i> 上传图片</button>
+                            <button type="button" class="quick-chip text-danger" id="removeGoalImgBtn" style="display: none;" onclick="removeGoalImage()"><i class="ph ph-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">选择 Emoji 图标</label>
                         <input type="hidden" id="goalModalEmoji" value="📱">
                         <div class="emoji-selector-grid">
                             <span class="emoji-chip active" onclick="selectEmojiChip(this, '📱')">📱</span>
@@ -972,15 +1026,16 @@
         ];
 
         let bigGoals = [
-            { name: "应急备用金", amount: 1000, emoji: "🎁" },
-            { name: "买新手机", amount: 3000, emoji: "📱" },
-            { name: "换新电动车", amount: 5000, emoji: "🛵" }
+            { name: "应急备用金", amount: 1000, emoji: "🎁", image: "" },
+            { name: "买新手机", amount: 3000, emoji: "📱", image: "" },
+            { name: "换新电动车", amount: 5000, emoji: "🛵", image: "" }
         ];
         let selectedGoalIndex = 1;
 
         let earningsHistory = [];
         let currentCalculatedTotal = 0;
         let streakDays = 0;
+        let currentUploadedGoalImgBase64 = "";
 
         const motivationQuotes = [
             "每一单的汗水，都在为你的目标铺路！",
@@ -1005,7 +1060,7 @@
                 } catch (e) {}
             }
 
-            const savedGoals = localStorage.getItem('custom_big_goals_v4');
+            const savedGoals = localStorage.getItem('custom_big_goals_v5');
             if (savedGoals) {
                 try {
                     const parsed = JSON.parse(savedGoals);
@@ -1013,7 +1068,8 @@
                         bigGoals = parsed.goals.map((item) => ({
                             name: item.name || "目标",
                             amount: item.amount || 1000,
-                            emoji: item.emoji || "🎯"
+                            emoji: item.emoji || "🎯",
+                            image: item.image || ""
                         }));
                         selectedGoalIndex = parsed.selectedIndex ?? 0;
                         if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = 0;
@@ -1051,6 +1107,66 @@
 
             initCalculatorData();
         });
+
+        // 压缩图片防止 LocalStorage 溢出
+        function handleGoalImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let w = img.width;
+                    let h = img.height;
+                    const maxDim = 400; // 限制最大边长 400px
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round(h * (maxDim / w));
+                            w = maxDim;
+                        } else {
+                            w = Math.round(w * (maxDim / h));
+                            h = maxDim;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    currentUploadedGoalImgBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    updateGoalModalImgPreview(currentUploadedGoalImgBase64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateGoalModalImgPreview(base64) {
+            const previewImg = document.getElementById('goalPreviewImg');
+            const placeholder = document.getElementById('goalImagePlaceholder');
+            const removeBtn = document.getElementById('removeGoalImgBtn');
+
+            if (base64) {
+                previewImg.src = base64;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                removeBtn.style.display = 'inline-flex';
+            } else {
+                previewImg.src = '';
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'inline';
+                removeBtn.style.display = 'none';
+            }
+        }
+
+        function removeGoalImage() {
+            currentUploadedGoalImgBase64 = "";
+            document.getElementById('goalImageInput').value = "";
+            updateGoalModalImgPreview("");
+        }
 
         function calculateStreak() {
             if (earningsHistory.length === 0) return 0;
@@ -1224,7 +1340,7 @@
 
         function persistGoals() {
             try {
-                localStorage.setItem('custom_big_goals_v4', JSON.stringify({
+                localStorage.setItem('custom_big_goals_v5', JSON.stringify({
                     goals: bigGoals,
                     selectedIndex: selectedGoalIndex
                 }));
@@ -1240,9 +1356,13 @@
             let html = '';
             bigGoals.forEach((goal, idx) => {
                 const isSelected = (idx === selectedGoalIndex);
+                const thumbHtml = goal.image 
+                    ? `<img src="${goal.image}" class="chip-thumb-img me-1">` 
+                    : `${goal.emoji || '🎯'} `;
+                
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
-                        <span>${goal.emoji || '🎯'} ${goal.name} (<span class="money-font-style">￥${goal.amount}</span>)</span>
+                        <span>${thumbHtml}${goal.name} (<span class="money-font-style">￥${goal.amount}</span>)</span>
                         <span class="chip-edit-btn" onclick="openEditGoalModal(event, ${idx})" title="编辑目标"><i class="ph ph-pencil-simple"></i></span>
                         <span class="chip-del-btn" onclick="removeGoal(event, ${idx})" title="删除目标"><i class="ph ph-x"></i></span>
                     </div>
@@ -1275,6 +1395,10 @@
             document.getElementById('goalModalName').value = '';
             document.getElementById('goalModalAmount').value = '';
             document.getElementById('goalModalEmoji').value = '📱';
+            currentUploadedGoalImgBase64 = "";
+            document.getElementById('goalImageInput').value = "";
+            updateGoalModalImgPreview("");
+
             document.querySelectorAll('.emoji-chip').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.emoji-chip')[0].classList.add('active');
             const modal = new bootstrap.Modal(document.getElementById('goalModal'));
@@ -1290,6 +1414,10 @@
             document.getElementById('goalModalName').value = goal.name;
             document.getElementById('goalModalAmount').value = goal.amount;
             document.getElementById('goalModalEmoji').value = goal.emoji || '🎯';
+            
+            currentUploadedGoalImgBase64 = goal.image || "";
+            updateGoalModalImgPreview(currentUploadedGoalImgBase64);
+
             const modal = new bootstrap.Modal(document.getElementById('goalModal'));
             modal.show();
         };
@@ -1299,6 +1427,7 @@
             let name = document.getElementById('goalModalName').value.trim();
             const amount = parseFloat(document.getElementById('goalModalAmount').value);
             const emoji = document.getElementById('goalModalEmoji').value || '🎯';
+            const img = currentUploadedGoalImgBase64;
 
             if (isNaN(amount) || amount <= 0) {
                 alert('请输入有效的攒钱目标金额！');
@@ -1308,9 +1437,9 @@
             if (!name) name = `目标 ￥${amount}`;
 
             if (editIdx === -1) {
-                bigGoals.push({ name: name, amount: amount, emoji: emoji });
+                bigGoals.push({ name: name, amount: amount, emoji: emoji, image: img });
             } else {
-                bigGoals[editIdx] = { name: name, amount: amount, emoji: emoji };
+                bigGoals[editIdx] = { name: name, amount: amount, emoji: emoji, image: img };
             }
 
             bigGoals.sort((a, b) => a.amount - b.amount);
@@ -1349,6 +1478,7 @@
             const goalPercentText = document.getElementById('goalPercentText');
             const goalEstOrders = document.getElementById('goalEstOrders');
             const goalEstDays = document.getElementById('goalEstDays');
+            const goalCoverImg = document.getElementById('goalCoverImg');
 
             if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText || !goalEstOrders || !goalEstDays) return;
 
@@ -1363,11 +1493,22 @@
                 goalPercentText.textContent = "0%";
                 goalEstOrders.textContent = "-- 单";
                 goalEstDays.textContent = "-- 天";
+                if (goalCoverImg) goalCoverImg.style.display = 'none';
                 return;
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
             goalTitleText.innerHTML = `${currentGoal.emoji || '🎯'} ${currentGoal.name}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
+
+            // 大图封面逻辑
+            if (goalCoverImg) {
+                if (currentGoal.image) {
+                    goalCoverImg.src = currentGoal.image;
+                    goalCoverImg.style.display = 'block';
+                } else {
+                    goalCoverImg.style.display = 'none';
+                }
+            }
 
             const diff = currentGoal.amount - totalSaved;
             const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
