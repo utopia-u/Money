@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>阶梯单量单价计算器</title>
+    <title>阶梯单量单价计算器 - 暴走跑单版</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -95,6 +95,7 @@
             margin: 0 auto;
         }
 
+        /* 财富渐变文字类 */
         .money-text-gradient {
             background: linear-gradient(135deg, #059669 0%, #10B981 100%);
             -webkit-background-clip: text;
@@ -117,6 +118,7 @@
             font-weight: 800;
         }
 
+        /* 跑单金句栏 */
         .motivation-banner {
             background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
             color: #FFFFFF;
@@ -129,6 +131,52 @@
             font-size: 0.78rem;
             font-weight: 700;
             box-shadow: 0 4px 14px rgba(255, 68, 0, 0.25);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .motivation-banner:active {
+            transform: scale(0.99);
+        }
+
+        /* 防摆烂战况警告卡片 */
+        .anti-slacking-card {
+            background: var(--bg-surface);
+            border: 1.5px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anti-slacking-card.is-slacking {
+            animation: danger-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes danger-pulse {
+            0% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            50% { border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.1); }
+            100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .status-badge-slacking {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .status-badge-working {
+            background: var(--success-bg);
+            color: var(--success-color);
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            font-size: 0.7rem;
+            font-weight: 800;
         }
 
         .app-header {
@@ -351,6 +399,10 @@
             border-color: rgba(255, 68, 0, 0.3);
         }
 
+        .quick-chip:active {
+            transform: scale(0.95);
+        }
+
         .quick-chip.active {
             background: var(--accent-color) !important;
             color: #FFFFFF !important;
@@ -386,15 +438,38 @@
             padding: 10px 12px;
         }
 
-        /* 目标封面展示大图样式 */
-        .goal-cover-img {
+        /* 目标封面大图与动态视觉解封样式 */
+        .goal-cover-img-wrapper {
+            position: relative;
             width: 64px;
             height: 64px;
             border-radius: var(--radius-md);
-            object-fit: cover;
+            overflow: hidden;
+            flex-shrink: 0;
             border: 1px solid var(--border-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            flex-shrink: 0;
+        }
+
+        .goal-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+
+        /* 锁定的蒙版，存钱越多图片越清晰 */
+        .goal-cover-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            backdrop-filter: blur(2px);
+            transition: all 0.3s ease;
         }
 
         .goal-stats-grid {
@@ -697,12 +772,25 @@
 <body>
 
     <div class="app-layout">
-        <div class="motivation-banner">
-            <div>
-                <i class="ph ph-lightning me-1"></i>
-                <span id="motivationQuote">每一单的汗水，都在为你的目标铺路！加油！</span>
+        <div class="motivation-banner" onclick="rotateMotivationQuote()" title="点击换一句激励语">
+            <div class="d-flex align-items-center me-2 overflow-hidden">
+                <i class="ph ph-lightning me-1 flex-shrink-0"></i>
+                <span id="motivationQuote" class="text-truncate">每一单的汗水，都在为你的目标铺路！加油！</span>
             </div>
-            <span class="badge bg-white text-danger border rounded-pill" id="streakBadgeTop"><i class="ph ph-fire text-danger me-1"></i> 连胜 0 天</span>
+            <span class="badge bg-white text-danger border rounded-pill flex-shrink-0" id="streakBadgeTop"><i class="ph ph-fire text-danger me-1"></i> 连胜 0 天</span>
+        </div>
+
+        <div class="anti-slacking-card is-slacking" id="antiSlackingCard">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="status-badge-slacking" id="slackingStatusBadge">🚨 摆烂危险期</span>
+                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡记收益！连胜记录岌岌可危！</span>
+                </div>
+                <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 05:22:18</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center text-xs mt-2 pt-2 border-top border-light">
+                <span class="text-secondary fw-bold" id="slackingCostText">💡 今日若摆烂代价：心仪目标将被迫延迟 <strong class="text-danger money-font-style">1.5 天</strong> 才能拿到！</span>
+            </div>
         </div>
 
         <header class="app-header">
@@ -765,8 +853,12 @@
                         <div class="quick-chip-group mb-2" id="goalChipsContainer"></div>
 
                         <div class="goal-banner-card">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <img id="goalCoverImg" src="" class="goal-cover-img" style="display: none;" alt="目标卡片图片">
+                            <div class="d-flex align-items-center gap-2.5 mb-1">
+                                <div class="goal-cover-img-wrapper" id="goalCoverImgWrapper" style="display: none;">
+                                    <img id="goalCoverImg" src="" class="goal-cover-img" alt="目标图片">
+                                    <div id="goalCoverOverlay" class="goal-cover-overlay">已解锁 0%</div>
+                                </div>
+
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
@@ -950,7 +1042,7 @@
                     <input type="hidden" id="editGoalIndex" value="-1">
                     
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">心仪目标图片（可选，更加有干劲！）</label>
+                        <label class="form-label text-xs fw-bold text-secondary">心仪目标图片（可选，极为刺激攒钱动力！）</label>
                         <div class="image-preview-container mb-2" id="goalImagePreviewBox">
                             <span class="text-xs text-secondary" id="goalImagePlaceholder"><i class="ph ph-image me-1"></i> 未上传图片</span>
                             <img id="goalPreviewImg" src="" style="display: none;" alt="预览图">
@@ -1038,19 +1130,51 @@
         let currentUploadedGoalImgBase64 = "";
 
         const motivationQuotes = [
-            "每一单的汗水，都在为你的目标铺路！",
-            "今天多跑几单，离心仪的目标又近一步！",
-            "自律跑单，财富自由靠双手拼出来！",
-            "风里雨里，外卖路上有你最帅！",
-            "存下的不是钱，是生活的底气与选择权！"
+            "每一单的汗水，都在为你的【心仪目标】铺路！加油！",
+            "别人在摆烂躺平，你在疯狂接单攒钱，这就是差距！",
+            "想想你想要的【新手机/新车】，今天多跑20单算什么！",
+            "风里雨里，外卖路上你最酷，银行卡余额最有安全感！",
+            "存下的不是几百块，是面对生活的底气与选择权！",
+            "再坚持几单！胜利就在眼前，今天绝不摆烂！"
         ];
 
+        // 纯原生 Web Audio API 动态合成“金币入账/击响音效”
+        function playChaChingSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 声音 1：高频金币响声
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(987.77, ctx.currentTime); // B5
+                osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.08); // E6
+                gain1.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start();
+                osc1.stop(ctx.currentTime + 0.35);
+
+                // 声音 2：清脆和弦重音
+                setTimeout(() => {
+                    const osc2 = ctx.createOscillator();
+                    const gain2 = ctx.createGain();
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(1567.98, ctx.currentTime); // G6
+                    gain2.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                    osc2.connect(gain2);
+                    gain2.connect(ctx.destination);
+                    osc2.start();
+                    osc2.stop(ctx.currentTime + 0.25);
+                }, 60);
+            } catch(e) {}
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const quoteEl = document.getElementById('motivationQuote');
-            if (quoteEl) {
-                const randomQ = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
-                quoteEl.textContent = randomQ;
-            }
+            rotateMotivationQuote();
+            startMidnightCountdown();
 
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
             if (savedTiers) {
@@ -1108,7 +1232,37 @@
             initCalculatorData();
         });
 
-        // 压缩图片防止 LocalStorage 溢出
+        function rotateMotivationQuote() {
+            const quoteEl = document.getElementById('motivationQuote');
+            if (quoteEl) {
+                const randomQ = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
+                quoteEl.textContent = randomQ;
+            }
+        }
+
+        // 倒计时至零点提示
+        function startMidnightCountdown() {
+            function updateClock() {
+                const now = new Date();
+                const midnight = new Date();
+                midnight.setHours(24, 0, 0, 0);
+                const diffMs = midnight - now;
+
+                if (diffMs <= 0) {
+                    document.getElementById('midnightCountdown').textContent = '今日已结算';
+                    return;
+                }
+
+                const hrs = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
+                const mins = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                const secs = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
+
+                document.getElementById('midnightCountdown').textContent = `今日剩余: ${hrs}:${mins}:${secs}`;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
         function handleGoalImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1119,7 +1273,7 @@
                 img.onload = function() {
                     let w = img.width;
                     let h = img.height;
-                    const maxDim = 400; // 限制最大边长 400px
+                    const maxDim = 400; 
                     if (w > maxDim || h > maxDim) {
                         if (w > h) {
                             h = Math.round(h * (maxDim / w));
@@ -1199,11 +1353,12 @@
         function fireConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
-                    particleCount: 80,
-                    spread: 70,
+                    particleCount: 90,
+                    spread: 80,
                     origin: { y: 0.6 }
                 });
             }
+            playChaChingSound();
         }
 
         function persistEarningsHistory() {
@@ -1240,6 +1395,9 @@
                 streakBadgeTop.innerHTML = `<i class="ph ph-fire text-danger me-1"></i> 连胜 ${streakDays} 天`;
             }
 
+            // 更新防摆烂看板状态
+            updateAntiSlackingStatus();
+
             if (daysCount === 0) {
                 container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡存入”吧！</span>';
             } else {
@@ -1260,6 +1418,50 @@
             }
 
             updateGoalProgress();
+        }
+
+        // 实时防摆烂状态判定与话术
+        function updateAntiSlackingStatus() {
+            const card = document.getElementById('antiSlackingCard');
+            const badge = document.getElementById('slackingStatusBadge');
+            const text = document.getElementById('slackingWarningText');
+            const costText = document.getElementById('slackingCostText');
+
+            if (!card || !badge || !text) return;
+
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            
+            const hasPunchedToday = earningsHistory.some(item => item.date.startsWith(todayStr));
+
+            if (hasPunchedToday) {
+                card.classList.remove('is-slacking');
+                badge.className = 'status-badge-working';
+                badge.textContent = '🔥 今日已战斗打卡';
+                text.textContent = '今日战果已存入目标！继续保持，财富正在加速滚动！';
+            } else {
+                card.classList.add('is-slacking');
+                badge.className = 'status-badge-slacking';
+                badge.textContent = '🚨 摆烂危险期';
+                text.textContent = `今天尚未打卡！已连胜 ${streakDays} 天，不跑单连胜战果将归零！`;
+            }
+
+            // 损失计算
+            if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
+                const currentGoal = bigGoals[selectedGoalIndex];
+                const totalSaved = getTotalPunchedInEarnings();
+                const diff = currentGoal.amount - totalSaved;
+
+                const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
+                const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 200;
+
+                if (diff > 0) {
+                    const lostDays = (avgDailyEarnings > 0) ? (1).toFixed(1) : 1;
+                    costText.innerHTML = `💡 今日若摆烂代价：将直接导致你的【${currentGoal.name}】被迫延后 <strong class="text-danger money-font-style">${lostDays} 天</strong> 拿拿到手！`;
+                } else {
+                    costText.innerHTML = `🎉 当前目标已达成！快点击右上角“+新增目标”，解锁下一个梦想！`;
+                }
+            }
         }
 
         window.recordTodayEarnings = function() {
@@ -1478,7 +1680,9 @@
             const goalPercentText = document.getElementById('goalPercentText');
             const goalEstOrders = document.getElementById('goalEstOrders');
             const goalEstDays = document.getElementById('goalEstDays');
+            const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper');
             const goalCoverImg = document.getElementById('goalCoverImg');
+            const goalCoverOverlay = document.getElementById('goalCoverOverlay');
 
             if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText || !goalEstOrders || !goalEstDays) return;
 
@@ -1493,25 +1697,32 @@
                 goalPercentText.textContent = "0%";
                 goalEstOrders.textContent = "-- 单";
                 goalEstDays.textContent = "-- 天";
-                if (goalCoverImg) goalCoverImg.style.display = 'none';
+                if (goalCoverImgWrapper) goalCoverImgWrapper.style.display = 'none';
                 return;
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
             goalTitleText.innerHTML = `${currentGoal.emoji || '🎯'} ${currentGoal.name}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
 
-            // 大图封面逻辑
-            if (goalCoverImg) {
-                if (currentGoal.image) {
-                    goalCoverImg.src = currentGoal.image;
-                    goalCoverImg.style.display = 'block';
-                } else {
-                    goalCoverImg.style.display = 'none';
-                }
-            }
-
             const diff = currentGoal.amount - totalSaved;
             const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
+
+            // 图片解封蒙版渲染
+            if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
+                if (currentGoal.image) {
+                    goalCoverImg.src = currentGoal.image;
+                    goalCoverImgWrapper.style.display = 'block';
+                    if (pct >= 100) {
+                        goalCoverOverlay.style.background = 'rgba(5, 150, 105, 0.2)';
+                        goalCoverOverlay.innerHTML = '已解封🎉';
+                    } else {
+                        goalCoverOverlay.style.background = `rgba(0, 0, 0, ${Math.max(0.1, 0.5 - (pct / 200))})`;
+                        goalCoverOverlay.innerHTML = `已解封 ${pct.toFixed(0)}%`;
+                    }
+                } else {
+                    goalCoverImgWrapper.style.display = 'none';
+                }
+            }
 
             progressBarFill.style.width = `${pct}%`;
             goalPercentText.textContent = `${pct.toFixed(1)}%`;
@@ -1677,6 +1888,7 @@
             if (isNaN(cur)) cur = 0;
             totalOrdersInput.value = String(cur + amount);
             calculate(true);
+            playChaChingSound();
         };
 
         window.clearOrders = () => {
@@ -1691,6 +1903,7 @@
             if (isNaN(cur)) cur = 0;
             groupOrdersInput.value = String(cur + amount);
             calculate(true);
+            playChaChingSound();
         };
 
         window.clearGroupOrders = () => {
