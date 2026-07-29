@@ -471,45 +471,6 @@
                     </div>
                 </div>
 
-                <div class="formula-preview-pill mb-3">
-                    <span><i class="ph-fill ph-receipt me-1"></i> 核算公式</span>
-                    <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
-                </div>
-
-                <div class="glass-card mb-3">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="ph-fill ph-target text-danger fs-5"></i>
-                            <span class="text-sm fw-bold text-primary">资产膨胀目标</span>
-                        </div>
-                        <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color);" onclick="openAddGoalModal()">+ 设立新目标</button>
-                    </div>
-                    <div class="d-flex flex-wrap gap-2 mb-3" id="goalChipsContainer"></div>
-                    <div class="goal-banner-card">
-                        <div class="d-flex align-items-center gap-3 mb-2">
-                            <div class="goal-cover-img-wrapper" id="goalCoverImgWrapper" style="display: none;">
-                                <img id="goalCoverImg" src="" class="goal-cover-img" alt="目标图片">
-                                <div id="goalCoverOverlay" class="goal-cover-overlay">已解锁 0%</div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="text-sm fw-bold text-primary" id="goalTitleText">目标: ￥0.00</span>
-                                    <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
-                                </div>
-                                <div class="goal-progress-bar-bg">
-                                    <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="goal-stats-grid">
-                            <div class="goal-stat-item"><span class="stat-label">已充能存入</span><span class="stat-value money-text-gradient" id="goalSavedAmount">￥0.00</span></div>
-                            <div class="goal-stat-item"><span class="stat-label">完成进度</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
-                            <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
-                            <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row g-3 mb-3">
                     <div class="col-12 col-md-6">
                         <div class="glass-card">
@@ -552,16 +513,57 @@
                     </div>
                 </div>
 
+                <div class="d-flex gap-2 mb-3">
+                    <div class="formula-preview-pill flex-grow-1 mb-0" style="padding: 10px 14px;">
+                        <span class="d-none d-sm-inline"><i class="ph-fill ph-receipt me-1"></i> 核算公式</span>
+                        <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
+                    </div>
+                    <button type="button" class="quick-chip text-white px-3 flex-shrink-0 m-0" style="background: linear-gradient(135deg, #10B981, #059669); border:none; border-radius: var(--radius-md);" onclick="recordTodayEarnings()">
+                        <i class="ph-bold ph-check-circle me-1 fs-6"></i> 打卡存入
+                    </button>
+                </div>
+
+                <div class="glass-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ph-fill ph-target text-danger fs-5"></i>
+                            <span class="text-sm fw-bold text-primary">资产膨胀目标</span>
+                        </div>
+                        <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color);" onclick="openAddGoalModal()">+ 设立新目标</button>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3" id="goalChipsContainer"></div>
+                    <div class="goal-banner-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="goal-cover-img-wrapper" id="goalCoverImgWrapper" style="display: none;">
+                                <img id="goalCoverImg" src="" class="goal-cover-img" alt="目标图片">
+                                <div id="goalCoverOverlay" class="goal-cover-overlay">已解锁 0%</div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-sm fw-bold text-primary" id="goalTitleText">目标: ￥0.00</span>
+                                    <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
+                                </div>
+                                <div class="goal-progress-bar-bg">
+                                    <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="goal-stats-grid">
+                            <div class="goal-stat-item"><span class="stat-label">已充能存入</span><span class="stat-value money-text-gradient" id="goalSavedAmount">￥0.00</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">完成进度</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-card mb-3">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <i class="ph-fill ph-vault text-warning fs-5"></i>
-                            <span class="text-sm fw-bold text-primary">金库打卡记录</span>
+                            <span class="text-sm fw-bold text-primary">金库打卡流水</span>
                         </div>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="quick-chip text-white" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
-                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
-                        </div>
+                        <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录流水</button>
                     </div>
                     <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-4" style="background: rgba(var(--bg-surface-rgb), 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
                         <span class="text-xs fw-bold text-secondary">打卡 <span id="historyCount" class="text-primary fs-6 money-font-style">0</span> 天 (日均: <span id="dailyAvgText" class="money-text-gradient">￥0.00</span>)</span>
@@ -751,7 +753,7 @@
             { name: "新战车", amount: 5000, emoji: "🛵", image: "" }
         ];
         let selectedGoalIndex = 1;
-        let dailyOrderTarget = 50; // 默认每日目标单量
+        let dailyOrderTarget = 50; 
 
         let earningsHistory = [];
         let currentCalculatedTotal = 0;
