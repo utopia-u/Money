@@ -596,6 +596,29 @@
                     </div>
                 </div>
 
+                <div class="glass-card mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ph-fill ph-flag-checkered fs-5" style="color: var(--accent-color);"></i>
+                            <span class="text-sm fw-bold text-primary">今日跑单目标</span>
+                        </div>
+                        <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(99, 102, 241, 0.2);" onclick="openDailyTargetModal()"><i class="ph-bold ph-pencil-simple me-1"></i> 设定目标</button>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-end mb-2">
+                        <span class="text-xs fw-bold text-secondary">完成进度 <span id="dailyTargetPercent" class="text-primary fs-6 money-font-style ms-1">0%</span></span>
+                        <span class="text-xs fw-bold text-secondary"><span id="dailyTargetCurrent" class="text-success fs-5 money-font-style">0</span> <span class="mx-1">/</span> <span id="dailyTargetMax" class="money-font-style fs-6">50</span> 单</span>
+                    </div>
+                    
+                    <div class="goal-progress-bar-bg" style="height: 12px; margin-top: 0; margin-bottom: 12px;">
+                        <div id="dailyTargetProgressBar" class="goal-progress-bar-fill" style="background: linear-gradient(90deg, #6366F1, #8B5CF6); width: 0%;"></div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-center">
+                        <span id="dailyTargetText" class="text-xs fw-bold text-secondary">距达成目标还差 <span class="text-danger money-font-style">50</span> 单，继续冲！</span>
+                    </div>
+                </div>
+
                 <div class="row g-3 mb-3">
                     <div class="col-12 col-md-6">
                         <div class="glass-card">
@@ -695,6 +718,27 @@
                 
                 <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>数据已静默同步云端本地</div>
                 <div id="errorBox" class="text-center text-xs fw-bold text-danger mt-2" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dailyTargetModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-black fs-6">设定今日跑单目标</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">今日目标总单量 (单)</label>
+                        <input type="number" id="dailyTargetInput" class="form-control calc-input-group money-font-style bg-light" placeholder="例如: 50">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="quick-chip active" onclick="saveDailyTarget()">保存目标</button>
+                </div>
             </div>
         </div>
     </div>
@@ -808,7 +852,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- 核心 JS 逻辑层保持稳定，已适配所有 Bug 修复 ---
         let imageTiers = [
             { minOrder: 1, price: 4.0 }, { minOrder: 600, price: 5.0 },
             { minOrder: 1000, price: 5.5 }, { minOrder: 1300, price: 6.5 }
@@ -825,6 +868,8 @@
         let currentCalculatedTotal = 0;
         let streakDays = 0;
         let currentUploadedGoalImgBase64 = "";
+        
+        let dailyTargetOrders = 50; // 默认每日目标单量
 
         const motivationQuotes = [
             "每一单的汗水，都在为你的【心仪目标】铺路！",
@@ -1043,7 +1088,7 @@
             const hasPunchedToday = earningsHistory.some(item => item.date.startsWith(todayStr));
 
             if (hasPunchedToday) {
-                card.classList.remove('is-slacking'); card.style.display = 'none'; // 如果打卡了直接隐藏警告，保持清爽
+                card.classList.remove('is-slacking'); card.style.display = 'none'; 
             } else {
                 card.classList.add('is-slacking'); card.style.display = 'block';
                 warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无充能将断档！` : '今日金库尚未进账！';
@@ -1245,6 +1290,58 @@
             }
         }
 
+        /* ----- 新增：每日目标单量功能核心 JS ----- */
+        window.openDailyTargetModal = function() {
+            document.getElementById('dailyTargetInput').value = dailyTargetOrders;
+            new bootstrap.Modal(document.getElementById('dailyTargetModal')).show();
+        };
+
+        window.saveDailyTarget = function() {
+            const val = parseInt(document.getElementById('dailyTargetInput').value, 10);
+            if (isNaN(val) || val < 0) {
+                alert('请输入有效的目标单量！');
+                return;
+            }
+            dailyTargetOrders = val;
+            calculate(true); 
+            bootstrap.Modal.getInstance(document.getElementById('dailyTargetModal')).hide();
+        };
+
+        function updateDailyTargetProgress(totalOrdersNum) {
+            const dailyTargetMax = document.getElementById('dailyTargetMax');
+            const dailyTargetCurrent = document.getElementById('dailyTargetCurrent');
+            const dailyTargetPercent = document.getElementById('dailyTargetPercent');
+            const dailyTargetProgressBar = document.getElementById('dailyTargetProgressBar');
+            const dailyTargetText = document.getElementById('dailyTargetText');
+
+            if (!dailyTargetMax) return;
+
+            dailyTargetMax.textContent = dailyTargetOrders;
+            dailyTargetCurrent.textContent = totalOrdersNum;
+
+            if (dailyTargetOrders <= 0) {
+                dailyTargetPercent.textContent = '100%';
+                dailyTargetProgressBar.style.width = '100%';
+                dailyTargetText.innerHTML = '🎉 冲锋号已吹响，每跑一单都是纯赚！';
+                return;
+            }
+
+            const pct = Math.min(100, (totalOrdersNum / dailyTargetOrders) * 100);
+            dailyTargetPercent.textContent = `${pct.toFixed(0)}%`;
+            dailyTargetProgressBar.style.width = `${pct}%`;
+
+            if (totalOrdersNum >= dailyTargetOrders) {
+                dailyTargetText.innerHTML = `🎉 恭喜！今日已超额跑出 <span class="text-success money-font-style fs-6 mx-1">${totalOrdersNum - dailyTargetOrders}</span> 单！`;
+                dailyTargetProgressBar.style.background = 'linear-gradient(90deg, #F59E0B, #10B981)';
+                dailyTargetProgressBar.style.boxShadow = '0 0 14px rgba(16,185,129,0.6)';
+            } else {
+                dailyTargetText.innerHTML = `距达成目标还差 <span class="text-danger money-font-style fs-6 mx-1">${dailyTargetOrders - totalOrdersNum}</span> 单，继续冲！`;
+                dailyTargetProgressBar.style.background = 'linear-gradient(90deg, #6366F1, #8B5CF6)';
+                dailyTargetProgressBar.style.boxShadow = '0 0 12px rgba(99,102,241,0.4)';
+            }
+        }
+        /* ------------------------------------------- */
+
         function renderTierCards(matchedIndex, regularOrdersNum) {
             const container = document.getElementById('tierRoadmapGrid'); if (!container) return;
             imageTiers.sort((a, b) => a.minOrder - b.minOrder); let html = '';
@@ -1320,6 +1417,12 @@
                     const parsed = JSON.parse(localData);
                     totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
                     groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
+                    
+                    // 读取每日目标单量
+                    if (parsed.dailyTarget !== undefined) {
+                        dailyTargetOrders = parseInt(parsed.dailyTarget, 10);
+                    }
+                    
                     calculate(false); return;
                 } catch (e) {}
             }
@@ -1332,13 +1435,21 @@
             if (shouldSave) {
                 try {
                     if (window.localStorage) {
-                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify({ totalOrders: totalOrdersStr, groupOrders: groupOrdersStr }));
+                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify({ 
+                            totalOrders: totalOrdersStr, 
+                            groupOrders: groupOrdersStr,
+                            dailyTarget: dailyTargetOrders
+                        }));
                         if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
                     }
                 } catch (e) {}
             }
 
             let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+            
+            // 实时更新目标单量进度环
+            updateDailyTargetProgress(totalOrdersNum);
+
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
             if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
             if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
