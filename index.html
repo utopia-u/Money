@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>阶梯单量单价计算器 - 暴走跑单版</title>
+    <title>阶梯单量计算器 - 2026全息财富版</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
@@ -25,795 +24,472 @@
 
     <style>
         :root {
-            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
-            --font-display-num: 'Bebas Neue', var(--font-sans);
+            /* 2026 字体系统 */
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
-            --bg-body: #F4F1EC;
-            --bg-surface-rgb: 255, 255, 255;
-            --bg-surface: rgb(var(--bg-surface-rgb));
-            --text-primary: #1A1C21;
-            --text-secondary: #6B7280;
+            /* 浅色空间拟态 (Spatial Light) */
+            --bg-body: #F4F6FB;
+            --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
             
-            --accent-color: #FF4400;
-            --accent-light: #FFF2EB;
-            --accent-text: #FF4400; 
+            --accent-color: #6366F1; /* 靛蓝色 */
+            --accent-light: rgba(99, 102, 241, 0.1);
             
-            --danger-color: #EF4444;
-            --danger-bg: #FEF2F2;
-            --danger-text: #B91C1C;
-            --success-color: #059669;
-            --success-bg: #ECFDF5;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --danger-text: #EF4444;
+            --success-color: #10B981;
+            --success-bg: rgba(16, 185, 129, 0.1);
 
-            /* 极致圆润超椭圆圆角 */
-            --radius-xl: 28px;        
-            --radius-lg: 20px;        
-            --radius-md: 14px;        
-            --radius-sm: 8px;         
-            --radius-pill: 9999px;    
-
-            --card-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.03), 0 2px 6px -2px rgba(0, 0, 0, 0.02);
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --border-color: rgba(0, 0, 0, 0.06);
+            --radius-xl: 32px;        
+            --radius-lg: 24px;        
+            --radius-md: 16px;        
+            --radius-pill: 99px;    
         }
 
         [data-theme="dark"] {
-            --bg-body: #0E0D0B;
-            --bg-surface-rgb: 24, 22, 20;
-            --bg-surface: rgb(var(--bg-surface-rgb));
-            --text-primary: #F3F4F6; 
-            --text-secondary: #9CA3AF; 
-            --accent-color: #FF4400;
-            --accent-light: rgba(255, 68, 0, 0.15);
-            --accent-text: #FF4400; 
-            --danger-bg: rgba(239, 68, 68, 0.15);
+            /* 深空黑曜石质感 (Obsidian Dark) */
+            --bg-body: #050507;
+            --bg-body-gradient: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            --glass-bg: rgba(20, 20, 25, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.04);
+            --text-primary: #F8FAFC; 
+            --text-secondary: #94A3B8; 
+            
+            --accent-color: #818CF8;
+            --accent-light: rgba(129, 140, 248, 0.15);
+            
+            --danger-bg: rgba(248, 113, 113, 0.15);
             --danger-text: #FCA5A5;
             --success-color: #34D399;
-            --success-bg: rgba(16, 185, 129, 0.15);
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --success-bg: rgba(52, 211, 153, 0.15);
         }
 
         html, body {
             touch-action: manipulation;
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
             background-color: var(--bg-body);
+            background-image: var(--bg-body-gradient);
+            background-attachment: fixed;
             color: var(--text-primary);
             font-family: var(--font-sans) !important;
-            padding: 10px;
-            padding-bottom: calc(24px + var(--safe-bottom));
+            padding: 12px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+            min-height: 100vh;
         }
 
-        .app-layout {
-            max-width: 980px;
-            margin: 0 auto;
-        }
+        .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        /* 财富渐变文字类 */
+        /* 财富流动渐变字 (2026 Fluid Mesh Text) */
         .money-text-gradient {
-            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            background: linear-gradient(135deg, #34D399, #10B981, #059669);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: var(--font-money) !important;
-            font-variant-numeric: tabular-nums;
             font-weight: 900;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
-
         [data-theme="dark"] .money-text-gradient {
-            background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+            background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25);
         }
 
-        .money-font-style {
-            font-family: var(--font-money) !important;
-            font-variant-numeric: tabular-nums;
-            font-weight: 800;
-        }
+        .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
-        /* 跑单金句无缝横向跑马灯 */
+        /* 高级悬浮动态岛栏 (Dynamic Island Banner) */
         .motivation-banner {
-            background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
-            color: #FFFFFF;
-            border-radius: var(--radius-lg);
-            padding: 8px 14px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            border-radius: var(--radius-pill);
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 14px rgba(255, 68, 0, 0.25);
-            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: var(--glass-shadow);
             position: relative;
-        }
-
-        .marquee-container {
-            display: flex;
-            align-items: center;
             overflow: hidden;
-            width: 100%;
-            height: 22px;
         }
 
-        .marquee-track {
-            display: inline-flex;
-            align-items: center;
-            white-space: nowrap;
-            will-change: transform;
-            animation: marquee-scroll 28s linear infinite;
+        .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
+        .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
+        @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+
+        .streak-badge {
+            background: linear-gradient(135deg, #FF6B6B, #EF4444);
+            color: white;
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            flex-shrink: 0;
+            z-index: 2;
         }
 
-        .marquee-track:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes marquee-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .marquee-item {
-            display: inline-flex;
-            align-items: center;
-            padding-right: 40px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-
-        /* 防摆烂战况警告卡片 */
-        .anti-slacking-card {
-            background: var(--bg-surface);
-            border: 1.5px solid rgba(239, 68, 68, 0.3);
+        /* 空间玻璃态卡片通用类 (Spatial Glass Card) */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg);
-            padding: 12px 14px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.08);
+            box-shadow: var(--glass-shadow);
+            padding: 18px;
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .anti-slacking-card.is-slacking {
-            animation: danger-pulse 2s infinite ease-in-out;
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg);
+            animation: glass-shine 8s infinite;
         }
-
-        @keyframes danger-pulse {
-            0% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
-            50% { border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.1); }
-            100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .status-badge-slacking {
-            background: var(--danger-bg);
-            color: var(--danger-text);
-            padding: 3px 8px;
-            border-radius: var(--radius-pill);
-            font-size: 0.7rem;
-            font-weight: 800;
-        }
-
-        .status-badge-working {
-            background: var(--success-bg);
-            color: var(--success-color);
-            padding: 3px 8px;
-            border-radius: var(--radius-pill);
-            font-size: 0.7rem;
-            font-weight: 800;
-        }
+        @keyframes glass-shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .app-header {
-            padding: 10px 16px; 
-            background: var(--bg-surface);
+            padding: 12px 20px; 
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: var(--radius-lg);
-            margin-bottom: 10px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
         }
 
-        .section-card {
-            background: var(--bg-surface);
-            padding: 16px;
-            border-radius: var(--radius-xl); 
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
+        /* 👑 2026 核心亮点：全息流体财富主卡 (Holographic Wealth Hero) */
+        @keyframes fluidAurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .calc-bento-card {
-            background: var(--bg-surface);
-            border-radius: var(--radius-lg);
-            padding: 14px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.015);
+        .spatial-wealth-hero {
             position: relative;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        [data-theme="dark"] .calc-bento-card {
-            background: rgba(30, 27, 25, 0.6);
-        }
-
-        /* 全新风格：深空极光与黑金微光 Glassmorphism 卡片 */
-        .grand-total-hero {
-            background-color: #0d1321;
-            background-image: 
-                radial-gradient(circle at 88% 12%, rgba(16, 185, 129, 0.35) 0%, transparent 45%),
-                radial-gradient(circle at 12% 90%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
-                linear-gradient(135deg, #0d1527 0%, #111e38 50%, #0a1120 100%),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0 L60 30 L30 60 L0 30 Z' fill='none' stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.08'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%23ffffff' fill-opacity='0.12'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: auto, auto, auto, 40px 40px;
-            color: #FFFFFF;
-            padding: 18px;
+            background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a);
+            background-size: 300% 300%;
+            animation: fluidAurora 18s ease infinite;
+            padding: 24px;
             border-radius: var(--radius-lg);
-            position: relative;
-            box-shadow: 0 14px 32px -8px rgba(13, 21, 39, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        /* 微晶玻璃噪点层 */
+        .spatial-wealth-hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            pointer-events: none;
+            mix-blend-mode: overlay;
         }
 
         .hero-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-            position: relative;
-            z-index: 2;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; z-index: 2;
         }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+        .hero-badge-glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 4px 12px;
             border-radius: var(--radius-pill);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 700;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #E2E8F0;
+            display: inline-flex; align-items: center; gap: 6px;
         }
 
         .hero-badge-accent {
-            background: rgba(16, 185, 129, 0.25);
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.2));
             border-color: rgba(52, 211, 153, 0.4);
             color: #A7F3D0;
-            font-family: var(--font-money);
         }
 
-        /* 黑金微光磨砂框 */
+        /* 极度夺目的数字展区 */
         .hero-amount-wrapper {
-            margin: 12px 0;
-            display: inline-flex;
-            align-items: baseline;
-            gap: 8px;
+            margin: 20px 0;
             position: relative;
             z-index: 2;
-            padding: 6px 18px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
-            backdrop-filter: blur(16px);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(255, 215, 0, 0.35);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
         }
 
         .hero-currency-symbol {
-            font-size: 1.6rem;
-            font-weight: 900;
+            font-size: 2rem;
+            font-weight: 800;
             font-family: var(--font-money);
-            color: #FFD700;
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .hero-amount-number {
             font-family: var(--font-money) !important;
-            font-size: 3.1rem;
+            font-size: 4rem;
             font-weight: 900;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
             line-height: 1;
-            font-variant-numeric: tabular-nums;
-            background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+            background: linear-gradient(to bottom, #FFFFFF 20%, #A7F3D0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4));
         }
 
         .hero-progress-box {
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-md);
-            padding: 8px 12px;
+            padding: 12px 16px;
             position: relative;
             z-index: 2;
         }
 
         .hero-progress-track {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.15);
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-pill);
             overflow: hidden;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .hero-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+            background: linear-gradient(90deg, #FDE68A, #34D399);
             border-radius: var(--radius-pill);
             width: 0%;
-            transition: width 0.4s ease;
-            box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
         }
 
         .hero-progress-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.73rem;
-            font-weight: 700;
-            color: rgba(226, 232, 240, 0.95);
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.85);
         }
 
-        .formula-preview-pill {
-            background: var(--bg-body);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 8px 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .formula-preview-pill .formula-code {
-            color: var(--accent-color);
-            font-weight: 800;
-            font-family: var(--font-money);
-        }
-
-        .calc-input-group {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-        }
-
+        /* 新拟态输入框 (Neumorphic Glass Inputs) */
+        .calc-input-group { position: relative; width: 100%; margin-bottom: 8px; }
         .calc-input-group input {
             width: 100%;
-            height: 42px;
-            padding: 4px 40px 4px 12px;
-            border: 1.5px solid var(--border-color);
+            height: 48px;
+            padding: 4px 40px 4px 16px;
+            border: 2px solid transparent;
+            background: rgba(var(--bg-surface-rgb), 0.4);
             border-radius: var(--radius-md);
-            font-size: 1.1rem;
-            font-weight: 800;
+            font-size: 1.25rem;
+            font-weight: 900;
             font-family: var(--font-money);
             color: var(--text-primary);
-            background-color: var(--bg-body);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-
+        [data-theme="dark"] .calc-input-group input {
+            background: rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+        }
         .calc-input-group input:focus {
             outline: none;
             border-color: var(--accent-color);
-            background-color: var(--bg-surface);
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        .calc-input-group .input-suffix {
-            position: absolute;
-            right: 12px;
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-
-        .quick-chip-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 6px;
-        }
-
-        .quick-chip {
-            border: 1px solid var(--border-color);
             background: var(--bg-body);
+            box-shadow: 0 0 0 4px var(--accent-light);
+        }
+        .calc-input-group .input-suffix {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); pointer-events: none;
+        }
+
+        /* 空间质感按钮与标签 */
+        .quick-chip {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             color: var(--text-primary);
-            font-size: 0.73rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: var(--radius-pill);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            transition: all 0.2s ease;
+            gap: 4px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
         }
-
         .quick-chip:hover {
-            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            border-color: var(--accent-color);
             color: var(--accent-color);
-            border-color: rgba(255, 68, 0, 0.3);
         }
-
-        .quick-chip:active {
-            transform: scale(0.95);
-        }
-
+        .quick-chip:active { transform: scale(0.96); }
         .quick-chip.active {
-            background: var(--accent-color) !important;
-            color: #FFFFFF !important;
-            border-color: var(--accent-color) !important;
+            background: var(--accent-color);
+            color: #FFFFFF;
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 12px var(--accent-light);
         }
 
-        .quick-chip .chip-del-btn, .quick-chip .chip-edit-btn {
-            font-size: 0.72rem;
-            opacity: 0.75;
-            padding: 0 2px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quick-chip .chip-del-btn:hover, .quick-chip .chip-edit-btn:hover {
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.15);
-        }
-
-        .chip-thumb-img {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .goal-banner-card {
-            background: var(--bg-body);
-            border: 1.5px solid var(--border-color);
+        .formula-preview-pill {
+            background: rgba(var(--bg-surface-rgb), 0.3);
+            border: 1px dashed var(--glass-border);
             border-radius: var(--radius-md);
-            padding: 10px 12px;
-        }
-
-        .goal-cover-img-wrapper {
-            position: relative;
-            width: 64px;
-            height: 64px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .goal-cover-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: filter 0.3s ease;
-        }
-
-        .goal-cover-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.35);
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 800;
-            backdrop-filter: blur(2px);
-            transition: all 0.3s ease;
+            justify-content: space-between;
+        }
+        .formula-preview-pill .formula-code { color: var(--accent-color); font-weight: 800; font-family: var(--font-money); }
+
+        /* 目标激励视觉模块 (Motivator Area) */
+        .goal-banner-card {
+            background: rgba(var(--bg-surface-rgb), 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .goal-cover-img-wrapper {
+            position: relative; width: 72px; height: 72px;
+            border-radius: var(--radius-md); overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .goal-cover-img { width: 100%; height: 100%; object-fit: cover; }
+        .goal-cover-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.7rem; font-weight: 800;
+            backdrop-filter: blur(2px); transition: all 0.3s ease;
         }
 
         .goal-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin-top: 8px;
-            text-align: center;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px;
         }
-
         .goal-stat-item {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 5px 2px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 8px 4px; text-align: center;
         }
-
-        .goal-stat-item .stat-label {
-            font-size: 0.63rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            display: block;
-        }
-
-        .goal-stat-item .stat-value {
-            font-size: 0.85rem;
-            font-weight: 800;
-            font-family: var(--font-money);
-            font-variant-numeric: tabular-nums;
-            margin-top: 1px;
-            display: block;
-        }
+        .goal-stat-item .stat-label { font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); display: block; }
+        .goal-stat-item .stat-value { font-size: 0.95rem; font-weight: 900; font-family: var(--font-money); margin-top: 4px; display: block; }
 
         .goal-progress-bar-bg {
-            height: 8px;
-            background: rgba(0,0,0,0.06);
-            border-radius: var(--radius-pill);
-            overflow: hidden;
+            height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
         }
-
-        [data-theme="dark"] .goal-progress-bar-bg {
-            background: rgba(255,255,255,0.08);
-        }
-
+        [data-theme="dark"] .goal-progress-bar-bg { background: rgba(255,255,255,0.05); }
         .goal-progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10B981, #059669);
-            border-radius: var(--radius-pill);
-            transition: width 0.3s ease;
+            height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease;
         }
+        .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #F110B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
 
-        .goal-progress-bar-fill.completed {
-            background: linear-gradient(90deg, #10B981, #047857);
-        }
-
-        .earnings-history-list {
-            max-height: 150px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
+        /* 收益记录流 */
+        .earnings-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+        .earnings-history-list::-webkit-scrollbar { width: 4px; }
+        .earnings-history-list::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 4px; opacity: 0.3; }
+        
         .earnings-history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-body);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 6px 10px;
-            font-size: 0.75rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem;
+            transition: transform 0.2s;
         }
+        .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
+        .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
 
-        .earnings-history-item .item-date {
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .earnings-history-item .item-amount {
-            font-weight: 900;
-            font-family: var(--font-money);
-            color: var(--success-color);
-            font-size: 0.9rem;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .tier-roadmap-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        @media (min-width: 576px) {
-            .tier-roadmap-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
+        /* 阶梯卡片阵列 */
+        .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
+        
         .tier-card {
-            background: var(--bg-body);
-            border: 1.5px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 8px 10px;
-            text-align: center;
-            position: relative;
-            transition: all 0.2s ease;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md); padding: 12px; text-align: center;
+            position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .tier-card .tier-range {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .tier-card .tier-price {
-            font-size: 1.15rem;
-            font-weight: 900;
-            font-family: var(--font-money);
-            font-variant-numeric: tabular-nums;
-            color: var(--text-primary);
-        }
-
+        .tier-card .tier-range { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+        .tier-card .tier-price { font-size: 1.3rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); }
+        
         .tier-card.is-active {
-            background: var(--accent-light) !important;
-            border-color: var(--accent-color) !important;
-            box-shadow: 0 4px 14px -4px rgba(255, 68, 0, 0.25);
-            transform: translateY(-1px);
+            background: var(--accent-light); border-color: var(--accent-color);
+            box-shadow: 0 8px 24px var(--accent-light); transform: translateY(-4px);
         }
-
-        .tier-card.is-active .tier-range {
-            color: var(--accent-color);
-            font-weight: 800;
-        }
-
-        .tier-card.is-active .tier-price {
-            color: var(--accent-color);
-        }
-
         .tier-card.is-active::after {
-            content: '✓ 当前档位';
-            position: absolute;
-            top: -9px;
-            right: 50%;
-            transform: translateX(50%);
-            background: var(--accent-color);
-            color: #FFFFFF;
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 1px 7px;
-            border-radius: var(--radius-pill);
-            white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(255, 68, 0, 0.25);
+            content: '✓ 匹配档位'; position: absolute; top: -10px; right: 50%; transform: translateX(50%);
+            background: var(--accent-color); color: #FFF; font-size: 0.65rem; font-weight: 800;
+            padding: 2px 10px; border-radius: var(--radius-pill); box-shadow: 0 4px 12px var(--accent-light); white-space: nowrap;
         }
 
+        /* 纯享辅助计算盘 (2026 Calc) */
         .calculator-wrapper {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 14px;
-            width: 100%;
-            max-width: 320px;
-            margin: 0 auto;
-            box-shadow: var(--card-shadow);
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl); padding: 16px; width: 100%; max-width: 320px;
+            margin: 0 auto; box-shadow: var(--glass-shadow); backdrop-filter: blur(20px);
         }
-
         #calcDisplay {
-            width: 100%;
-            height: 44px;
-            margin-bottom: 10px;
-            text-align: right;
-            font-size: 1.45rem;
-            font-family: var(--font-money);
-            font-variant-numeric: tabular-nums;
-            padding: 4px 12px;
-            border: 1.5px solid var(--border-color);
-            border-radius: var(--radius-md);
-            background: var(--bg-body);
-            color: var(--text-primary);
-            font-weight: 800;
+            width: 100%; height: 56px; margin-bottom: 12px; text-align: right; font-size: 1.8rem;
+            font-family: var(--font-money); padding: 8px 16px; border: none;
+            border-radius: var(--radius-lg); background: rgba(0,0,0,0.04); color: var(--text-primary); font-weight: 800;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
         }
-
-        .calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-
+        [data-theme="dark"] #calcDisplay { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); }
+        
+        .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .calc-btn {
-            height: 40px;
-            font-size: 1.1rem;
-            font-family: var(--font-money);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            background: var(--bg-body);
-            cursor: pointer;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s ease, transform 0.1s ease;
+            height: 48px; font-size: 1.25rem; font-family: var(--font-money); font-weight: 800;
+            border: 1px solid var(--glass-border); border-radius: var(--radius-md);
+            background: rgba(var(--bg-surface-rgb), 0.4); color: var(--text-primary);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;
         }
-
-        .calc-btn:active {
-            transform: scale(0.95);
-        }
-
-        .calc-op {
-            background: var(--accent-light);
-            color: var(--accent-text);
-            font-weight: 800;
-            border-color: rgba(255, 68, 0, 0.15);
-        }
-
-        .calc-clear {
-            background: var(--danger-bg);
-            color: var(--danger-text);
-            font-weight: 800;
-            border-color: rgba(239, 68, 68, 0.15);
-        }
-
+        .calc-btn:active { transform: scale(0.92); }
+        .calc-op { color: var(--accent-color); background: var(--accent-light); border-color: transparent; }
+        .calc-clear { color: var(--danger-text); background: var(--danger-bg); border-color: transparent; }
         .calc-equal {
-            background: linear-gradient(135deg, #FF5500 0%, #FF2200 100%);
-            color: #FFFFFF;
-            font-weight: 800;
-            border: none;
-            box-shadow: 0 4px 10px rgba(255, 68, 0, 0.25);
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFF; border: none;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); grid-row: span 2; height: 100%; border-radius: var(--radius-md);
         }
 
-        .error-msg {
-            color: var(--danger-text);
-            background: var(--danger-bg);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 8px 12px;
-            border-radius: var(--radius-md);
-            margin-bottom: 8px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            display: none;
+        .modal-content { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); box-shadow: 0 24px 48px rgba(0,0,0,0.2); color: var(--text-primary); }
+        
+        /* 摆烂警告 */
+        .anti-slacking-card {
+            background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 12px; backdrop-filter: blur(10px);
         }
-
-        .save-tip {
-            text-align: right;
-            font-size: 0.72rem;
-            color: var(--success-color);
-            margin-top: -2px;
-            margin-bottom: 6px;
-            font-weight: 800;
-            display: none;
-        }
-
-        .emoji-selector-grid {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .emoji-chip {
-            font-size: 1.2rem;
-            padding: 4px 10px;
-            border-radius: var(--radius-md);
-            background: var(--bg-body);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-
-        .emoji-chip.active {
-            border-color: var(--accent-color);
-            background: var(--accent-light);
-        }
-
-        .image-preview-container {
-            width: 100%;
-            height: 100px;
-            border-radius: var(--radius-md);
-            border: 1.5px dashed var(--border-color);
-            background: var(--bg-body);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .image-preview-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-content {
-            border-radius: var(--radius-xl) !important;
+        .anti-slacking-card.is-slacking { animation: danger-pulse 2.5s infinite ease-in-out; }
+        @keyframes danger-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
     </style>
 </head>
@@ -821,340 +497,310 @@
 
     <div class="app-layout">
         <div class="motivation-banner">
-            <div class="marquee-container me-2 position-relative">
+            <div class="marquee-container me-3">
                 <div class="marquee-track" id="motivationMarquee"></div>
             </div>
-            <span class="badge bg-white text-danger border rounded-pill flex-shrink-0" id="streakBadgeTop" style="z-index: 2;"><i class="ph ph-fire text-danger me-1"></i> 连胜 0 天</span>
+            <span class="streak-badge" id="streakBadgeTop"><i class="ph-fill ph-fire me-1"></i>0 天</span>
         </div>
 
         <div class="anti-slacking-card is-slacking" id="antiSlackingCard">
-            <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="status-badge-slacking" id="slackingStatusBadge">🚨 摆烂危险期</span>
+                    <span class="badge bg-danger text-white rounded-pill"><i class="ph ph-warning-circle"></i> 摆烂危险期</span>
                     <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡记收益！连胜记录岌岌可危！</span>
                 </div>
-                <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 05:22:18</span>
+                <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 00:00:00</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center text-xs mt-2 pt-2 border-top border-light">
-                <span class="text-secondary fw-bold" id="slackingCostText">💡 今日若摆烂代价：心仪目标将被迫延迟 <strong class="text-danger money-font-style">1.5 天</strong> 才能拿到！</span>
+            <div class="text-xs border-top border-danger border-opacity-25 pt-2 mt-1">
+                <span class="text-secondary fw-bold" id="slackingCostText">💡 若今日摆烂：心仪目标将被迫延迟 <strong class="text-danger money-font-style">1.5 天</strong>！</span>
             </div>
         </div>
 
-        <header class="app-header">
-            <div class="d-flex align-items-center gap-2">
-                <div class="icon-box" style="width: 30px; height: 30px; border-radius: 8px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center;"><i class="ph ph-calculator fs-6"></i></div>
-                <h4 class="mb-0 fw-bold fs-6">阶梯单量单价计算器</h4>
+        <header class="app-header glass-card p-3 mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px var(--accent-light);"><i class="ph-fill ph-calculator fs-4"></i></div>
+                <div>
+                    <h4 class="mb-0 fw-black fs-6">跑单财富加速器</h4>
+                    <span class="text-xs text-secondary fw-bold">阶梯单量 / 单价极速核算</span>
+                </div>
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
-                    style="width: 34px; height: 34px; background-color: var(--bg-body); color: var(--text-primary); border: 1px solid var(--border-color);" aria-label="切换深浅主题">
-                <i class="ph ph-moon fs-6" style="transition: transform 0.2s ease;"></i>
+                    style="width: 40px; height: 40px; background: var(--bg-body); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); color: var(--text-primary);" aria-label="切换深浅主题">
+                <i class="ph-fill ph-moon fs-5" style="transition: transform 0.3s ease;"></i>
             </button>
         </header>
 
-        <section class="section-card">
-            <div id="errorBox" class="error-msg"></div>
-            <div id="saveTip" class="save-tip">✓ 数据已自动同步至本地存储</div>
-
-            <div class="row g-2">
-                <div class="col-12 col-lg-8">
-                    <div class="calc-bento-card p-3">
-                        <div class="grand-total-hero">
-                            <div class="hero-header-row">
-                                <span class="hero-badge"><i class="ph ph-sparkle"></i> 本次/今日结算收益</span>
-                                <span id="resTierBadge" class="hero-badge hero-badge-accent">匹配中...</span>
-                            </div>
-
-                            <div class="hero-amount-wrapper">
-                                <span class="hero-currency-symbol">¥</span>
-                                <span id="resTotalNum" class="hero-amount-number">0.00</span>
-                            </div>
-
-                            <div class="hero-progress-box">
-                                <div class="hero-progress-track">
-                                    <div id="tierProgressFill" class="hero-progress-fill"></div>
-                                </div>
-                                <div class="hero-progress-info">
-                                    <span id="tierProgressLabel">常规单量进度</span>
-                                    <span id="tierProgressDetail" class="money-font-style">0 单</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-2">
-                            <div class="formula-preview-pill">
-                                <span><i class="ph ph-receipt me-1"></i> 核算公式</span>
-                                <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
-                            </div>
-                        </div>
+        <div class="row g-3">
+            <div class="col-12 col-lg-8">
+                <div class="spatial-wealth-hero">
+                    <div class="hero-header-row">
+                        <span class="hero-badge-glass"><i class="ph-fill ph-sparkle text-warning"></i> 预估总收益</span>
+                        <span id="resTierBadge" class="hero-badge-glass hero-badge-accent">匹配中...</span>
                     </div>
 
-                    <div class="calc-bento-card p-3">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <div class="d-flex align-items-center gap-1.5">
-                                <i class="ph ph-target text-danger fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">攒钱目标与跑单预估</span>
-                            </div>
-                            <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255,68,0,0.3);" onclick="openAddGoalModal()">+ 新增目标</button>
-                        </div>
-
-                        <div class="quick-chip-group mb-2" id="goalChipsContainer"></div>
-
-                        <div class="goal-banner-card">
-                            <div class="d-flex align-items-center gap-2.5 mb-1">
-                                <div class="goal-cover-img-wrapper" id="goalCoverImgWrapper" style="display: none;">
-                                    <img id="goalCoverImg" src="" class="goal-cover-img" alt="目标图片">
-                                    <div id="goalCoverOverlay" class="goal-cover-overlay">已解锁 0%</div>
-                                </div>
-
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="text-xs fw-bold text-secondary" id="goalTitleText">目标: ￥0.00</span>
-                                        <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
-                                    </div>
-                                    <div class="goal-progress-bar-bg">
-                                        <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="goal-stats-grid">
-                                <div class="goal-stat-item">
-                                    <span class="stat-label">已打卡存入</span>
-                                    <span class="stat-value money-text-gradient" id="goalSavedAmount">￥0.00</span>
-                                </div>
-                                <div class="goal-stat-item">
-                                    <span class="stat-label">完成百分比</span>
-                                    <span class="stat-value text-primary" id="goalPercentText">0%</span>
-                                </div>
-                                <div class="goal-stat-item">
-                                    <span class="stat-label">预计还需跑</span>
-                                    <span class="stat-value text-danger" id="goalEstOrders">-- 单</span>
-                                </div>
-                                <div class="goal-stat-item">
-                                    <span class="stat-label">按日均约需</span>
-                                    <span class="stat-value text-warning" id="goalEstDays">-- 天</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="hero-amount-wrapper">
+                        <span class="hero-currency-symbol">¥</span>
+                        <span id="resTotalNum" class="hero-amount-number">0.00</span>
                     </div>
 
-                    <div class="calc-bento-card p-3">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <div class="d-flex align-items-center gap-1.5">
-                                <i class="ph ph-coins text-warning fs-6"></i>
-                                <span class="text-xs fw-bold text-primary">打卡收益记录（支持自由选改日期）</span>
-                            </div>
-                            <div class="d-flex gap-1.5">
-                                <button type="button" class="quick-chip" style="background: #059669; color: #fff; border-color: #059669;" onclick="recordTodayEarnings()">🎉 叠加打卡存入</button>
-                                <button type="button" class="quick-chip" style="background: var(--bg-body);" onclick="openCustomDepositModal()">+ 自定义存入</button>
-                                <button type="button" class="quick-chip text-danger" onclick="clearEarningsHistory()">清空</button>
-                            </div>
+                    <div class="hero-progress-box">
+                        <div class="hero-progress-info mb-1">
+                            <span id="tierProgressLabel">常规单量进度</span>
+                            <span id="tierProgressDetail" class="money-font-style">0 单</span>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-3" style="background: var(--bg-body); border: 1px solid var(--border-color);">
-                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-calendar-check me-1"></i> 已打卡 <span id="historyCount" class="text-primary money-font-style">0</span> 次 (日均: <span id="dailyAvgText" class="money-text-gradient">￥0.00</span>)</span>
-                            <span class="text-xs fw-bold text-secondary">打卡总存入: <span id="accumulatedTotal" class="fs-6 money-text-gradient ms-1">￥0.00</span></span>
+                        <div class="hero-progress-track">
+                            <div id="tierProgressFill" class="hero-progress-fill"></div>
                         </div>
-
-                        <div class="earnings-history-list" id="earningsHistoryList"></div>
-                    </div>
-
-                    <div class="row g-2">
-                        <div class="col-12 col-md-6">
-                            <div class="calc-bento-card p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                    <label class="text-xs fw-bold text-secondary mb-0">完成总单量</label>
-                                    <span id="regularOrdersBadge" class="badge bg-light text-secondary text-xs border money-font-style" style="border-radius: var(--radius-pill);">常规: 0单</span>
-                                </div>
-                                <div class="calc-input-group">
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="totalOrders" placeholder="0">
-                                    <span class="input-suffix">单</span>
-                                </div>
-                                <div class="quick-chip-group">
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(1)">+1单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(5)">+5单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(10)">+10单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(20)">+20单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(50)">+50单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(100)">+100单</button>
-                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearOrders()">清空</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="calc-bento-card p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                    <label class="text-xs fw-bold text-secondary mb-0">拼团完成单量</label>
-                                    <span class="text-xs fw-bold text-secondary opacity-75 money-font-style">固定单价 ￥3.20</span>
-                                </div>
-                                <div class="calc-input-group">
-                                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="groupOrders" placeholder="0">
-                                    <span class="input-suffix">单</span>
-                                </div>
-                                <div class="quick-chip-group">
-                                    <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(1)">+1单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(2)">+2单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(5)">+5单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(10)">+10单</button>
-                                    <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(20)">+20单</button>
-                                    <button type="button" class="quick-chip" style="color:var(--danger-text);" onclick="clearGroupOrders()">重置</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="calc-bento-card p-3 mt-2">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="text-xs fw-bold text-secondary"><i class="ph ph-chart-bar me-1"></i> 常规阶梯档位标准表</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color); border-color: rgba(255, 68, 0, 0.3);" onclick="openAddTierModal()">+ 添加档位</button>
-                                <span class="badge bg-light text-secondary border text-xs d-none d-sm-inline-block" style="border-radius: var(--radius-pill);">支持增删改</span>
-                            </div>
-                        </div>
-                        <div class="tier-roadmap-grid" id="tierRoadmapGrid"></div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4 d-flex justify-content-center">
-                    <div class="w-100" style="max-width: 320px;">
-                        <div class="text-center mb-1"><span class="text-xs fw-bold text-secondary"><i class="ph ph-calculator me-1"></i> 便捷快速核算辅助盘</span></div>
-                        <div class="calculator-wrapper">
-                            <input type="text" id="calcDisplay" readonly placeholder="0">
-                            <div class="calc-buttons">
-                                <button class="calc-btn calc-clear">C</button>
-                                <button class="calc-btn calc-clear">⌫</button>
-                                <button class="calc-btn calc-op">/</button>
-                                <button class="calc-btn calc-op">*</button>
-                                
-                                <button class="calc-btn">7</button>
-                                <button class="calc-btn">8</button>
-                                <button class="calc-btn">9</button>
-                                <button class="calc-btn calc-op">-</button>
-                                
-                                <button class="calc-btn">4</button>
-                                <button class="calc-btn">5</button>
-                                <button class="calc-btn">6</button>
-                                <button class="calc-btn calc-op">+</button>
-                                
-                                <button class="calc-btn">1</button>
-                                <button class="calc-btn">2</button>
-                                <button class="calc-btn">3</button>
-                                <button class="calc-btn calc-equal" style="grid-row: span 2; height: 100%;">=</button>
-                                
-                                <button class="calc-btn" style="grid-column: span 2;">0</button>
-                                <button class="calc-btn">.</button>
+                <div class="formula-preview-pill mb-3">
+                    <span><i class="ph-fill ph-receipt me-1"></i> 核算公式</span>
+                    <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
+                </div>
+
+                <div class="glass-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ph-fill ph-target text-danger fs-5"></i>
+                            <span class="text-sm fw-bold text-primary">资产膨胀目标</span>
+                        </div>
+                        <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color);" onclick="openAddGoalModal()">+ 设立新目标</button>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3" id="goalChipsContainer"></div>
+
+                    <div class="goal-banner-card">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="goal-cover-img-wrapper" id="goalCoverImgWrapper" style="display: none;">
+                                <img id="goalCoverImg" src="" class="goal-cover-img" alt="目标图片">
+                                <div id="goalCoverOverlay" class="goal-cover-overlay">已解锁 0%</div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-sm fw-bold text-primary" id="goalTitleText">目标: ￥0.00</span>
+                                    <span class="text-xs fw-bold text-danger money-font-style" id="goalDiffStatusText">还差 ￥0.00</span>
+                                </div>
+                                <div class="goal-progress-bar-bg">
+                                    <div id="goalProgressBarFill" class="goal-progress-bar-fill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="goal-stats-grid">
+                            <div class="goal-stat-item"><span class="stat-label">已充能存入</span><span class="stat-value money-text-gradient" id="goalSavedAmount">￥0.00</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">完成进度</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="text-sm fw-bold text-secondary mb-0">完成总单量</label>
+                                <span id="regularOrdersBadge" class="badge bg-secondary bg-opacity-10 text-secondary text-xs rounded-pill money-font-style">常规: 0单</span>
+                            </div>
+                            <div class="calc-input-group">
+                                <input type="text" inputmode="numeric" id="totalOrders" placeholder="0">
+                                <span class="input-suffix">单</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(1)">+1</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(5)">+5</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(10)">+10</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(20)">+20</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(50)">+50</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearOrders()"><i class="ph-bold ph-trash"></i></button>
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="text-sm fw-bold text-secondary mb-0">拼团单量</label>
+                                <span class="text-xs fw-bold text-secondary opacity-75 money-font-style">固定 ￥3.20</span>
+                            </div>
+                            <div class="calc-input-group">
+                                <input type="text" inputmode="numeric" id="groupOrders" placeholder="0">
+                                <span class="input-suffix">单</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(1)">+1</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(2)">+2</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(5)">+5</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(10)">+10</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearGroupOrders()"><i class="ph-bold ph-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ph-fill ph-vault text-warning fs-5"></i>
+                            <span class="text-sm fw-bold text-primary">金库打卡记录</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="quick-chip text-white" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
+                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-4" style="background: rgba(var(--bg-surface-rgb), 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                        <span class="text-xs fw-bold text-secondary">打卡 <span id="historyCount" class="text-primary fs-6 money-font-style">0</span> 天 (日均: <span id="dailyAvgText" class="money-text-gradient">￥0.00</span>)</span>
+                        <span class="text-xs fw-bold text-secondary">总存入: <span id="accumulatedTotal" class="fs-5 money-text-gradient ms-1">￥0.00</span></span>
+                    </div>
+
+                    <div class="earnings-history-list" id="earningsHistoryList"></div>
+                </div>
+
+                <div class="glass-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="text-sm fw-bold text-secondary"><i class="ph-fill ph-chart-bar me-1"></i> 常规阶梯档位表</span>
+                        <button type="button" class="quick-chip" style="background: var(--accent-light); color: var(--accent-color);" onclick="openAddTierModal()">+ 调整档位</button>
+                    </div>
+                    <div class="tier-roadmap-grid" id="tierRoadmapGrid"></div>
                 </div>
             </div>
-        </section>
+
+            <div class="col-12 col-lg-4">
+                <div class="text-center mb-2"><span class="text-xs fw-bold text-secondary tracking-wide"><i class="ph-fill ph-calculator me-1"></i> 独立高频核算盘</span></div>
+                <div class="calculator-wrapper">
+                    <input type="text" id="calcDisplay" readonly placeholder="0">
+                    <div class="calc-buttons">
+                        <button class="calc-btn calc-clear">C</button>
+                        <button class="calc-btn calc-clear">⌫</button>
+                        <button class="calc-btn calc-op">/</button>
+                        <button class="calc-btn calc-op">*</button>
+                        <button class="calc-btn">7</button>
+                        <button class="calc-btn">8</button>
+                        <button class="calc-btn">9</button>
+                        <button class="calc-btn calc-op">-</button>
+                        <button class="calc-btn">4</button>
+                        <button class="calc-btn">5</button>
+                        <button class="calc-btn">6</button>
+                        <button class="calc-btn calc-op">+</button>
+                        <button class="calc-btn">1</button>
+                        <button class="calc-btn">2</button>
+                        <button class="calc-btn">3</button>
+                        <button class="calc-btn calc-equal">=</button>
+                        <button class="calc-btn" style="grid-column: span 2;">0</button>
+                        <button class="calc-btn">.</button>
+                    </div>
+                </div>
+                
+                <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>数据已静默同步云端本地</div>
+                <div id="errorBox" class="text-center text-xs fw-bold text-danger mt-2" style="display:none;"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="modal fade" id="tierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="tierModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
+            <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6" id="tierModalTitle">添加/修改阶梯档位</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    <h5 class="modal-title fw-black fs-6" id="tierModalTitle">编辑阶梯档位</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editTierIndex" value="-1">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">起步单量 (最小单数)</label>
-                        <input type="number" id="tierModalMinOrder" class="form-control money-font-style" placeholder="例如: 1300" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">起步单量</label>
+                        <input type="number" id="tierModalMinOrder" class="form-control calc-input-group money-font-style bg-light">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">单价 (元/单)</label>
-                        <input type="number" step="0.01" id="tierModalPrice" class="form-control money-font-style" placeholder="例如: 6.50" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">对应单价 (元)</label>
+                        <input type="number" step="0.01" id="tierModalPrice" class="form-control calc-input-group money-font-style bg-light">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveTierFromModal()">保存档位</button>
+                    <button type="button" class="quick-chip active" onclick="saveTierFromModal()">保存</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="goalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="goalModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
+            <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6" id="goalModalTitle">新增攒钱目标</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    <h5 class="modal-title fw-black fs-6" id="goalModalTitle">设立资产目标</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editGoalIndex" value="-1">
-                    
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">心仪目标图片（可选，极为刺激攒钱动力！）</label>
-                        <div class="image-preview-container mb-2" id="goalImagePreviewBox">
-                            <span class="text-xs text-secondary" id="goalImagePlaceholder"><i class="ph ph-image me-1"></i> 未上传图片</span>
-                            <img id="goalPreviewImg" src="" style="display: none;" alt="预览图">
-                        </div>
-                        <div class="d-flex gap-2">
-                            <input type="file" id="goalImageInput" class="d-none" accept="image/*" onchange="handleGoalImageUpload(event)">
-                            <button type="button" class="quick-chip w-100 justify-content-center" onclick="document.getElementById('goalImageInput').click()"><i class="ph ph-upload-simple me-1"></i> 上传图片</button>
-                            <button type="button" class="quick-chip text-danger" id="removeGoalImgBtn" style="display: none;" onclick="removeGoalImage()"><i class="ph ph-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">选择 Emoji 图标</label>
-                        <input type="hidden" id="goalModalEmoji" value="📱">
-                        <div class="emoji-selector-grid">
-                            <span class="emoji-chip active" onclick="selectEmojiChip(this, '📱')">📱</span>
-                            <span class="emoji-chip" onclick="selectEmojiChip(this, '🛵')">🛵</span>
-                            <span class="emoji-chip" onclick="selectEmojiChip(this, '🏠')">🏠</span>
-                            <span class="emoji-chip" onclick="selectEmojiChip(this, '✈️')">✈️</span>
-                            <span class="emoji-chip" onclick="selectEmojiChip(this, '💻')">💻</span>
-                            <span class="emoji-chip" onclick="selectEmojiChip(this, '🎁')">🎁</span>
+                        <label class="form-label text-xs fw-bold text-secondary">驱动原动力（上传心仪物品图）</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width:64px;height:64px;border-radius:12px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;overflow:hidden;" id="goalImagePreviewBox">
+                                <i class="ph ph-image text-secondary" id="goalImagePlaceholder"></i>
+                                <img id="goalPreviewImg" src="" style="display: none; width:100%;height:100%;object-fit:cover;">
+                            </div>
+                            <div class="flex-grow-1 d-flex flex-column gap-2">
+                                <input type="file" id="goalImageInput" class="d-none" accept="image/*" onchange="handleGoalImageUpload(event)">
+                                <button type="button" class="quick-chip w-100 justify-content-center" onclick="document.getElementById('goalImageInput').click()"><i class="ph-bold ph-upload-simple me-1"></i> 上传激励图</button>
+                                <button type="button" class="quick-chip text-danger w-100 justify-content-center" id="removeGoalImgBtn" style="display: none;" onclick="removeGoalImage()"><i class="ph-bold ph-trash me-1"></i> 移除图片</button>
+                            </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">目标名字/名称</label>
-                        <input type="text" id="goalModalName" class="form-control" placeholder="例如: 买新手机、换新电动车" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">标识 (Emoji)</label>
+                        <input type="hidden" id="goalModalEmoji" value="🎯">
+                        <div class="d-flex gap-2 flex-wrap" id="emojiSelector">
+                            <span class="quick-chip fs-5 py-1 px-3 active" onclick="selectEmojiChip(this, '🎯')">🎯</span>
+                            <span class="quick-chip fs-5 py-1 px-3" onclick="selectEmojiChip(this, '📱')">📱</span>
+                            <span class="quick-chip fs-5 py-1 px-3" onclick="selectEmojiChip(this, '🛵')">🛵</span>
+                            <span class="quick-chip fs-5 py-1 px-3" onclick="selectEmojiChip(this, '🏠')">🏠</span>
+                            <span class="quick-chip fs-5 py-1 px-3" onclick="selectEmojiChip(this, '💰')">💰</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">目标名称</label>
+                        <input type="text" id="goalModalName" class="form-control bg-light fw-bold">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">目标金额 (元)</label>
-                        <input type="number" id="goalModalAmount" class="form-control money-font-style" placeholder="例如: 3000" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <input type="number" id="goalModalAmount" class="form-control money-font-style bg-light">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip" style="background: var(--accent-color); color: #fff; border-color: var(--accent-color);" onclick="saveGoalFromModal()">保存目标</button>
+                    <button type="button" class="quick-chip active" onclick="saveGoalFromModal()">确认立下Flag</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="recordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="recordModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-color);">
+            <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold fs-6" id="recordModalTitle">打卡收益存入目标</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                    <h5 class="modal-title fw-black fs-6" id="recordModalTitle">金库资金流动</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="recordEditIndex" value="-1">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">打卡日期与时间（可自由修正/补做打卡）</label>
-                        <input type="datetime-local" id="recordModalDateTime" class="form-control money-font-style" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">资金流水时间</label>
+                        <input type="datetime-local" id="recordModalDateTime" class="form-control money-font-style bg-light">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">存入金额 (元，支出请输入负数如 -50)</label>
-                        <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style" placeholder="例如: 200" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">金额 (元)</label>
+                        <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style bg-light text-success fs-5">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">备注说明 (可选)</label>
-                        <input type="text" id="recordModalMemo" class="form-control" placeholder="例如: 跑单打卡存入、雨天补贴" style="background: var(--bg-body); color: var(--text-primary); border-color: var(--border-color); border-radius: var(--radius-md);">
+                        <label class="form-label text-xs fw-bold text-secondary">资金来源备注</label>
+                        <input type="text" id="recordModalMemo" class="form-control bg-light fw-bold" placeholder="例如: 爆单打卡">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip" style="background: #059669; color: #fff; border-color: #059669;" onclick="saveRecordFromModal()">确认保存存入</button>
+                    <button type="button" class="quick-chip text-white" style="background: #10B981; border:none;" onclick="saveRecordFromModal()"><i class="ph-bold ph-check me-1"></i> 确认入库</button>
                 </div>
             </div>
         </div>
@@ -1162,17 +808,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // --- 核心 JS 逻辑层保持稳定，已适配所有 Bug 修复 ---
         let imageTiers = [
-            { minOrder: 1, price: 4.0 },
-            { minOrder: 600, price: 5.0 },
-            { minOrder: 1000, price: 5.5 },
-            { minOrder: 1300, price: 6.5 }
+            { minOrder: 1, price: 4.0 }, { minOrder: 600, price: 5.0 },
+            { minOrder: 1000, price: 5.5 }, { minOrder: 1300, price: 6.5 }
         ];
 
         let bigGoals = [
-            { name: "应急备用金", amount: 1000, emoji: "🎁", image: "" },
-            { name: "买新手机", amount: 3000, emoji: "📱", image: "" },
-            { name: "换新电动车", amount: 5000, emoji: "🛵", image: "" }
+            { name: "应急备用金", amount: 1000, emoji: "💰", image: "" },
+            { name: "新手机", amount: 3000, emoji: "📱", image: "" },
+            { name: "新战车", amount: 5000, emoji: "🛵", image: "" }
         ];
         let selectedGoalIndex = 1;
 
@@ -1182,50 +827,30 @@
         let currentUploadedGoalImgBase64 = "";
 
         const motivationQuotes = [
-            "每一单的汗水，都在为你的【心仪目标】铺路！加油！",
-            "别人在摆烂躺平，你在疯狂接单攒钱，这就是差距！",
-            "想想你想要的【新手机/新车】，今天多跑20单算什么！",
-            "风里雨里，外卖路上你最酷，银行卡余额最有安全感！",
-            "存下的不是几百块，是面对生活的底气与选择权！",
-            "再坚持几单！胜利就在眼前，今天绝不摆烂！"
+            "每一单的汗水，都在为你的【心仪目标】铺路！",
+            "想想你想要的未来，今天多跑20单算什么！",
+            "风里雨里，银行卡余额最有安全感！",
+            "存下的不是数字，是面对生活的底气与选择权！",
+            "财富引擎已启动，今日绝不停歇！"
         ];
 
         function playChaChingSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                
                 const osc1 = ctx.createOscillator();
                 const gain1 = ctx.createGain();
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(987.77, ctx.currentTime); 
+                osc1.type = 'sine'; osc1.frequency.setValueAtTime(987.77, ctx.currentTime); 
                 osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.08); 
                 gain1.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start();
-                osc1.stop(ctx.currentTime + 0.35);
-
-                setTimeout(() => {
-                    const osc2 = ctx.createOscillator();
-                    const gain2 = ctx.createGain();
-                    osc2.type = 'triangle';
-                    osc2.frequency.setValueAtTime(1567.98, ctx.currentTime); 
-                    gain2.gain.setValueAtTime(0.12, ctx.currentTime);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-                    osc2.connect(gain2);
-                    gain2.connect(ctx.destination);
-                    osc2.start();
-                    osc2.stop(ctx.currentTime + 0.25);
-                }, 60);
+                osc1.connect(gain1); gain1.connect(ctx.destination);
+                osc1.start(); osc1.stop(ctx.currentTime + 0.35);
             } catch(e) {}
         }
 
         function parseLocalDateString(dateStr) {
             const parts = dateStr.split(' ')[0].split('-');
-            if (parts.length === 3) {
-                return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-            }
+            if (parts.length === 3) return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
             return new Date(dateStr);
         }
 
@@ -1247,10 +872,7 @@
                     const parsed = JSON.parse(savedGoals);
                     if (Array.isArray(parsed.goals) && parsed.goals.length > 0) {
                         bigGoals = parsed.goals.map((item) => ({
-                            name: item.name || "目标",
-                            amount: item.amount || 1000,
-                            emoji: item.emoji || "🎯",
-                            image: item.image || ""
+                            name: item.name || "目标", amount: item.amount || 1000, emoji: item.emoji || "🎯", image: item.image || ""
                         }));
                         selectedGoalIndex = parsed.selectedIndex ?? 0;
                         if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = 0;
@@ -1270,9 +892,7 @@
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {
                 const themeIcon = themeToggle.querySelector('i');
-                if (themeIcon && document.documentElement.getAttribute('data-theme') === 'dark') {
-                    themeIcon.classList.replace('ph-moon', 'ph-sun');
-                }
+                if (themeIcon && document.documentElement.getAttribute('data-theme') === 'dark') themeIcon.classList.replace('ph-moon', 'ph-sun');
                 themeToggle.addEventListener('click', () => {
                     const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                     document.documentElement.setAttribute('data-theme', newTheme);
@@ -1280,7 +900,7 @@
                     if (themeIcon) {
                         themeIcon.style.transform = 'scale(0) rotate(180deg)';
                         setTimeout(() => {
-                            themeIcon.className = newTheme === 'dark' ? 'ph ph-sun' : 'ph ph-moon';
+                            themeIcon.className = newTheme === 'dark' ? 'ph-fill ph-sun fs-5' : 'ph-fill ph-moon fs-5';
                             themeIcon.style.transform = 'scale(1) rotate(0deg)';
                         }, 150);
                     }
@@ -1291,75 +911,46 @@
         });
 
         function formatToDatetimeLocal(dateObj) {
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            const hh = String(dateObj.getHours()).padStart(2, '0');
-            const mm = String(dateObj.getMinutes()).padStart(2, '0');
+            const y = dateObj.getFullYear(), m = String(dateObj.getMonth() + 1).padStart(2, '0'), d = String(dateObj.getDate()).padStart(2, '0');
+            const hh = String(dateObj.getHours()).padStart(2, '0'), mm = String(dateObj.getMinutes()).padStart(2, '0');
             return `${y}-${m}-${d}T${hh}:${mm}`;
         }
 
         function initMotivationMarquee() {
             const marqueeTrack = document.getElementById('motivationMarquee');
             if (!marqueeTrack) return;
-
             let itemsHtml = '';
-            motivationQuotes.forEach(q => {
-                itemsHtml += `<span class="marquee-item"><i class="ph ph-lightning text-warning me-1"></i>${q}</span>`;
-            });
-
+            motivationQuotes.forEach(q => { itemsHtml += `<span class="marquee-item"><i class="ph-fill ph-lightning text-warning me-1"></i>${q}</span>`; });
             marqueeTrack.innerHTML = itemsHtml + itemsHtml;
         }
 
         function startMidnightCountdown() {
             function updateClock() {
-                const now = new Date();
-                const midnight = new Date();
+                const now = new Date(), midnight = new Date();
                 midnight.setHours(24, 0, 0, 0);
                 const diffMs = midnight - now;
-
-                if (diffMs <= 0) {
-                    document.getElementById('midnightCountdown').textContent = '今日已结算';
-                    return;
-                }
-
+                if (diffMs <= 0) { document.getElementById('midnightCountdown').textContent = '今日已结算'; return; }
                 const hrs = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
                 const mins = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
                 const secs = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
-
-                document.getElementById('midnightCountdown').textContent = `今日剩余: ${hrs}:${mins}:${secs}`;
+                document.getElementById('midnightCountdown').textContent = `剩余: ${hrs}:${mins}:${secs}`;
             }
-            updateClock();
-            setInterval(updateClock, 1000);
+            updateClock(); setInterval(updateClock, 1000);
         }
 
         function handleGoalImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    let w = img.width;
-                    let h = img.height;
-                    const maxDim = 400; 
+                    let w = img.width, h = img.height; const maxDim = 400; 
                     if (w > maxDim || h > maxDim) {
-                        if (w > h) {
-                            h = Math.round(h * (maxDim / w));
-                            w = maxDim;
-                        } else {
-                            w = Math.round(w * (maxDim / h));
-                            h = maxDim;
-                        }
+                        if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; } else { w = Math.round(w * (maxDim / h)); h = maxDim; }
                     }
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-
+                    const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
                     currentUploadedGoalImgBase64 = canvas.toDataURL('image/jpeg', 0.8);
                     updateGoalModalImgPreview(currentUploadedGoalImgBase64);
                 };
@@ -1369,91 +960,45 @@
         }
 
         function updateGoalModalImgPreview(base64) {
-            const previewImg = document.getElementById('goalPreviewImg');
-            const placeholder = document.getElementById('goalImagePlaceholder');
-            const removeBtn = document.getElementById('removeGoalImgBtn');
-
+            const previewImg = document.getElementById('goalPreviewImg'), placeholder = document.getElementById('goalImagePlaceholder'), removeBtn = document.getElementById('removeGoalImgBtn');
             if (base64) {
-                previewImg.src = base64;
-                previewImg.style.display = 'block';
-                placeholder.style.display = 'none';
-                removeBtn.style.display = 'inline-flex';
+                previewImg.src = base64; previewImg.style.display = 'block'; placeholder.style.display = 'none'; removeBtn.style.display = 'flex';
             } else {
-                previewImg.src = '';
-                previewImg.style.display = 'none';
-                placeholder.style.display = 'inline';
-                removeBtn.style.display = 'none';
+                previewImg.src = ''; previewImg.style.display = 'none'; placeholder.style.display = 'block'; removeBtn.style.display = 'none';
             }
         }
 
-        function removeGoalImage() {
-            currentUploadedGoalImgBase64 = "";
-            document.getElementById('goalImageInput').value = "";
-            updateGoalModalImgPreview("");
-        }
+        function removeGoalImage() { currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview(""); }
 
         function calculateStreak() {
             if (earningsHistory.length === 0) return 0;
-            
             const dates = [...new Set(earningsHistory.map(item => item.date.split(' ')[0]))].sort().reverse();
             if (dates.length === 0) return 0;
-
             let count = 1;
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            
+            const now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             let lastDate = parseLocalDateString(dates[0]);
             const diffDaysWithToday = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
-            
-            if (diffDaysWithToday > 1) {
-                return 0;
-            }
-
+            if (diffDaysWithToday > 1) return 0;
             for (let i = 0; i < dates.length - 1; i++) {
-                const curr = parseLocalDateString(dates[i]);
-                const prev = parseLocalDateString(dates[i+1]);
+                const curr = parseLocalDateString(dates[i]), prev = parseLocalDateString(dates[i+1]);
                 const diff = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
-                if (diff === 1) {
-                    count++;
-                } else {
-                    break;
-                }
+                if (diff === 1) count++; else break;
             }
             return count;
         }
 
         function fireConfetti() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 90,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
-            }
+            if (typeof confetti === 'function') confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 }, colors: ['#10B981', '#F59E0B', '#6366F1'] });
             playChaChingSound();
         }
 
-        function persistEarningsHistory() {
-            try {
-                localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory));
-            } catch (e) {}
-        }
-
-        function getTotalPunchedInEarnings() {
-            return earningsHistory.reduce((sum, item) => sum + (item.amount || 0), 0);
-        }
+        function persistEarningsHistory() { try { localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory)); } catch (e) {} }
+        function getTotalPunchedInEarnings() { return earningsHistory.reduce((sum, item) => sum + (item.amount || 0), 0); }
 
         function renderEarningsHistory() {
-            const container = document.getElementById('earningsHistoryList');
-            const historyCountEl = document.getElementById('historyCount');
-            const accumulatedTotalEl = document.getElementById('accumulatedTotal');
-            const dailyAvgText = document.getElementById('dailyAvgText');
-
-            if (!container || !historyCountEl || !accumulatedTotalEl) return;
-
-            const totalSum = getTotalPunchedInEarnings();
-            const daysCount = earningsHistory.length;
-
+            const container = document.getElementById('earningsHistoryList'), historyCountEl = document.getElementById('historyCount'), accumulatedTotalEl = document.getElementById('accumulatedTotal'), dailyAvgText = document.getElementById('dailyAvgText');
+            if (!container) return;
+            const totalSum = getTotalPunchedInEarnings(), daysCount = earningsHistory.length;
             const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
             const avg = uniqueDays > 0 ? (totalSum / uniqueDays) : 0;
 
@@ -1463,443 +1008,261 @@
 
             streakDays = calculateStreak();
             const streakBadgeTop = document.getElementById('streakBadgeTop');
-            if (streakBadgeTop) {
-                streakBadgeTop.innerHTML = `<i class="ph ph-fire text-danger me-1"></i> 连胜 ${streakDays} 天`;
-            }
+            if (streakBadgeTop) streakBadgeTop.innerHTML = `<i class="ph-fill ph-fire me-1"></i>${streakDays}天热浪连胜`;
 
             updateAntiSlackingStatus();
 
             if (daysCount === 0) {
-                container.innerHTML = '<span class="text-xs text-secondary text-center py-2">暂无打卡收益，在上方完成单量计算后点击“打卡存入”吧！</span>';
+                container.innerHTML = '<div class="text-center py-4 text-xs text-secondary">暂无金库流水，快去赚取第一桶金！</div>';
             } else {
                 let html = '';
                 earningsHistory.forEach((item, index) => {
-                    const memoHtml = item.memo ? `<span class="badge bg-light text-secondary ms-2 border">${item.memo}</span>` : '';
+                    const memoHtml = item.memo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${item.memo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
-                            <span class="item-date"><i class="ph ph-calendar me-1"></i>${item.date}${memoHtml}</span>
-                            <div class="d-flex align-items-center gap-2">
+                            <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${item.date}${memoHtml}</span>
+                            <div class="d-flex align-items-center gap-3">
                                 <span class="item-amount">${item.amount >= 0 ? '+' : ''}￥${item.amount.toFixed(2)}</span>
-                                <button type="button" class="btn btn-sm p-0 text-secondary" onclick="openEditEarningsRecord(${index})" title="编辑此条记录/纠正日期"><i class="ph ph-pencil-simple"></i></button>
-                                <button type="button" class="btn btn-sm p-0 text-danger" onclick="deleteEarningsRecord(${index})" title="删除该条记录"><i class="ph ph-trash"></i></button>
+                                <div class="d-flex gap-2">
+                                    <i class="ph-bold ph-pencil-simple text-secondary" style="cursor:pointer;" onclick="openEditEarningsRecord(${index})"></i>
+                                    <i class="ph-bold ph-trash text-danger" style="cursor:pointer;" onclick="deleteEarningsRecord(${index})"></i>
+                                </div>
                             </div>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             }
-
             updateGoalProgress();
         }
 
         function updateAntiSlackingStatus() {
-            const card = document.getElementById('antiSlackingCard');
-            const badge = document.getElementById('slackingStatusBadge');
-            const text = document.getElementById('slackingWarningText');
-            const costText = document.getElementById('slackingCostText');
-
-            if (!card || !badge || !text) return;
-
-            const today = new Date();
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            
+            const card = document.getElementById('antiSlackingCard'), costText = document.getElementById('slackingCostText'), warningText = document.getElementById('slackingWarningText');
+            if (!card) return;
+            const today = new Date(), todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const hasPunchedToday = earningsHistory.some(item => item.date.startsWith(todayStr));
 
             if (hasPunchedToday) {
-                card.classList.remove('is-slacking');
-                badge.className = 'status-badge-working';
-                badge.textContent = '🔥 今日已战斗打卡';
-                text.textContent = '今日战果已存入目标！继续保持，财富正在加速滚动！';
+                card.classList.remove('is-slacking'); card.style.display = 'none'; // 如果打卡了直接隐藏警告，保持清爽
             } else {
-                card.classList.add('is-slacking');
-                badge.className = 'status-badge-slacking';
-                badge.textContent = '🚨 摆烂危险期';
-                text.textContent = `今天尚未打卡！已连胜 ${streakDays} 天，不跑单连胜战果将归零！`;
+                card.classList.add('is-slacking'); card.style.display = 'block';
+                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无充能将断档！` : '今日金库尚未进账！';
             }
 
             if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
-                const currentGoal = bigGoals[selectedGoalIndex];
-                const totalSaved = getTotalPunchedInEarnings();
-                const diff = currentGoal.amount - totalSaved;
-
+                const totalSaved = getTotalPunchedInEarnings(), currentGoal = bigGoals[selectedGoalIndex], diff = currentGoal.amount - totalSaved;
                 const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
                 const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 200;
-
                 if (diff > 0) {
                     const lostDays = (avgDailyEarnings > 0) ? (1).toFixed(1) : 1;
-                    costText.innerHTML = `💡 今日若摆烂代价：将直接导致你的【${currentGoal.name}】被迫延后 <strong class="text-danger money-font-style">${lostDays} 天</strong> 才能拿到！`;
-                } else {
-                    costText.innerHTML = `🎉 当前目标已达成！快点击右上角“+新增目标”，解锁下一个梦想！`;
+                    costText.innerHTML = `💡 若今日摆烂：【${currentGoal.name}】将被迫延迟 <strong class="text-danger money-font-style">${lostDays} 天</strong>！`;
                 }
             }
         }
 
         window.recordTodayEarnings = function() {
-            if (currentCalculatedTotal <= 0) {
-                alert('当前计算得出的收益为 0，请先输入有效的单量进行核算！');
-                return;
-            }
-
-            document.getElementById('recordModalTitle').textContent = "🎉 打卡收益存入目标";
+            if (currentCalculatedTotal <= 0) { alert('当前计算收益为 0，请先输入有效的单量！'); return; }
+            document.getElementById('recordModalTitle').textContent = "确认资金入库";
             document.getElementById('recordEditIndex').value = "-1";
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = currentCalculatedTotal.toFixed(2);
-            document.getElementById('recordModalMemo').value = "跑单打卡存入";
-
-            const modal = new bootstrap.Modal(document.getElementById('recordModal'));
-            modal.show();
+            document.getElementById('recordModalMemo').value = "常规打卡存入";
+            new bootstrap.Modal(document.getElementById('recordModal')).show();
         };
 
         window.openCustomDepositModal = function() {
-            document.getElementById('recordModalTitle').textContent = "+ 自定义存入/记录收益";
+            document.getElementById('recordModalTitle').textContent = "记录资金流动";
             document.getElementById('recordEditIndex').value = "-1";
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = '';
             document.getElementById('recordModalMemo').value = '';
-
-            const modal = new bootstrap.Modal(document.getElementById('recordModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('recordModal')).show();
         };
 
         window.openEditEarningsRecord = function(index) {
             const item = earningsHistory[index];
             if (!item) return;
-
-            document.getElementById('recordModalTitle').textContent = "✏️ 纠正打卡记录 / 修改日期";
+            document.getElementById('recordModalTitle').textContent = "修正资金记录";
             document.getElementById('recordEditIndex').value = index;
-
             let dtStr = item.date.replace(' ', 'T');
-            if (dtStr.length > 16) dtStr = dtStr.substring(0, 16); 
-            if (dtStr.length === 10) dtStr += "T00:00";
-
+            if (dtStr.length > 16) dtStr = dtStr.substring(0, 16); if (dtStr.length === 10) dtStr += "T00:00";
             document.getElementById('recordModalDateTime').value = dtStr;
             document.getElementById('recordModalAmount').value = item.amount;
             document.getElementById('recordModalMemo').value = item.memo || '';
-
-            const modal = new bootstrap.Modal(document.getElementById('recordModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('recordModal')).show();
         };
 
         window.saveRecordFromModal = function() {
             const editIndex = parseInt(document.getElementById('recordEditIndex').value, 10);
-            const dtVal = document.getElementById('recordModalDateTime').value;
-            const amount = parseFloat(document.getElementById('recordModalAmount').value);
-            const memo = document.getElementById('recordModalMemo').value.trim();
-
-            if (!dtVal) {
-                alert('请选择有效的打卡日期！');
-                return;
-            }
-
-            if (isNaN(amount) || amount === 0) {
-                alert('请输入有效的金额！');
-                return;
-            }
-
+            const dtVal = document.getElementById('recordModalDateTime').value, amount = parseFloat(document.getElementById('recordModalAmount').value), memo = document.getElementById('recordModalMemo').value.trim();
+            if (!dtVal) { alert('请选择有效的打卡日期！'); return; }
+            if (isNaN(amount) || amount === 0) { alert('请输入有效的金额！'); return; }
             const displayDate = dtVal.replace('T', ' ');
 
             if (editIndex === -1) {
-                earningsHistory.unshift({
-                    date: displayDate,
-                    amount: amount,
-                    memo: memo || "打卡存入"
-                });
-
-                if (document.getElementById('recordModalTitle').textContent.includes('打卡收益存入')) {
-                    if (totalOrdersInput) totalOrdersInput.value = '0';
-                    if (groupOrdersInput) groupOrdersInput.value = '0';
-                    calculate(true);
+                earningsHistory.unshift({ date: displayDate, amount: amount, memo: memo || "打卡存入" });
+                if (document.getElementById('recordModalTitle').textContent.includes('确认资金入库')) {
+                    if (totalOrdersInput) totalOrdersInput.value = '0'; if (groupOrdersInput) groupOrdersInput.value = '0'; calculate(true);
                 }
             } else {
-                earningsHistory[editIndex] = {
-                    date: displayDate,
-                    amount: amount,
-                    memo: memo
-                };
+                earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
-
             earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
-
             if (amount > 0) fireConfetti();
-
-            persistEarningsHistory();
-            renderEarningsHistory();
-
-            const modalEl = document.getElementById('recordModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
+            persistEarningsHistory(); renderEarningsHistory();
+            bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
         };
 
         window.deleteEarningsRecord = function(index) {
             if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？`)) {
-                earningsHistory.splice(index, 1);
-                persistEarningsHistory();
-                renderEarningsHistory();
+                earningsHistory.splice(index, 1); persistEarningsHistory(); renderEarningsHistory();
             }
         };
 
         window.clearEarningsHistory = function() {
             if (earningsHistory.length === 0) return;
-            if (confirm('确定要清空所有已打卡存入的收益历史吗？')) {
-                earningsHistory = [];
-                persistEarningsHistory();
-                renderEarningsHistory();
+            if (confirm('危险操作：确定要清空所有已打卡存入的收益历史吗？此操作不可逆！')) {
+                earningsHistory = []; persistEarningsHistory(); renderEarningsHistory();
             }
         };
 
         function sortGoalsData() {
             const currentSelected = bigGoals[selectedGoalIndex];
             bigGoals.sort((a, b) => a.amount - b.amount);
-            if (currentSelected) {
-                const newIdx = bigGoals.indexOf(currentSelected);
-                selectedGoalIndex = newIdx !== -1 ? newIdx : 0;
-            } else {
-                selectedGoalIndex = 0;
-            }
+            if (currentSelected) { const newIdx = bigGoals.indexOf(currentSelected); selectedGoalIndex = newIdx !== -1 ? newIdx : 0; } else { selectedGoalIndex = 0; }
         }
 
-        function persistGoals() {
-            try {
-                localStorage.setItem('custom_big_goals_v5', JSON.stringify({
-                    goals: bigGoals,
-                    selectedIndex: selectedGoalIndex
-                }));
-            } catch (e) {}
-        }
+        function persistGoals() { try { localStorage.setItem('custom_big_goals_v5', JSON.stringify({ goals: bigGoals, selectedIndex: selectedGoalIndex })); } catch (e) {} }
 
         function renderGoalChips() {
-            const container = document.getElementById('goalChipsContainer');
-            if (!container) return;
-
+            const container = document.getElementById('goalChipsContainer'); if (!container) return;
             let html = '';
             bigGoals.forEach((goal, idx) => {
                 const isSelected = (idx === selectedGoalIndex);
-                const thumbHtml = goal.image 
-                    ? `<img src="${goal.image}" class="chip-thumb-img me-1">` 
-                    : `${goal.emoji || '🎯'} `;
-                
+                const thumbHtml = goal.image ? `<img src="${goal.image}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;margin-right:4px;">` : `${goal.emoji || '🎯'} `;
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
-                        <span>${thumbHtml}${goal.name} (<span class="money-font-style">￥${goal.amount}</span>)</span>
-                        <span class="chip-edit-btn" onclick="openEditGoalModal(event, ${idx})" title="编辑目标"><i class="ph ph-pencil-simple"></i></span>
-                        <span class="chip-del-btn" onclick="removeGoal(event, ${idx})" title="删除目标"><i class="ph ph-x"></i></span>
+                        <span>${thumbHtml}${goal.name} (￥${goal.amount})</span>
+                        <i class="ph-bold ph-pencil-simple ms-1 opacity-75 hover-opacity-100" onclick="openEditGoalModal(event, ${idx})"></i>
+                        <i class="ph-bold ph-x text-danger opacity-75 hover-opacity-100 ms-1" onclick="removeGoal(event, ${idx})"></i>
                     </div>
                 `;
             });
-
-            if (bigGoals.length === 0) {
-                html = '<span class="text-xs text-secondary">暂无目标，点击右上角新增</span>';
-            }
-
-            container.innerHTML = html;
+            container.innerHTML = bigGoals.length === 0 ? '<span class="text-xs text-secondary">暂无目标，点击右上角设立</span>' : html;
         }
 
-        window.selectGoal = function(idx) {
-            selectedGoalIndex = idx;
-            persistGoals();
-            renderGoalChips();
-            updateGoalProgress();
-        };
+        window.selectGoal = function(idx) { selectedGoalIndex = idx; persistGoals(); renderGoalChips(); updateGoalProgress(); };
 
         window.selectEmojiChip = function(el, emoji) {
-            document.querySelectorAll('.emoji-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('goalModalEmoji').value = emoji;
+            document.querySelectorAll('#emojiSelector .quick-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active'); document.getElementById('goalModalEmoji').value = emoji;
         };
 
         window.openAddGoalModal = function() {
-            document.getElementById('goalModalTitle').textContent = "新增攒钱目标";
-            document.getElementById('editGoalIndex').value = "-1";
-            document.getElementById('goalModalName').value = '';
-            document.getElementById('goalModalAmount').value = '';
-            document.getElementById('goalModalEmoji').value = '📱';
-            currentUploadedGoalImgBase64 = "";
-            document.getElementById('goalImageInput').value = "";
-            updateGoalModalImgPreview("");
-
-            document.querySelectorAll('.emoji-chip').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.emoji-chip')[0].classList.add('active');
-            const modal = new bootstrap.Modal(document.getElementById('goalModal'));
-            modal.show();
+            document.getElementById('goalModalTitle').textContent = "设立资产目标"; document.getElementById('editGoalIndex').value = "-1";
+            document.getElementById('goalModalName').value = ''; document.getElementById('goalModalAmount').value = ''; document.getElementById('goalModalEmoji').value = '🎯';
+            currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview("");
+            document.querySelectorAll('#emojiSelector .quick-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('#emojiSelector .quick-chip')[0].classList.add('active');
+            new bootstrap.Modal(document.getElementById('goalModal')).show();
         };
 
         window.openEditGoalModal = function(event, idx) {
-            event.stopPropagation();
-            const goal = bigGoals[idx];
-            if (!goal) return;
-            document.getElementById('goalModalTitle').textContent = "修改攒钱目标";
-            document.getElementById('editGoalIndex').value = idx;
-            document.getElementById('goalModalName').value = goal.name;
-            document.getElementById('goalModalAmount').value = goal.amount;
+            event.stopPropagation(); const goal = bigGoals[idx]; if (!goal) return;
+            document.getElementById('goalModalTitle').textContent = "调整资产目标"; document.getElementById('editGoalIndex').value = idx;
+            document.getElementById('goalModalName').value = goal.name; document.getElementById('goalModalAmount').value = goal.amount;
             document.getElementById('goalModalEmoji').value = goal.emoji || '🎯';
-            
-            currentUploadedGoalImgBase64 = goal.image || "";
-            updateGoalModalImgPreview(currentUploadedGoalImgBase64);
-
-            const modal = new bootstrap.Modal(document.getElementById('goalModal'));
-            modal.show();
+            currentUploadedGoalImgBase64 = goal.image || ""; updateGoalModalImgPreview(currentUploadedGoalImgBase64);
+            new bootstrap.Modal(document.getElementById('goalModal')).show();
         };
 
         window.saveGoalFromModal = function() {
             const editIdx = parseInt(document.getElementById('editGoalIndex').value, 10);
             let name = document.getElementById('goalModalName').value.trim();
-            const amount = parseFloat(document.getElementById('goalModalAmount').value);
-            const emoji = document.getElementById('goalModalEmoji').value || '🎯';
-            const img = currentUploadedGoalImgBase64;
-
-            if (isNaN(amount) || amount <= 0) {
-                alert('请输入有效的攒钱目标金额！');
-                return;
-            }
-
+            const amount = parseFloat(document.getElementById('goalModalAmount').value), emoji = document.getElementById('goalModalEmoji').value || '🎯', img = currentUploadedGoalImgBase64;
+            if (isNaN(amount) || amount <= 0) { alert('请输入有效的攒钱目标金额！'); return; }
             if (!name) name = `目标 ￥${amount}`;
 
-            if (editIdx === -1) {
-                bigGoals.push({ name: name, amount: amount, emoji: emoji, image: img });
-            } else {
-                bigGoals[editIdx] = { name: name, amount: amount, emoji: emoji, image: img };
-            }
+            if (editIdx === -1) bigGoals.push({ name: name, amount: amount, emoji: emoji, image: img });
+            else bigGoals[editIdx] = { name: name, amount: amount, emoji: emoji, image: img };
 
-            sortGoalsData();
-            persistGoals();
-
-            const modalEl = document.getElementById('goalModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-
-            renderGoalChips();
-            updateGoalProgress();
+            sortGoalsData(); persistGoals();
+            bootstrap.Modal.getInstance(document.getElementById('goalModal')).hide();
+            renderGoalChips(); updateGoalProgress();
         };
 
         window.removeGoal = function(event, idx) {
-            event.stopPropagation();
-            const goal = bigGoals[idx];
-            if (confirm(`确定要删除【${goal.name}】(￥${goal.amount}) 攒钱目标吗？`)) {
+            event.stopPropagation(); const goal = bigGoals[idx];
+            if (confirm(`确定要移除目标【${goal.name}】吗？`)) {
                 bigGoals.splice(idx, 1);
-                if (selectedGoalIndex >= bigGoals.length) {
-                    selectedGoalIndex = Math.max(0, bigGoals.length - 1);
-                }
-                sortGoalsData();
-                persistGoals();
-                renderGoalChips();
-                updateGoalProgress();
+                if (selectedGoalIndex >= bigGoals.length) selectedGoalIndex = Math.max(0, bigGoals.length - 1);
+                sortGoalsData(); persistGoals(); renderGoalChips(); updateGoalProgress();
             }
         };
 
         function updateGoalProgress() {
-            const goalTitleText = document.getElementById('goalTitleText');
-            const goalDiffStatusText = document.getElementById('goalDiffStatusText');
-            const progressBarFill = document.getElementById('goalProgressBarFill');
-            const goalSavedAmount = document.getElementById('goalSavedAmount');
-            const goalPercentText = document.getElementById('goalPercentText');
-            const goalEstOrders = document.getElementById('goalEstOrders');
-            const goalEstDays = document.getElementById('goalEstDays');
-            const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper');
-            const goalCoverImg = document.getElementById('goalCoverImg');
-            const goalCoverOverlay = document.getElementById('goalCoverOverlay');
+            const goalTitleText = document.getElementById('goalTitleText'), goalDiffStatusText = document.getElementById('goalDiffStatusText'), progressBarFill = document.getElementById('goalProgressBarFill');
+            const goalSavedAmount = document.getElementById('goalSavedAmount'), goalPercentText = document.getElementById('goalPercentText'), goalEstOrders = document.getElementById('goalEstOrders'), goalEstDays = document.getElementById('goalEstDays');
+            const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper'), goalCoverImg = document.getElementById('goalCoverImg'), goalCoverOverlay = document.getElementById('goalCoverOverlay');
 
-            if (!goalTitleText || !goalDiffStatusText || !progressBarFill || !goalSavedAmount || !goalPercentText || !goalEstOrders || !goalEstDays) return;
-
-            const totalSaved = getTotalPunchedInEarnings();
-            goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
+            if (!goalTitleText) return;
+            const totalSaved = getTotalPunchedInEarnings(); goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
 
             if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
-                goalTitleText.textContent = "未设定目标";
-                goalDiffStatusText.textContent = "请新建目标";
-                goalDiffStatusText.className = "text-xs fw-bold text-secondary";
-                progressBarFill.style.width = "0%";
-                goalPercentText.textContent = "0%";
-                goalEstOrders.textContent = "-- 单";
-                goalEstDays.textContent = "-- 天";
-                if (goalCoverImgWrapper) goalCoverImgWrapper.style.display = 'none';
-                return;
+                goalTitleText.textContent = "未设定目标"; goalDiffStatusText.textContent = "请设立";
+                progressBarFill.style.width = "0%"; goalPercentText.textContent = "0%"; goalEstOrders.textContent = "-- 单"; goalEstDays.textContent = "-- 天";
+                if (goalCoverImgWrapper) goalCoverImgWrapper.style.display = 'none'; return;
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
             goalTitleText.innerHTML = `${currentGoal.emoji || '🎯'} ${currentGoal.name}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
 
-            const diff = currentGoal.amount - totalSaved;
-            const pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
+            const diff = currentGoal.amount - totalSaved, pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
 
             if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
                 if (currentGoal.image) {
-                    goalCoverImg.src = currentGoal.image;
-                    goalCoverImgWrapper.style.display = 'block';
-                    if (pct >= 100) {
-                        goalCoverOverlay.style.background = 'rgba(5, 150, 105, 0.2)';
-                        goalCoverOverlay.innerHTML = '已解封🎉';
-                    } else {
-                        goalCoverOverlay.style.background = `rgba(0, 0, 0, ${Math.max(0.1, 0.5 - (pct / 200))})`;
-                        goalCoverOverlay.innerHTML = `已解封 ${pct.toFixed(0)}%`;
-                    }
-                } else {
-                    goalCoverImgWrapper.style.display = 'none';
-                }
+                    goalCoverImg.src = currentGoal.image; goalCoverImgWrapper.style.display = 'block';
+                    if (pct >= 100) { goalCoverOverlay.style.background = 'rgba(16, 185, 129, 0.4)'; goalCoverOverlay.innerHTML = '<i class="ph-fill ph-check-circle fs-5"></i>'; }
+                    else { goalCoverOverlay.style.background = `rgba(0, 0, 0, ${Math.max(0.1, 0.6 - (pct / 200))})`; goalCoverOverlay.innerHTML = `${pct.toFixed(0)}%`; }
+                } else { goalCoverImgWrapper.style.display = 'none'; }
             }
 
-            progressBarFill.style.width = `${pct}%`;
-            goalPercentText.textContent = `${pct.toFixed(1)}%`;
-
-            const avgUnitPrice = 5.0; 
-            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
-            const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
+            progressBarFill.style.width = `${pct}%`; goalPercentText.textContent = `${pct.toFixed(1)}%`;
+            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length, avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
 
             if (diff <= 0) {
-                const over = Math.abs(diff);
-                goalDiffStatusText.innerHTML = `🎉 已达成！超额存入 <span class="money-font-style">￥${over.toFixed(2)}</span>`;
+                goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
-                goalEstOrders.textContent = "已达成";
-                goalEstDays.textContent = "已完成🎉";
-                goalEstDays.className = "stat-value text-success";
+                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
             } else {
-                goalDiffStatusText.innerHTML = `还差 <span class="money-font-style">￥${diff.toFixed(2)}</span>`;
+                goalDiffStatusText.innerHTML = `距目标 <span class="money-font-style">￥${diff.toFixed(2)}</span>`;
                 goalDiffStatusText.className = "text-xs fw-bold text-danger";
                 progressBarFill.classList.remove('completed');
-
-                const estOrders = Math.ceil(diff / avgUnitPrice);
-                goalEstOrders.textContent = `约 ${estOrders} 单`;
-
-                if (avgDailyEarnings > 0) {
-                    const estDays = Math.ceil(diff / avgDailyEarnings);
-                    goalEstDays.textContent = `约 ${estDays} 天`;
-                    goalEstDays.className = "stat-value text-warning";
-                } else {
-                    goalEstDays.textContent = "-- 天";
-                    goalEstDays.className = "stat-value text-secondary";
-                }
+                goalEstOrders.textContent = `约 ${Math.ceil(diff / 5.0)} 单`;
+                if (avgDailyEarnings > 0) { goalEstDays.textContent = `约 ${Math.ceil(diff / avgDailyEarnings)} 天`; goalEstDays.className = "stat-value text-warning"; } 
+                else { goalEstDays.textContent = "-- 天"; goalEstDays.className = "stat-value text-secondary"; }
             }
         }
 
         function renderTierCards(matchedIndex, regularOrdersNum) {
-            const container = document.getElementById('tierRoadmapGrid');
-            if (!container) return;
-
-            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
-
-            let html = '';
+            const container = document.getElementById('tierRoadmapGrid'); if (!container) return;
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder); let html = '';
             imageTiers.forEach((tier, index) => {
                 const isActive = (index === matchedIndex && regularOrdersNum > 0);
-                let rangeText = '';
-                const nextTier = imageTiers[index + 1];
-                if (!nextTier) {
-                    rangeText = `${tier.minOrder} 单及以上`;
-                } else {
+                let rangeText = ''; const nextTier = imageTiers[index + 1];
+                if (!nextTier) rangeText = `${tier.minOrder} 单及以上`;
+                else {
                     const upper = nextTier.minOrder - 1;
-                    if (upper < tier.minOrder) {
-                        rangeText = `${tier.minOrder} 单起`;
-                    } else {
-                        rangeText = `${tier.minOrder} ~ ${upper} 单`;
-                    }
+                    rangeText = upper < tier.minOrder ? `${tier.minOrder} 单起` : `${tier.minOrder} ~ ${upper} 单`;
                 }
-
                 html += `
                     <div class="tier-card ${isActive ? 'is-active' : ''}">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="tier-range">${rangeText}</span>
-                            <div class="d-flex gap-1.5">
-                                <button type="button" class="btn btn-sm p-0 text-secondary" style="font-size:0.85rem;" onclick="openEditTier(${index})" title="修改档位"><i class="ph ph-pencil-simple"></i></button>
-                                <button type="button" class="btn btn-sm p-0 text-danger" style="font-size:0.85rem;" onclick="removeTier(${index})" title="删除档位"><i class="ph ph-trash"></i></button>
+                            <div class="d-flex gap-2">
+                                <i class="ph-bold ph-pencil-simple text-secondary" style="cursor:pointer;" onclick="openEditTier(${index})"></i>
+                                <i class="ph-bold ph-trash text-danger" style="cursor:pointer;" onclick="removeTier(${index})"></i>
                             </div>
                         </div>
                         <span class="tier-price">￥${tier.price.toFixed(2)}</span>
@@ -1909,354 +1272,158 @@
             container.innerHTML = html;
         }
 
-        function persistTiers() {
-            try {
-                localStorage.setItem('custom_image_tiers_v2', JSON.stringify(imageTiers));
-            } catch (e) {}
-        }
+        function persistTiers() { try { localStorage.setItem('custom_image_tiers_v2', JSON.stringify(imageTiers)); } catch (e) {} }
 
         window.openAddTierModal = function() {
-            document.getElementById('tierModalTitle').textContent = '添加新阶梯档位';
-            document.getElementById('editTierIndex').value = '-1';
-            document.getElementById('tierModalMinOrder').value = '';
-            document.getElementById('tierModalPrice').value = '';
-            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
-            modal.show();
+            document.getElementById('tierModalTitle').textContent = '增设阶梯档位'; document.getElementById('editTierIndex').value = '-1';
+            document.getElementById('tierModalMinOrder').value = ''; document.getElementById('tierModalPrice').value = '';
+            new bootstrap.Modal(document.getElementById('tierModal')).show();
         };
 
         window.openEditTier = function(index) {
-            const tier = imageTiers[index];
-            if (!tier) return;
-            document.getElementById('tierModalTitle').textContent = '修改阶梯档位';
-            document.getElementById('editTierIndex').value = index;
-            document.getElementById('tierModalMinOrder').value = tier.minOrder;
-            document.getElementById('tierModalPrice').value = tier.price;
-            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
-            modal.show();
+            const tier = imageTiers[index]; if (!tier) return;
+            document.getElementById('tierModalTitle').textContent = '调整阶梯标准'; document.getElementById('editTierIndex').value = index;
+            document.getElementById('tierModalMinOrder').value = tier.minOrder; document.getElementById('tierModalPrice').value = tier.price;
+            new bootstrap.Modal(document.getElementById('tierModal')).show();
         };
 
         window.saveTierFromModal = function() {
-            const index = parseInt(document.getElementById('editTierIndex').value, 10);
-            const minOrderVal = parseInt(document.getElementById('tierModalMinOrder').value, 10);
-            const priceVal = parseFloat(document.getElementById('tierModalPrice').value);
-
-            if (isNaN(minOrderVal) || minOrderVal < 0 || isNaN(priceVal) || priceVal < 0) {
-                alert('请输入有效的单量和单价！');
-                return;
-            }
-
-            if (index === -1) {
-                imageTiers.push({ minOrder: minOrderVal, price: priceVal });
-            } else {
-                imageTiers[index] = { minOrder: minOrderVal, price: priceVal };
-            }
-
-            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
-            persistTiers();
-
-            const modalEl = document.getElementById('tierModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-
-            calculate(true);
+            const index = parseInt(document.getElementById('editTierIndex').value, 10), minOrderVal = parseInt(document.getElementById('tierModalMinOrder').value, 10), priceVal = parseFloat(document.getElementById('tierModalPrice').value);
+            if (isNaN(minOrderVal) || minOrderVal < 0 || isNaN(priceVal) || priceVal < 0) { alert('请输入有效的单量和单价！'); return; }
+            if (index === -1) imageTiers.push({ minOrder: minOrderVal, price: priceVal }); else imageTiers[index] = { minOrder: minOrderVal, price: priceVal };
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder); persistTiers();
+            bootstrap.Modal.getInstance(document.getElementById('tierModal')).hide(); calculate(true);
         };
 
         window.removeTier = function(index) {
-            if (imageTiers.length <= 1) {
-                alert('至少需要保留一个阶梯档位！');
-                return;
-            }
-            if (confirm(`确定要删除该档位吗？`)) {
-                imageTiers.splice(index, 1);
-                persistTiers();
-                calculate(true);
-            }
+            if (imageTiers.length <= 1) { alert('必须保留至少一个核算档位！'); return; }
+            if (confirm(`确定要移除该标准档位吗？`)) { imageTiers.splice(index, 1); persistTiers(); calculate(true); }
         };
 
-        const totalOrdersInput = document.getElementById('totalOrders');
-        const groupOrdersInput = document.getElementById('groupOrders');
-        const regularOrdersBadge = document.getElementById('regularOrdersBadge');
-        const errorBox = document.getElementById('errorBox');
-        const saveTip = document.getElementById('saveTip');
-
-        const resTotalNum = document.getElementById('resTotalNum');
-        const resTierBadge = document.getElementById('resTierBadge');
-        const tierProgressFill = document.getElementById('tierProgressFill');
-        const tierProgressLabel = document.getElementById('tierProgressLabel');
-        const tierProgressDetail = document.getElementById('tierProgressDetail');
-        const formulaPreview = document.getElementById('formulaPreview');
-
+        const totalOrdersInput = document.getElementById('totalOrders'), groupOrdersInput = document.getElementById('groupOrders');
+        const regularOrdersBadge = document.getElementById('regularOrdersBadge'), errorBox = document.getElementById('errorBox'), saveTip = document.getElementById('saveTip');
+        const resTotalNum = document.getElementById('resTotalNum'), resTierBadge = document.getElementById('resTierBadge'), tierProgressFill = document.getElementById('tierProgressFill'), tierProgressLabel = document.getElementById('tierProgressLabel'), tierProgressDetail = document.getElementById('tierProgressDetail'), formulaPreview = document.getElementById('formulaPreview');
         let saveTimeout = null;
 
-        const sanitizeInput = (val) => {
-            if (!val) return '';
-            let clean = String(val).replace(/[^\d]/g, ''); 
-            if (clean.length > 5) clean = clean.slice(0, 5); 
-            return clean;
-        };
+        const sanitizeInput = (val) => { let clean = String(val).replace(/[^\d]/g, ''); if (clean.length > 5) clean = clean.slice(0, 5); return clean; };
 
-        window.addTotalOrders = (amount) => {
-            if (!totalOrdersInput) return;
-            let cur = parseInt(totalOrdersInput.value || '0', 10);
-            if (isNaN(cur)) cur = 0;
-            totalOrdersInput.value = String(cur + amount);
-            calculate(true);
-            playChaChingSound();
-        };
-
-        window.clearOrders = () => {
-            if (!totalOrdersInput) return;
-            totalOrdersInput.value = '0';
-            calculate(true);
-        };
-
-        window.addGroupOrders = (amount) => {
-            if (!groupOrdersInput) return;
-            let cur = parseInt(groupOrdersInput.value || '0', 10);
-            if (isNaN(cur)) cur = 0;
-            groupOrdersInput.value = String(cur + amount);
-            calculate(true);
-            playChaChingSound();
-        };
-
-        window.clearGroupOrders = () => {
-            if (!groupOrdersInput) return;
-            groupOrdersInput.value = '0';
-            calculate(true);
-        };
+        window.addTotalOrders = (amount) => { if (!totalOrdersInput) return; totalOrdersInput.value = String((parseInt(totalOrdersInput.value || '0', 10) || 0) + amount); calculate(true); playChaChingSound(); };
+        window.clearOrders = () => { if (!totalOrdersInput) return; totalOrdersInput.value = '0'; calculate(true); };
+        window.addGroupOrders = (amount) => { if (!groupOrdersInput) return; groupOrdersInput.value = String((parseInt(groupOrdersInput.value || '0', 10) || 0) + amount); calculate(true); playChaChingSound(); };
+        window.clearGroupOrders = () => { if (!groupOrdersInput) return; groupOrdersInput.value = '0'; calculate(true); };
 
         function initCalculatorData() {
-            renderGoalChips();
-            renderEarningsHistory();
-
-            let localData = null;
-            try {
-                if (window.localStorage) {
-                    localData = localStorage.getItem('tier_calculator_storage_v2');
-                }
-            } catch (e) {}
-
+            renderGoalChips(); renderEarningsHistory();
+            let localData = null; try { if (window.localStorage) localData = localStorage.getItem('tier_calculator_storage_v2'); } catch (e) {}
             if (localData && totalOrdersInput && groupOrdersInput) {
                 try {
                     const parsed = JSON.parse(localData);
                     totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
                     groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
-                    calculate(false); 
-                    return;
+                    calculate(false); return;
                 } catch (e) {}
             }
-            if (totalOrdersInput && groupOrdersInput) {
-                totalOrdersInput.value = '0';
-                groupOrdersInput.value = '0';
-                calculate(true);
-            }
+            if (totalOrdersInput && groupOrdersInput) { totalOrdersInput.value = '0'; groupOrdersInput.value = '0'; calculate(true); }
         }
 
         function calculate(shouldSave = true) {
-            showError("");
-            if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
-            
-            const totalOrdersStr = totalOrdersInput.value.trim();
-            const groupOrdersStr = groupOrdersInput.value.trim();
-            
+            showError(""); if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
+            const totalOrdersStr = totalOrdersInput.value.trim(), groupOrdersStr = groupOrdersInput.value.trim();
             if (shouldSave) {
                 try {
                     if (window.localStorage) {
-                        const dataToSave = { totalOrders: totalOrdersStr, groupOrders: groupOrdersStr };
-                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify(dataToSave));
-                        if (saveTip) {
-                            saveTip.style.display = 'block';
-                            if (saveTimeout) clearTimeout(saveTimeout);
-                            saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 1200);
-                        }
+                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify({ totalOrders: totalOrdersStr, groupOrders: groupOrdersStr }));
+                        if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
                     }
                 } catch (e) {}
             }
 
-            let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr);
-            let groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
-
-            if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) {
-                if (totalOrdersStr !== "") {
-                    showError("完成总单量需要输入非负整数！");
-                    resetResultDisplay();
-                    return;
-                }
-            }
-
-            if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) {
-                if (groupOrdersStr !== "") {
-                    showError("拼团单量需要输入非负整数！");
-                    resetResultDisplay();
-                    return;
-                }
-            }
-
-            if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") {
-                showError(`拼团单量（${groupOrdersNum}单）不能大于完成总单量（${totalOrdersNum}单）！`);
-                resetResultDisplay();
-                return;
-            }
+            let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+            if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
+            if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
+            if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
 
             const regularOrdersNum = Math.max(0, totalOrdersNum - groupOrdersNum);
+            if (regularOrdersBadge) regularOrdersBadge.textContent = `常规核算单量: ${regularOrdersNum}单`;
 
-            if (regularOrdersBadge) {
-                regularOrdersBadge.textContent = `常规: ${regularOrdersNum}单`;
-            }
-
-            let regularSubtotal = 0;
-            let matchedIndex = -1;
-
-            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
-
-            if (regularOrdersNum >= 1) {
-                for (let i = 0; i < imageTiers.length; i++) {
-                    if (regularOrdersNum >= imageTiers[i].minOrder) { 
-                        matchedIndex = i; 
-                    }
-                }
-            }
+            let regularSubtotal = 0, matchedIndex = -1; imageTiers.sort((a, b) => a.minOrder - b.minOrder);
+            if (regularOrdersNum >= 1) { for (let i = 0; i < imageTiers.length; i++) { if (regularOrdersNum >= imageTiers[i].minOrder) matchedIndex = i; } }
 
             renderTierCards(matchedIndex, regularOrdersNum);
 
             let currentPrice = 0;
             if (matchedIndex !== -1 && regularOrdersNum > 0) {
-                currentPrice = imageTiers[matchedIndex].price;
-                regularSubtotal = regularOrdersNum * currentPrice;
-                resTierBadge.textContent = `⚡ 常规: ￥${currentPrice.toFixed(2)}/单`;
-            } else {
-                resTierBadge.textContent = regularOrdersNum === 0 ? "未达门槛 (0单)" : "未达门槛";
-            }
+                currentPrice = imageTiers[matchedIndex].price; regularSubtotal = regularOrdersNum * currentPrice;
+                resTierBadge.innerHTML = `<i class="ph-bold ph-lightning"></i> ￥${currentPrice.toFixed(2)} / 单`;
+            } else { resTierBadge.textContent = regularOrdersNum === 0 ? "门槛未激活 (0单)" : "门槛未激活"; }
 
-            const groupUnitPrice = 3.20;
-            const groupSubtotal = groupOrdersNum * groupUnitPrice;
-            const grandTotal = regularSubtotal + groupSubtotal;
+            const groupUnitPrice = 3.20, groupSubtotal = groupOrdersNum * groupUnitPrice, grandTotal = regularSubtotal + groupSubtotal;
             currentCalculatedTotal = grandTotal;
-
             resTotalNum.textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-            if (formulaPreview) {
-                formulaPreview.textContent = `常规 ${regularOrdersNum}单 × ￥${currentPrice.toFixed(2)} + 拼团 ${groupOrdersNum}单 × ￥${groupUnitPrice.toFixed(2)}`;
-            }
+            if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-white mx-1">${regularOrdersNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥${groupUnitPrice.toFixed(2)}</span>`;
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
         }
 
         function updateProgressEngine(regularOrders, matchedIndex) {
             if (!tierProgressFill || !tierProgressLabel || !tierProgressDetail) return;
-
-            let progressPct = 100;
-            let labelText = "";
-            let detailText = "";
-
-            if (imageTiers.length === 0) {
-                tierProgressFill.style.width = '0%';
-                tierProgressLabel.textContent = '请先添加档位';
-                tierProgressDetail.textContent = '0 单';
-                return;
-            }
-
+            let progressPct = 100, labelText = "", detailText = "";
+            if (imageTiers.length === 0) { tierProgressFill.style.width = '0%'; tierProgressLabel.textContent = '暂无档位标准'; tierProgressDetail.textContent = '0 单'; return; }
             let nextTier = imageTiers.find(t => t.minOrder > regularOrders);
-
             if (matchedIndex === -1) {
-                const firstTier = imageTiers[0];
-                progressPct = Math.min(100, Math.max(0, (regularOrders / firstTier.minOrder) * 100));
-                const remaining = firstTier.minOrder - regularOrders;
-                labelText = `距升至 ￥${firstTier.price.toFixed(2)}/单 档位`;
-                detailText = `还差 ${remaining} 单`;
+                const firstTier = imageTiers[0]; progressPct = Math.min(100, Math.max(0, (regularOrders / firstTier.minOrder) * 100));
+                labelText = `距升档至 ￥${firstTier.price.toFixed(2)}/单`; detailText = `还差 ${firstTier.minOrder - regularOrders} 单`;
             } else if (nextTier) {
-                const currentTier = imageTiers[matchedIndex];
-                const span = nextTier.minOrder - currentTier.minOrder;
-                const currentProgress = regularOrders - currentTier.minOrder;
+                const currentTier = imageTiers[matchedIndex], span = nextTier.minOrder - currentTier.minOrder, currentProgress = regularOrders - currentTier.minOrder;
                 progressPct = Math.min(100, Math.max(0, (currentProgress / span) * 100));
-                const remaining = nextTier.minOrder - regularOrders;
-                labelText = `距升至 ￥${nextTier.price.toFixed(2)}/单 档位`;
-                detailText = `还差 ${remaining} 单`;
+                labelText = `距升档至 ￥${nextTier.price.toFixed(2)}/单`; detailText = `还差 ${nextTier.minOrder - regularOrders} 单`;
             } else {
-                progressPct = 100;
-                labelText = `🎉 已解锁最高单价档位`;
-                detailText = `￥${imageTiers[imageTiers.length - 1].price.toFixed(2)} / 单`;
+                progressPct = 100; labelText = `🎉 已激活最高溢价档位`; detailText = `顶级单价 ￥${imageTiers[imageTiers.length - 1].price.toFixed(2)}`;
             }
-
-            tierProgressFill.style.width = `${progressPct}%`;
-            tierProgressLabel.textContent = labelText;
-            tierProgressDetail.textContent = detailText;
+            tierProgressFill.style.width = `${progressPct}%`; tierProgressLabel.textContent = labelText; tierProgressDetail.textContent = detailText;
         }
 
         function resetResultDisplay() {
-            currentCalculatedTotal = 0;
-            if (resTotalNum && resTierBadge) {
-                resTotalNum.textContent = "0.00";
-                resTierBadge.textContent = "数据有误";
-            }
+            currentCalculatedTotal = 0; if (resTotalNum && resTierBadge) { resTotalNum.textContent = "0.00"; resTierBadge.textContent = "等待输入"; }
             renderTierCards(-1, 0);
         }
 
-        function showError(msg) {
-            if (!errorBox) return;
-            if (msg) { errorBox.textContent = msg; errorBox.style.display = 'block'; } 
-            else { errorBox.style.display = 'none'; }
-        }
+        function showError(msg) { if (!errorBox) return; if (msg) { errorBox.innerHTML = `<i class="ph-fill ph-warning-circle me-1"></i>${msg}`; errorBox.style.display = 'block'; } else { errorBox.style.display = 'none'; } }
 
         if (totalOrdersInput && groupOrdersInput) {
-            totalOrdersInput.addEventListener('input', (e) => {
-                e.target.value = sanitizeInput(e.target.value);
-                calculate(true);
-            });
-            groupOrdersInput.addEventListener('input', (e) => {
-                e.target.value = sanitizeInput(e.target.value);
-                calculate(true);
-            });
+            totalOrdersInput.addEventListener('input', (e) => { e.target.value = sanitizeInput(e.target.value); calculate(true); });
+            groupOrdersInput.addEventListener('input', (e) => { e.target.value = sanitizeInput(e.target.value); calculate(true); });
         }
 
-        const calcDisplay = document.getElementById('calcDisplay');
-        const calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
-        let calcValue = '';
-        const operators = ['+', '-', '*', '/'];
-
-        const sanitizeCalcExpression = (expr) => {
-            return expr.replace(/(^|[\+\-\*\/])0+(?=\d)/g, '$1');
-        };
+        const calcDisplay = document.getElementById('calcDisplay'), calcButtons = document.querySelectorAll('.calc-buttons .calc-btn');
+        let calcValue = ''; const operators = ['+', '-', '*', '/'];
+        const sanitizeCalcExpression = (expr) => expr.replace(/(^|[\+\-\*\/])0+(?=\d)/g, '$1');
 
         calcButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 if (!calcDisplay) return;
                 const action = btn.textContent;
-                
-                if (action === 'C') {
-                    calcValue = '';
-                } else if (action === '⌫') {
-                    calcValue = calcValue === '错误' ? '' : calcValue.slice(0, -1);
-                } else if (action === '=') {
+                if (action === 'C') calcValue = '';
+                else if (action === '⌫') calcValue = calcValue === '计算溢出' || calcValue === '错误' ? '' : calcValue.slice(0, -1);
+                else if (action === '=') {
                     if (calcValue === '' || calcValue === '错误' || operators.includes(calcValue.slice(-1))) return;
                     try {
                         const cleanedExpr = sanitizeCalcExpression(calcValue);
-                        if (!/^[0-9+\-*/. ]+$/.test(cleanedExpr)) throw new Error('Invalid Math String');
+                        if (!/^[0-9+\-*/. ]+$/.test(cleanedExpr)) throw new Error('Invalid');
                         let result = new Function('return ' + cleanedExpr)();
                         if (!isFinite(result)) throw new Error('Infinity');
                         calcValue = String(Math.round(result * 1000000) / 1000000); 
-                    } catch (e) {
-                        calcValue = '错误';
-                    }
+                    } catch (e) { calcValue = '计算溢出'; }
                 } else {
-                    if (calcValue === '错误') calcValue = '';
+                    if (calcValue === '计算溢出' || calcValue === '错误') calcValue = '';
                     const lastChar = calcValue.slice(-1);
-                    
                     if (operators.includes(action)) {
                         if (calcValue === '') return;
-                        if (operators.includes(lastChar)) {
-                            calcValue = calcValue.slice(0, -1) + action;
-                        } else {
-                            calcValue += action;
-                        }
+                        if (operators.includes(lastChar)) calcValue = calcValue.slice(0, -1) + action; else calcValue += action;
                     } 
-                    else if (action === '.') {
-                        const parts = calcValue.split(/[\+\-\*\/]/);
-                        if (parts[parts.length - 1].includes('.')) return;
-                        calcValue += action;
-                    } else {
-                        calcValue += action;
-                    }
+                    else if (action === '.') { const parts = calcValue.split(/[\+\-\*\/]/); if (parts[parts.length - 1].includes('.')) return; calcValue += action; } 
+                    else { calcValue += action; }
                 }
                 calcDisplay.value = calcValue;
             });
