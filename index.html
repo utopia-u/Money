@@ -606,7 +606,7 @@
                         <button class="calc-btn">.</button>
                     </div>
                 </div>
-                <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>数据已静默同步云端本地</div>
+                <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"></div>
                 <div id="errorBox" class="text-center text-xs fw-bold text-danger mt-2" style="display:none;"></div>
             </div>
         </div>
@@ -759,6 +759,7 @@
         let currentCalculatedTotal = 0;
         let streakDays = 0;
         let currentUploadedGoalImgBase64 = "";
+        let activeDayString = ""; 
 
         const motivationQuotes = [
             "每一单的汗水，都在为你的【心仪目标】铺路！",
@@ -780,6 +781,11 @@
                 osc1.connect(gain1); gain1.connect(ctx.destination);
                 osc1.start(); osc1.stop(ctx.currentTime + 0.35);
             } catch(e) {}
+        }
+
+        function getLocalDayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
         function parseLocalDateString(dateStr) {
@@ -864,10 +870,29 @@
         }
 
         function startMidnightCountdown() {
+            activeDayString = getLocalDayString();
             function updateClock() {
                 const now = new Date(), midnight = new Date();
                 midnight.setHours(24, 0, 0, 0);
                 const diffMs = midnight - now;
+
+                // 跨天自动重置判定
+                const currentDayStr = getLocalDayString();
+                if (currentDayStr !== activeDayString) {
+                    activeDayString = currentDayStr;
+                    if (totalOrdersInput) totalOrdersInput.value = '0';
+                    if (groupOrdersInput) groupOrdersInput.value = '0';
+                    calculate(true);
+                    
+                    const saveTip = document.getElementById('saveTip');
+                    if (saveTip) {
+                        const originalHTML = saveTip.innerHTML;
+                        saveTip.innerHTML = '<i class="ph-fill ph-check-circle me-1"></i>新的一天，单量已自动归零';
+                        saveTip.style.display = 'block';
+                        setTimeout(() => { saveTip.style.display = 'none'; saveTip.innerHTML = originalHTML; }, 5000);
+                    }
+                }
+
                 if (diffMs <= 0) { document.getElementById('midnightCountdown').textContent = '今日已结算'; return; }
                 const hrs = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
                 const mins = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
@@ -1040,9 +1065,7 @@
 
             if (editIndex === -1) {
                 earningsHistory.unshift({ date: displayDate, amount: amount, memo: memo || "打卡存入" });
-                if (document.getElementById('recordModalTitle').textContent.includes('确认资金入库')) {
-                    if (totalOrdersInput) totalOrdersInput.value = '0'; if (groupOrdersInput) groupOrdersInput.value = '0'; calculate(true);
-                }
+                // 【打卡不清零功能】：移除了打卡后自动清零单量输入框的代码
             } else {
                 earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
@@ -1306,13 +1329,29 @@
 
         function initCalculatorData() {
             renderGoalChips(); renderEarningsHistory();
-            let localData = null; try { if (window.localStorage) localData = localStorage.getItem('tier_calculator_storage_v2'); } catch (e) {}
+            let localData = null; 
+            try { 
+                if (window.localStorage) {
+                    localData = localStorage.getItem('tier_calculator_storage_v3'); 
+                    if (!localData) localData = localStorage.getItem('tier_calculator_storage_v2'); // 向下兼容旧版数据
+                }
+            } catch (e) {}
+            
             if (localData && totalOrdersInput && groupOrdersInput) {
                 try {
                     const parsed = JSON.parse(localData);
-                    totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
-                    groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
-                    calculate(false); return;
+                    const todayStr = getLocalDayString();
+                    // 跨天判断：如果包含存储日期且不等于今天，执行自动归零
+                    if (parsed.saveDate && parsed.saveDate !== todayStr) {
+                        totalOrdersInput.value = '0';
+                        groupOrdersInput.value = '0';
+                        calculate(true); 
+                    } else {
+                        totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
+                        groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
+                        calculate(false);
+                    }
+                    return;
                 } catch (e) {}
             }
             if (totalOrdersInput && groupOrdersInput) { totalOrdersInput.value = '0'; groupOrdersInput.value = '0'; calculate(true); }
@@ -1324,7 +1363,12 @@
             if (shouldSave) {
                 try {
                     if (window.localStorage) {
-                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify({ totalOrders: totalOrdersStr, groupOrders: groupOrdersStr }));
+                        // 使用带日期的全新 V3 数据结构，保障跨天清零
+                        localStorage.setItem('tier_calculator_storage_v3', JSON.stringify({ 
+                            totalOrders: totalOrdersStr, 
+                            groupOrders: groupOrdersStr,
+                            saveDate: getLocalDayString() 
+                        }));
                         if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
                     }
                 } catch (e) {}
