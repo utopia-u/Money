@@ -28,7 +28,7 @@
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
-            /* 浅色空间拟态 (Spatial Light) */
+            /* 浅色空间拟态 */
             --bg-body: #F4F6FB;
             --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
             --glass-bg: rgba(255, 255, 255, 0.65);
@@ -37,7 +37,7 @@
             --text-primary: #0F172A;
             --text-secondary: #64748B;
             
-            --accent-color: #6366F1; /* 靛蓝色 */
+            --accent-color: #6366F1;
             --accent-light: rgba(99, 102, 241, 0.1);
             
             --danger-bg: rgba(239, 68, 68, 0.1);
@@ -52,7 +52,7 @@
         }
 
         [data-theme="dark"] {
-            /* 深空黑曜石质感 (Obsidian Dark) */
+            /* 深空黑曜石质感 */
             --bg-body: #050507;
             --bg-body-gradient: 
                 radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
@@ -72,329 +72,114 @@
             --success-bg: rgba(52, 211, 153, 0.15);
         }
 
-        html, body {
-            touch-action: manipulation;
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-        }
+        html, body { touch-action: manipulation; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
         body {
-            background-color: var(--bg-body);
-            background-image: var(--bg-body-gradient);
-            background-attachment: fixed;
-            color: var(--text-primary);
-            font-family: var(--font-sans) !important;
-            padding: 12px;
-            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
-            min-height: 100vh;
+            background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed;
+            color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh;
         }
 
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        /* 财富流动渐变字 */
         .money-text-gradient {
-            background: linear-gradient(135deg, #34D399, #10B981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: var(--font-money) !important;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         }
-        [data-theme="dark"] .money-text-gradient {
-            background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25);
-        }
-
+        [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
-        /* 高级悬浮动态岛栏 */
         .motivation-banner {
-            background: var(--glass-bg);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            border-radius: var(--radius-pill);
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            box-shadow: var(--glass-shadow);
-            position: relative;
-            overflow: hidden;
+            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill);
+            padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
         }
-
         .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
         .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
 
-        .streak-badge {
-            background: linear-gradient(135deg, #FF6B6B, #EF4444);
-            color: white;
-            padding: 4px 12px;
-            border-radius: var(--radius-pill);
-            font-size: 0.75rem;
-            font-weight: 800;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-            flex-shrink: 0;
-            z-index: 2;
-        }
+        .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; }
 
-        /* 空间玻璃态卡片通用类 */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(32px);
-            -webkit-backdrop-filter: blur(32px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--glass-shadow);
-            padding: 18px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transform: skewX(-20deg);
-            animation: glass-shine 8s infinite;
-        }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transform: skewX(-20deg); animation: glass-shine 8s infinite; }
         @keyframes glass-shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
-        .app-header {
-            padding: 12px 20px; 
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .app-header { padding: 12px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* 全息流体财富主卡 */
-        @keyframes fluidAurora {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes fluidAurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .spatial-wealth-hero { position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; }
+        .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; }
 
-        .spatial-wealth-hero {
-            position: relative;
-            background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a);
-            background-size: 300% 300%;
-            animation: fluidAurora 18s ease infinite;
-            padding: 24px;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 16px;
-            color: #ffffff;
-        }
-
-        /* 微晶玻璃噪点层 */
-        .spatial-wealth-hero::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
-            pointer-events: none; mix-blend-mode: overlay;
-        }
-
-        .hero-header-row {
-            display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 2;
-        }
-
-        .hero-badge-glass {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px;
-        }
-
+        .hero-header-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+        .hero-badge-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px; }
         .hero-badge-accent { background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.2)); border-color: rgba(52, 211, 153, 0.4); color: #A7F3D0; }
 
-        /* 极度夺目的数字展区 */
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
         .hero-currency-symbol { font-size: 2rem; font-weight: 800; font-family: var(--font-money); color: rgba(255, 255, 255, 0.7); }
-        .hero-amount-number {
-            font-family: var(--font-money) !important; font-size: 4rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1;
-            background: linear-gradient(to bottom, #FFFFFF 20%, #A7F3D0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4));
-        }
+        .hero-amount-number { font-family: var(--font-money) !important; font-size: 4rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1; background: linear-gradient(to bottom, #FFFFFF 20%, #A7F3D0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4)); }
 
-        .hero-progress-box {
-            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 10px 14px; position: relative; z-index: 2;
-        }
+        .hero-progress-box { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 10px 14px; position: relative; z-index: 2; }
+        .hero-progress-track { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
+        .hero-progress-fill { height: 100%; background: linear-gradient(90deg, #FDE68A, #34D399); border-radius: var(--radius-pill); width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px rgba(52, 211, 153, 0.6); }
+        .daily-target-fill { height: 100%; border-radius: var(--radius-pill); width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hero-progress-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
 
-        .hero-progress-track {
-            height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-pill); overflow: hidden;
-            margin-bottom: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-        }
-
-        .hero-progress-fill {
-            height: 100%; background: linear-gradient(90deg, #FDE68A, #34D399); border-radius: var(--radius-pill); width: 0%;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
-        }
-        
-        .daily-target-fill {
-            height: 100%; border-radius: var(--radius-pill); width: 0%;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hero-progress-info {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.85);
-        }
-
-        /* 新拟态输入框 */
         .calc-input-group { position: relative; width: 100%; margin-bottom: 8px; }
-        .calc-input-group input {
-            width: 100%; height: 48px; padding: 4px 40px 4px 16px; border: 2px solid transparent;
-            background: rgba(var(--bg-surface-rgb), 0.4); border-radius: var(--radius-md);
-            font-size: 1.25rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary);
-            transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .calc-input-group input { width: 100%; height: 48px; padding: 4px 40px 4px 16px; border: 2px solid transparent; background: rgba(var(--bg-surface-rgb), 0.4); border-radius: var(--radius-md); font-size: 1.25rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         [data-theme="dark"] .calc-input-group input { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); }
-        .calc-input-group input:focus {
-            outline: none; border-color: var(--accent-color); background: var(--bg-body); box-shadow: 0 0 0 4px var(--accent-light);
-        }
-        .calc-input-group .input-suffix {
-            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); pointer-events: none;
-        }
+        .calc-input-group input:focus { outline: none; border-color: var(--accent-color); background: var(--bg-body); box-shadow: 0 0 0 4px var(--accent-light); }
+        .calc-input-group .input-suffix { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); pointer-events: none; }
 
-        /* 空间质感按钮与标签 */
-        .quick-chip {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
-            font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: var(--radius-pill);
-            cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(8px);
-        }
-        .quick-chip:hover {
-            transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-            border-color: var(--accent-color); color: var(--accent-color);
-        }
+        .quick-chip { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(8px); }
+        .quick-chip:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); border-color: var(--accent-color); color: var(--accent-color); }
         .quick-chip:active { transform: scale(0.96); }
-        .quick-chip.active {
-            background: var(--accent-color); color: #FFFFFF; border-color: var(--accent-color); box-shadow: 0 4px 12px var(--accent-light);
-        }
+        .quick-chip.active { background: var(--accent-color); color: #FFFFFF; border-color: var(--accent-color); box-shadow: 0 4px 12px var(--accent-light); }
 
-        .formula-preview-pill {
-            background: rgba(var(--bg-surface-rgb), 0.3); border: 1px dashed var(--glass-border);
-            border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; font-weight: 700;
-            color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between;
-        }
+        .formula-preview-pill { background: rgba(var(--bg-surface-rgb), 0.3); border: 1px dashed var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; }
         .formula-preview-pill .formula-code { color: var(--accent-color); font-weight: 800; font-family: var(--font-money); }
 
-        /* 目标激励视觉模块 */
-        .goal-banner-card {
-            background: rgba(var(--bg-surface-rgb), 0.2); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg); padding: 16px; margin-top: 12px;
-        }
-        .goal-cover-img-wrapper {
-            position: relative; width: 72px; height: 72px; border-radius: var(--radius-md);
-            overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
+        .goal-banner-card { background: rgba(var(--bg-surface-rgb), 0.2); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 16px; margin-top: 12px; }
+        .goal-cover-img-wrapper { position: relative; width: 72px; height: 72px; border-radius: var(--radius-md); overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
         .goal-cover-img { width: 100%; height: 100%; object-fit: cover; }
-        .goal-cover-overlay {
-            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(2px); transition: all 0.3s ease;
-        }
-
+        .goal-cover-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(2px); transition: all 0.3s ease; }
         .goal-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
-        .goal-stat-item {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md); padding: 8px 4px; text-align: center;
-        }
+        .goal-stat-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 8px 4px; text-align: center; }
         .goal-stat-item .stat-label { font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); display: block; }
         .goal-stat-item .stat-value { font-size: 0.95rem; font-weight: 900; font-family: var(--font-money); margin-top: 4px; display: block; }
-
-        .goal-progress-bar-bg {
-            height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill);
-            overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-        }
+        .goal-progress-bar-bg { height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         [data-theme="dark"] .goal-progress-bar-bg { background: rgba(255,255,255,0.05); }
-        .goal-progress-bar-fill {
-            height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease;
-        }
+        .goal-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease; }
         .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #F110B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
 
-        /* 收益记录流 */
         .earnings-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
         .earnings-history-list::-webkit-scrollbar { width: 4px; }
         .earnings-history-list::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 4px; opacity: 0.3; }
-        
-        .earnings-history-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s;
-        }
+        .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s; }
         .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
         .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
-        .auto-sync-badge { border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
 
-        /* 阶梯卡片阵列 */
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
-        
-        .tier-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 12px;
-            text-align: center; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .tier-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 12px; text-align: center; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .tier-card .tier-range { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
         .tier-card .tier-price { font-size: 1.3rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); }
-        
-        .tier-card.is-active {
-            background: var(--accent-light); border-color: var(--accent-color);
-            box-shadow: 0 8px 24px var(--accent-light); transform: translateY(-4px);
-        }
-        .tier-card.is-active::after {
-            content: '✓ 匹配档位'; position: absolute; top: -10px; right: 50%; transform: translateX(50%);
-            background: var(--accent-color); color: #FFF; font-size: 0.65rem; font-weight: 800;
-            padding: 2px 10px; border-radius: var(--radius-pill); box-shadow: 0 4px 12px var(--accent-light); white-space: nowrap;
-        }
+        .tier-card.is-active { background: var(--accent-light); border-color: var(--accent-color); box-shadow: 0 8px 24px var(--accent-light); transform: translateY(-4px); }
+        .tier-card.is-active::after { content: '✓ 匹配档位'; position: absolute; top: -10px; right: 50%; transform: translateX(50%); background: var(--accent-color); color: #FFF; font-size: 0.65rem; font-weight: 800; padding: 2px 10px; border-radius: var(--radius-pill); box-shadow: 0 4px 12px var(--accent-light); white-space: nowrap; }
 
-        /* 辅助计算盘 */
-        .calculator-wrapper {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 16px;
-            width: 100%; max-width: 320px; margin: 0 auto; box-shadow: var(--glass-shadow); backdrop-filter: blur(20px);
-        }
-        #calcDisplay {
-            width: 100%; height: 56px; margin-bottom: 12px; text-align: right; font-size: 1.8rem; font-family: var(--font-money);
-            padding: 8px 16px; border: none; border-radius: var(--radius-lg); background: rgba(0,0,0,0.04);
-            color: var(--text-primary); font-weight: 800; box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-        }
+        .calculator-wrapper { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 16px; width: 100%; max-width: 320px; margin: 0 auto; box-shadow: var(--glass-shadow); backdrop-filter: blur(20px); }
+        #calcDisplay { width: 100%; height: 56px; margin-bottom: 12px; text-align: right; font-size: 1.8rem; font-family: var(--font-money); padding: 8px 16px; border: none; border-radius: var(--radius-lg); background: rgba(0,0,0,0.04); color: var(--text-primary); font-weight: 800; box-shadow: inset 0 2px 6px rgba(0,0,0,0.05); }
         [data-theme="dark"] #calcDisplay { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); }
-        
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn {
-            height: 48px; font-size: 1.25rem; font-family: var(--font-money); font-weight: 800;
-            border: 1px solid var(--glass-border); border-radius: var(--radius-md);
-            background: rgba(var(--bg-surface-rgb), 0.4); color: var(--text-primary);
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;
-        }
+        .calc-btn { height: 48px; font-size: 1.25rem; font-family: var(--font-money); font-weight: 800; border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: rgba(var(--bg-surface-rgb), 0.4); color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease; }
         .calc-btn:active { transform: scale(0.92); }
         .calc-op { color: var(--accent-color); background: var(--accent-light); border-color: transparent; }
         .calc-clear { color: var(--danger-text); background: var(--danger-bg); border-color: transparent; }
-        .calc-equal {
-            background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFF; border: none;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); grid-row: span 2; height: 100%; border-radius: var(--radius-md);
-        }
+        .calc-equal { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFF; border: none; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); grid-row: span 2; height: 100%; border-radius: var(--radius-md); }
 
         .modal-content { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); box-shadow: 0 24px 48px rgba(0,0,0,0.2); color: var(--text-primary); }
         
-        /* 摆烂警告 */
-        .anti-slacking-card {
-            background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 12px; backdrop-filter: blur(10px);
-        }
+        .anti-slacking-card { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 12px; backdrop-filter: blur(10px); }
         .anti-slacking-card.is-slacking { animation: danger-pulse 2.5s infinite ease-in-out; }
         @keyframes danger-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     </style>
@@ -413,7 +198,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-danger text-white rounded-pill"><i class="ph ph-warning-circle"></i> 摆烂危险期</span>
-                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没加单！连胜记录岌岌可危！</span>
+                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡存入收益！连胜记录岌岌可危！</span>
                 </div>
                 <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 00:00:00</span>
             </div>
@@ -511,7 +296,7 @@
                             </div>
                         </div>
                         <div class="goal-stats-grid">
-                            <div class="goal-stat-item"><span class="stat-label">已充能存入</span><span class="stat-value money-text-gradient" id="goalSavedAmount">￥0.00</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">已充能(含临时)</span><span class="stat-value money-text-gradient" id="goalSavedAmount" style="font-size:0.8rem;">￥0.00</span></div>
                             <div class="goal-stat-item"><span class="stat-label">完成进度</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
                             <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
                             <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
@@ -567,10 +352,8 @@
                             <span class="text-sm fw-bold text-primary">金库打卡记录</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 text-xs d-flex align-items-center gap-1" title="每次增减单量，均会实时自动保存至今日金库">
-                                <i class="ph-bold ph-arrows-clockwise"></i> 自动存入
-                            </div>
-                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">手动记账</button>
+                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
+                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-4" style="background: rgba(var(--bg-surface-rgb), 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
@@ -961,7 +744,18 @@
         }
 
         function persistEarningsHistory() { try { localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory)); } catch (e) {} }
+        
+        // 仅仅累加已经真实打卡存入的金额（即记录列表中的全部金额）
         function getTotalPunchedInEarnings() { return earningsHistory.reduce((sum, item) => sum + (item.amount || 0), 0); }
+
+        // 获取今日已经在打卡列表中记录的总和（用于防重复打卡计费）
+        function getUnpunchedToday() {
+            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
+            const todayPunchedIn = earningsHistory
+                .filter(item => item.date.startsWith(todayStr))
+                .reduce((sum, item) => sum + (item.amount || 0), 0);
+            return Math.max(0, currentCalculatedTotal - todayPunchedIn);
+        }
 
         function renderEarningsHistory() {
             const container = document.getElementById('earningsHistoryList'), historyCountEl = document.getElementById('historyCount'), accumulatedTotalEl = document.getElementById('accumulatedTotal'), dailyAvgText = document.getElementById('dailyAvgText');
@@ -986,9 +780,7 @@
                 let html = '';
                 earningsHistory.forEach((item, index) => {
                     const safeMemo = escapeHTML(item.memo);
-                    let badgeClass = 'bg-secondary bg-opacity-10 text-secondary';
-                    if (safeMemo === '今日实时单量') badgeClass = 'auto-sync-badge text-success';
-                    const memoHtml = safeMemo ? `<span class="badge ${badgeClass} ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
+                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
                             <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.date)}${memoHtml}</span>
@@ -1018,7 +810,7 @@
                 card.classList.remove('is-slacking'); card.style.display = 'none'; 
             } else {
                 card.classList.add('is-slacking'); card.style.display = 'block';
-                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无进账将断档！` : '今日还没开始加单跑量！';
+                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无打卡进账将断档！` : '今日还没打卡存入收益！';
             }
 
             if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
@@ -1032,8 +824,29 @@
             }
         }
 
+        window.recordTodayEarnings = function() {
+            const unpunched = getUnpunchedToday();
+            
+            if (currentCalculatedTotal <= 0) { 
+                alert('当前页面计算收益为 0，请先输入单量！'); 
+                return; 
+            }
+            if (unpunched <= 0) { 
+                alert('当前页面上的收益已全部打卡入库，继续跑单产生新收益后再来吧！'); 
+                return; 
+            }
+            
+            document.getElementById('recordModalTitle').textContent = "确认资金入库";
+            document.getElementById('recordEditIndex').value = "-1";
+            document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
+            // 自动减去今日已打卡金额，仅推荐存入新增的差额，避免重复存入
+            document.getElementById('recordModalAmount').value = unpunched.toFixed(2);
+            document.getElementById('recordModalMemo').value = "常规打卡存入";
+            new bootstrap.Modal(document.getElementById('recordModal')).show();
+        };
+
         window.openCustomDepositModal = function() {
-            document.getElementById('recordModalTitle').textContent = "手动记录资金流动";
+            document.getElementById('recordModalTitle').textContent = "手动补录资金流动";
             document.getElementById('recordEditIndex').value = "-1";
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = '';
@@ -1067,9 +880,12 @@
                 earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
             earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
+            
             if (amount > 0 && editIndex === -1) fireConfetti();
-            persistEarningsHistory(); renderEarningsHistory();
+            persistEarningsHistory(); 
+            renderEarningsHistory();
             bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
+            // 不重置屏幕上的单量输入框，让用户可以看到一天的全貌
         };
 
         window.deleteEarningsRecord = function(index) {
@@ -1160,7 +976,19 @@
             const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper'), goalCoverImg = document.getElementById('goalCoverImg'), goalCoverOverlay = document.getElementById('goalCoverOverlay');
 
             if (!goalTitleText) return;
-            const totalSaved = getTotalPunchedInEarnings(); goalSavedAmount.textContent = `￥${totalSaved.toFixed(2)}`;
+            
+            // 真实历史入库金额
+            const totalSaved = getTotalPunchedInEarnings(); 
+            // 屏幕上尚未打卡入库的新增金额
+            const unpunched = getUnpunchedToday(); 
+            // UI展示的综合进度（临时涨幅）
+            const effectiveTotal = totalSaved + unpunched;
+            
+            let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
+            if (unpunched > 0) {
+                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含未打卡)</span>`;
+            }
+            goalSavedAmount.innerHTML = htmlSaved;
 
             if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
                 goalTitleText.textContent = "未设定目标"; goalDiffStatusText.textContent = "请设立";
@@ -1171,7 +999,8 @@
             const currentGoal = bigGoals[selectedGoalIndex];
             goalTitleText.innerHTML = `${escapeHTML(currentGoal.emoji || '🎯')} ${escapeHTML(currentGoal.name)}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
 
-            const diff = currentGoal.amount - totalSaved, pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
+            // 用合并临时金额的 effectiveTotal 来计算涨幅进度条
+            const diff = currentGoal.amount - effectiveTotal, pct = Math.min(100, Math.max(0, (effectiveTotal / currentGoal.amount) * 100));
 
             if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
                 if (currentGoal.image) {
@@ -1254,7 +1083,6 @@
             if (confirm(`确定要移除该标准档位吗？`)) { imageTiers.splice(index, 1); persistTiers(); calculate(true); }
         };
 
-        /* ✨ 每日（上午/下午）目标单量管理函数 ✨ */
         window.openDailyTargetModal = function() {
             document.getElementById('morningTargetInput').value = morningOrderTarget;
             document.getElementById('afternoonTargetInput').value = afternoonOrderTarget;
@@ -1276,7 +1104,7 @@
             } catch(e) {}
             
             bootstrap.Modal.getInstance(document.getElementById('dailyTargetModal')).hide();
-            calculate(false); // 触发刷新UI
+            calculate(false);
         };
 
         function updateDailyTargetProgress(currentTotal) {
@@ -1288,7 +1116,6 @@
 
             if (!morningBar || !afternoonBar) return;
 
-            // 根据用户当前输入的全天完成总单量，自动划分早晚进度
             let morningCompleted = Math.min(currentTotal, morningOrderTarget);
             let afternoonCompleted = Math.max(0, currentTotal - morningOrderTarget);
             let cappedAfternoonCompleted = Math.min(afternoonCompleted, afternoonOrderTarget);
@@ -1302,7 +1129,6 @@
             let morningDiff = morningOrderTarget - morningCompleted;
             let afternoonDiff = afternoonOrderTarget - afternoonCompleted;
 
-            // 渲染上午文案状态
             if (morningDiff <= 0) {
                 morningLabel.innerHTML = `<i class="ph-fill ph-sun me-1 text-warning"></i>上午战况: <span class="text-white fw-bold">已达成！</span>`;
                 morningBar.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.8)';
@@ -1311,7 +1137,6 @@
                 morningBar.style.boxShadow = 'none';
             }
 
-            // 渲染下午文案状态
             if (currentTotal < morningOrderTarget) {
                  afternoonLabel.innerHTML = `<i class="ph-fill ph-moon-stars me-1 text-info"></i>下午目标: <strong class="text-white fs-6 mx-1">${afternoonOrderTarget}</strong> 单 (等待激活)`;
                  afternoonBar.style.boxShadow = 'none';
@@ -1324,7 +1149,6 @@
                 afternoonBar.style.boxShadow = 'none';
             }
 
-            // 激励语录更新
             if (morningDiff > 0) {
                 motivationText.innerHTML = '✨ 迎着朝阳，开启上午的爆单之旅！';
                 motivationText.style.color = 'rgba(255,255,255,0.75)';
@@ -1381,7 +1205,7 @@
             if (localData && totalOrdersInput && groupOrdersInput) {
                 try {
                     const parsed = JSON.parse(localData);
-                    // 跨天自动重置输入框，保护昨日同步的金库流水不被误删
+                    // 跨天检测：如果是新的一天，则重置单量输入，保护昨日状态
                     if (parsed.date !== todayStr) {
                         shouldClear = true;
                     } else {
@@ -1396,7 +1220,7 @@
                 if (groupOrdersInput) groupOrdersInput.value = '0';
             }
             
-            calculate(false); // 初始加载，由已有的金库历史驱动UI即可
+            calculate(false); 
         }
 
         function calculate(shouldSave = true) {
@@ -1430,14 +1254,12 @@
             if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-white mx-1">${regularOrdersNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥${groupUnitPrice.toFixed(2)}</span>`;
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
-            
-            // 触发上午/下午双轨每日目标的进度更新
             updateDailyTargetProgress(totalOrdersNum);
 
-            // ✨ 加单自动存入并保存配置的核心逻辑 ✨
             if (shouldSave) {
                 try {
                     if (window.localStorage) {
+                        // 仅保存当前屏幕的输入状态用于刷新恢复，不强插金库记录
                         localStorage.setItem('tier_calculator_storage_v3', JSON.stringify({ 
                             date: todayStr, 
                             totalOrders: totalOrdersStr, 
@@ -1447,32 +1269,8 @@
                     }
                 } catch (e) {}
 
-                // 查找今日由系统自动创建的打卡记录
-                let todayRecordIndex = earningsHistory.findIndex(item => item.date.startsWith(todayStr) && item.memo === "今日实时单量");
-                
-                if (grandTotal > 0) {
-                    if (todayRecordIndex !== -1) {
-                        earningsHistory[todayRecordIndex].amount = grandTotal;
-                        earningsHistory[todayRecordIndex].date = formatToDatetimeLocal(new Date()).replace('T', ' ');
-                    } else {
-                        earningsHistory.unshift({
-                            date: formatToDatetimeLocal(new Date()).replace('T', ' '),
-                            amount: grandTotal,
-                            memo: "今日实时单量"
-                        });
-                    }
-                } else {
-                    // 若当前重置为0单，则撤销今日的自动同步记录
-                    if (todayRecordIndex !== -1) {
-                        earningsHistory.splice(todayRecordIndex, 1);
-                    }
-                }
-                
-                earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
-                persistEarningsHistory();
-                
-                // 自动刷新金库列表，进而触碰 updateGoalProgress(), 实现增减单量的瞬间反馈
-                renderEarningsHistory(); 
+                // 这里调用 updateGoalProgress 以实现 实时增减单量 -> 目标进度条立马做出反应（展示未入库状态）
+                updateGoalProgress(); 
             }
         }
 
