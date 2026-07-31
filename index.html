@@ -244,7 +244,7 @@
         }
         
         .daily-target-fill {
-            height: 100%; background: linear-gradient(90deg, #818CF8, #C084FC); border-radius: var(--radius-pill); width: 0%;
+            height: 100%; border-radius: var(--radius-pill); width: 0%;
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -460,13 +460,21 @@
 
                         <div class="hero-progress-box">
                             <div class="hero-progress-info mb-1 d-flex justify-content-between align-items-center">
-                                <span id="dailyTargetLabel"><i class="ph-fill ph-crosshairs me-1 text-warning"></i>距今日目标还差: <strong class="text-white fs-6 mx-1">50</strong> 单</span>
+                                <span id="morningTargetLabel"><i class="ph-fill ph-sun me-1 text-warning"></i>上午目标: -- 单</span>
                                 <i class="ph-bold ph-pencil-simple text-white opacity-75" style="cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'" onclick="openDailyTargetModal()" title="设置目标单量"></i>
                             </div>
-                            <div class="hero-progress-track mb-1">
-                                <div id="dailyOrderProgressBar" class="daily-target-fill" style="width: 0%;"></div>
+                            <div class="hero-progress-track mb-2">
+                                <div id="morningOrderProgressBar" class="daily-target-fill" style="width: 0%; background: linear-gradient(90deg, #FBBF24, #F59E0B);"></div>
                             </div>
-                            <div class="text-xs fw-bold" id="dailyOrderMotivation" style="color: rgba(255,255,255,0.75);">✨ 美好的一天开始啦，准备接单！</div>
+                            
+                            <div class="hero-progress-info mb-1 d-flex justify-content-between align-items-center">
+                                <span id="afternoonTargetLabel"><i class="ph-fill ph-moon-stars me-1 text-info"></i>下午目标: -- 单</span>
+                            </div>
+                            <div class="hero-progress-track mb-1">
+                                <div id="afternoonOrderProgressBar" class="daily-target-fill" style="width: 0%; background: linear-gradient(90deg, #818CF8, #C084FC);"></div>
+                            </div>
+
+                            <div class="text-xs fw-bold mt-2" id="dailyOrderMotivation" style="color: rgba(255,255,255,0.75);">✨ 美好的一天开始啦，准备接单！</div>
                         </div>
                     </div>
                 </div>
@@ -614,13 +622,17 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-black fs-6">设定今日接单目标</h5>
+                    <h5 class="modal-title fw-black fs-6">设定分时接单目标</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">你要挑战的每日单量 (单)</label>
-                        <input type="number" id="dailyTargetInput" class="form-control calc-input-group money-font-style bg-light" placeholder="例如: 50">
+                        <label class="form-label text-xs fw-bold text-secondary">上午目标单量 (单)</label>
+                        <input type="number" id="morningTargetInput" class="form-control calc-input-group money-font-style bg-light" placeholder="例如: 20">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-xs fw-bold text-secondary">下午目标单量 (单)</label>
+                        <input type="number" id="afternoonTargetInput" class="form-control calc-input-group money-font-style bg-light" placeholder="例如: 30">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
@@ -740,6 +752,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // -------------------------
+        // 🛠 安全修复：引入HTML转义工具函数防止XSS注入
+        // -------------------------
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>'"]/g, function(tag) {
+                const charsToReplace = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                };
+                return charsToReplace[tag] || tag;
+            });
+        }
+
         let imageTiers = [
             { minOrder: 1, price: 4.0 }, { minOrder: 600, price: 5.0 },
             { minOrder: 1000, price: 5.5 }, { minOrder: 1300, price: 6.5 }
@@ -750,8 +779,12 @@
             { name: "新手机", amount: 3000, emoji: "📱", image: "" },
             { name: "新战车", amount: 5000, emoji: "🛵", image: "" }
         ];
+        
         let selectedGoalIndex = 1;
-        let dailyOrderTarget = 50; // 默认每日目标单量
+        
+        // 拆分上午与下午的目标单量
+        let morningOrderTarget = 20; 
+        let afternoonOrderTarget = 30; 
 
         let earningsHistory = [];
         let currentCalculatedTotal = 0;
@@ -790,10 +823,12 @@
             initMotivationMarquee();
             startMidnightCountdown();
 
-            const savedDailyTarget = localStorage.getItem('custom_daily_target_v1');
-            if (savedDailyTarget) {
-                dailyOrderTarget = parseInt(savedDailyTarget, 10) || 50;
-            }
+            // 读取本地保存的上午/下午目标单量
+            const savedMorning = localStorage.getItem('custom_morning_target_v1');
+            if (savedMorning) morningOrderTarget = parseInt(savedMorning, 10) || 20;
+            
+            const savedAfternoon = localStorage.getItem('custom_afternoon_target_v1');
+            if (savedAfternoon) afternoonOrderTarget = parseInt(savedAfternoon, 10) || 30;
 
             const savedTiers = localStorage.getItem('custom_image_tiers_v2');
             if (savedTiers) {
@@ -954,10 +989,11 @@
             } else {
                 let html = '';
                 earningsHistory.forEach((item, index) => {
-                    const memoHtml = item.memo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${item.memo}</span>` : '';
+                    const safeMemo = escapeHTML(item.memo);
+                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
-                            <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${item.date}${memoHtml}</span>
+                            <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.date)}${memoHtml}</span>
                             <div class="d-flex align-items-center gap-3">
                                 <span class="item-amount">${item.amount >= 0 ? '+' : ''}￥${item.amount.toFixed(2)}</span>
                                 <div class="d-flex gap-2">
@@ -992,7 +1028,7 @@
                 const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 200;
                 if (diff > 0) {
                     const lostDays = (avgDailyEarnings > 0) ? (1).toFixed(1) : 1;
-                    costText.innerHTML = `💡 若今日摆烂：【${currentGoal.name}】将被迫延迟 <strong class="text-danger money-font-style">${lostDays} 天</strong>！`;
+                    costText.innerHTML = `💡 若今日摆烂：【${escapeHTML(currentGoal.name)}】将被迫延迟 <strong class="text-danger money-font-style">${lostDays} 天</strong>！`;
                 }
             }
         }
@@ -1076,10 +1112,12 @@
             let html = '';
             bigGoals.forEach((goal, idx) => {
                 const isSelected = (idx === selectedGoalIndex);
-                const thumbHtml = goal.image ? `<img src="${goal.image}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;margin-right:4px;">` : `${goal.emoji || '🎯'} `;
+                const safeEmoji = escapeHTML(goal.emoji || '🎯');
+                const safeName = escapeHTML(goal.name);
+                const thumbHtml = goal.image ? `<img src="${goal.image}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;margin-right:4px;">` : `${safeEmoji} `;
                 html += `
                     <div class="quick-chip ${isSelected ? 'active' : ''}" onclick="selectGoal(${idx})">
-                        <span>${thumbHtml}${goal.name} (￥${goal.amount})</span>
+                        <span>${thumbHtml}${safeName} (￥${goal.amount})</span>
                         <i class="ph-bold ph-pencil-simple ms-1 opacity-75 hover-opacity-100" onclick="openEditGoalModal(event, ${idx})"></i>
                         <i class="ph-bold ph-x text-danger opacity-75 hover-opacity-100 ms-1" onclick="removeGoal(event, ${idx})"></i>
                     </div>
@@ -1152,7 +1190,7 @@
             }
 
             const currentGoal = bigGoals[selectedGoalIndex];
-            goalTitleText.innerHTML = `${currentGoal.emoji || '🎯'} ${currentGoal.name}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
+            goalTitleText.innerHTML = `${escapeHTML(currentGoal.emoji || '🎯')} ${escapeHTML(currentGoal.name)}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
 
             const diff = currentGoal.amount - totalSaved, pct = Math.min(100, Math.max(0, (totalSaved / currentGoal.amount) * 100));
 
@@ -1237,56 +1275,86 @@
             if (confirm(`确定要移除该标准档位吗？`)) { imageTiers.splice(index, 1); persistTiers(); calculate(true); }
         };
 
-        /* ✨ 每日单量目标管理函数 ✨ */
+        /* ✨ 每日（上午/下午）目标单量管理函数 ✨ */
         window.openDailyTargetModal = function() {
-            document.getElementById('dailyTargetInput').value = dailyOrderTarget;
+            document.getElementById('morningTargetInput').value = morningOrderTarget;
+            document.getElementById('afternoonTargetInput').value = afternoonOrderTarget;
             new bootstrap.Modal(document.getElementById('dailyTargetModal')).show();
         };
 
         window.saveDailyTarget = function() {
-            const val = parseInt(document.getElementById('dailyTargetInput').value, 10);
-            if (isNaN(val) || val <= 0) { alert('请输入大于0的有效单量目标！'); return; }
-            dailyOrderTarget = val;
-            try { localStorage.setItem('custom_daily_target_v1', dailyOrderTarget); } catch(e) {}
+            const morningVal = parseInt(document.getElementById('morningTargetInput').value, 10);
+            const afternoonVal = parseInt(document.getElementById('afternoonTargetInput').value, 10);
+            if (isNaN(morningVal) || morningVal < 0 || isNaN(afternoonVal) || afternoonVal < 0) { 
+                alert('请输入大于等于0的有效单量目标！'); return; 
+            }
+            morningOrderTarget = morningVal;
+            afternoonOrderTarget = afternoonVal;
+            
+            try { 
+                localStorage.setItem('custom_morning_target_v1', morningOrderTarget); 
+                localStorage.setItem('custom_afternoon_target_v1', afternoonOrderTarget); 
+            } catch(e) {}
+            
             bootstrap.Modal.getInstance(document.getElementById('dailyTargetModal')).hide();
             calculate(false); // 触发刷新UI
         };
 
         function updateDailyTargetProgress(currentTotal) {
-            const labelText = document.getElementById('dailyTargetLabel');
-            const progressBar = document.getElementById('dailyOrderProgressBar');
+            const morningLabel = document.getElementById('morningTargetLabel');
+            const afternoonLabel = document.getElementById('afternoonTargetLabel');
+            const morningBar = document.getElementById('morningOrderProgressBar');
+            const afternoonBar = document.getElementById('afternoonOrderProgressBar');
             const motivationText = document.getElementById('dailyOrderMotivation');
 
-            if (!progressBar) return;
+            if (!morningBar || !afternoonBar) return;
 
-            let pct = Math.min(100, Math.max(0, (currentTotal / dailyOrderTarget) * 100));
-            let diff = dailyOrderTarget - currentTotal;
-            
-            progressBar.style.width = `${pct}%`;
+            // 根据用户当前输入的全天完成总单量，自动划分早晚进度
+            let morningCompleted = Math.min(currentTotal, morningOrderTarget);
+            let afternoonCompleted = Math.max(0, currentTotal - morningOrderTarget);
+            let cappedAfternoonCompleted = Math.min(afternoonCompleted, afternoonOrderTarget);
 
-            if (diff <= 0) {
-                labelText.innerHTML = `<i class="ph-fill ph-crosshairs me-1 text-warning"></i>今日战况: <span class="text-white fw-bold">已达成！超额 <strong class="text-warning fs-6 mx-1">${Math.abs(diff)}</strong> 单</span>`;
-                progressBar.style.boxShadow = '0 0 16px rgba(16, 185, 129, 0.8)';
-                progressBar.style.background = 'linear-gradient(90deg, #34D399, #10B981)';
-                motivationText.innerHTML = '<i class="ph-fill ph-fire text-danger me-1"></i>太棒了！今日单量目标已达成，进入超额爆单时间！';
-                motivationText.style.color = '#34D399'; 
+            let morningPct = morningOrderTarget > 0 ? (morningCompleted / morningOrderTarget) * 100 : 100;
+            let afternoonPct = afternoonOrderTarget > 0 ? (cappedAfternoonCompleted / afternoonOrderTarget) * 100 : 100;
+
+            morningBar.style.width = `${morningPct}%`;
+            afternoonBar.style.width = `${afternoonPct}%`;
+
+            let morningDiff = morningOrderTarget - morningCompleted;
+            let afternoonDiff = afternoonOrderTarget - afternoonCompleted;
+
+            // 渲染上午文案状态
+            if (morningDiff <= 0) {
+                morningLabel.innerHTML = `<i class="ph-fill ph-sun me-1 text-warning"></i>上午战况: <span class="text-white fw-bold">已达成！</span>`;
+                morningBar.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.8)';
             } else {
-                labelText.innerHTML = `<i class="ph-fill ph-crosshairs me-1 text-warning"></i>距今日目标还差: <strong class="text-white fs-6 mx-1">${diff}</strong> 单`;
-                progressBar.style.background = 'linear-gradient(90deg, #818CF8, #C084FC)';
-                
-                if (pct >= 50) {
-                    progressBar.style.boxShadow = '0 0 8px rgba(192, 132, 252, 0.4)';
-                    motivationText.innerHTML = '<i class="ph-fill ph-rocket-launch text-warning me-1"></i>进度过半啦，稳扎稳打，胜利就在眼前！';
-                    motivationText.style.color = 'rgba(255,255,255,0.9)';
-                } else if (pct > 0) {
-                    progressBar.style.boxShadow = 'none';
-                    motivationText.innerHTML = '🛵 持续发力中，保持节奏！';
-                    motivationText.style.color = 'rgba(255,255,255,0.75)';
-                } else {
-                    progressBar.style.boxShadow = 'none';
-                    motivationText.innerHTML = '✨ 美好的一天开始啦，准备接单！';
-                    motivationText.style.color = 'rgba(255,255,255,0.75)';
-                }
+                morningLabel.innerHTML = `<i class="ph-fill ph-sun me-1 text-warning"></i>距上午目标差: <strong class="text-white fs-6 mx-1">${morningDiff}</strong> 单`;
+                morningBar.style.boxShadow = 'none';
+            }
+
+            // 渲染下午文案状态
+            if (currentTotal < morningOrderTarget) {
+                 afternoonLabel.innerHTML = `<i class="ph-fill ph-moon-stars me-1 text-info"></i>下午目标: <strong class="text-white fs-6 mx-1">${afternoonOrderTarget}</strong> 单 (等待激活)`;
+                 afternoonBar.style.boxShadow = 'none';
+            } else if (afternoonDiff <= 0) {
+                let over = Math.abs(afternoonDiff);
+                afternoonLabel.innerHTML = `<i class="ph-fill ph-moon-stars me-1 text-info"></i>下午战况: <span class="text-white fw-bold">已达成！超额 <strong class="text-warning fs-6 mx-1">${over}</strong> 单</span>`;
+                afternoonBar.style.boxShadow = '0 0 10px rgba(192, 132, 252, 0.8)';
+            } else {
+                afternoonLabel.innerHTML = `<i class="ph-fill ph-moon-stars me-1 text-info"></i>距下午目标差: <strong class="text-white fs-6 mx-1">${afternoonDiff}</strong> 单`;
+                afternoonBar.style.boxShadow = 'none';
+            }
+
+            // 激励语录更新
+            if (morningDiff > 0) {
+                motivationText.innerHTML = '✨ 迎着朝阳，开启上午的爆单之旅！';
+                motivationText.style.color = 'rgba(255,255,255,0.75)';
+            } else if (morningDiff <= 0 && afternoonDiff > 0) {
+                motivationText.innerHTML = '🛵 上午目标已拿下！稍作休息，下午继续冲刺！';
+                motivationText.style.color = '#FDE68A';
+            } else {
+                motivationText.innerHTML = '<i class="ph-fill ph-fire text-danger me-1"></i>太棒了！全天目标均已拿下，进入超额爆单时间！';
+                motivationText.style.color = '#34D399'; 
             }
         }
 
@@ -1355,7 +1423,7 @@
 
             updateProgressEngine(regularOrdersNum, matchedIndex);
             
-            // 触发每日目标的进度更新
+            // 触发上午/下午双轨每日目标的进度更新
             updateDailyTargetProgress(totalOrdersNum);
         }
 
