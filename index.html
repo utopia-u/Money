@@ -338,6 +338,7 @@
         }
         .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
         .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
+        .auto-sync-badge { border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
 
         /* 阶梯卡片阵列 */
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -412,7 +413,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-danger text-white rounded-pill"><i class="ph ph-warning-circle"></i> 摆烂危险期</span>
-                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡记收益！连胜记录岌岌可危！</span>
+                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没加单！连胜记录岌岌可危！</span>
                 </div>
                 <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 00:00:00</span>
             </div>
@@ -533,8 +534,8 @@
                                 <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(1)">+1</button>
                                 <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(5)">+5</button>
                                 <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(10)">+10</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(20)">+20</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(50)">+50</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-1)">-1</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-5)">-5</button>
                                 <button type="button" class="quick-chip text-danger" onclick="clearOrders()"><i class="ph-bold ph-trash"></i></button>
                             </div>
                         </div>
@@ -551,9 +552,8 @@
                             </div>
                             <div class="d-flex flex-wrap gap-2 mt-2">
                                 <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(1)">+1</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(2)">+2</button>
                                 <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(5)">+5</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(10)">+10</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addGroupOrders(-1)">-1</button>
                                 <button type="button" class="quick-chip text-danger" onclick="clearGroupOrders()"><i class="ph-bold ph-trash"></i></button>
                             </div>
                         </div>
@@ -566,9 +566,11 @@
                             <i class="ph-fill ph-vault text-warning fs-5"></i>
                             <span class="text-sm fw-bold text-primary">金库打卡记录</span>
                         </div>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="quick-chip text-white" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
-                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 text-xs d-flex align-items-center gap-1" title="每次增减单量，均会实时自动保存至今日金库">
+                                <i class="ph-bold ph-arrows-clockwise"></i> 自动存入
+                            </div>
+                            <button type="button" class="quick-chip" onclick="openCustomDepositModal()">手动记账</button>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-4" style="background: rgba(var(--bg-surface-rgb), 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
@@ -758,13 +760,7 @@
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(tag) {
-                const charsToReplace = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                };
+                const charsToReplace = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
                 return charsToReplace[tag] || tag;
             });
         }
@@ -990,7 +986,9 @@
                 let html = '';
                 earningsHistory.forEach((item, index) => {
                     const safeMemo = escapeHTML(item.memo);
-                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
+                    let badgeClass = 'bg-secondary bg-opacity-10 text-secondary';
+                    if (safeMemo === '今日实时单量') badgeClass = 'auto-sync-badge text-success';
+                    const memoHtml = safeMemo ? `<span class="badge ${badgeClass} ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
                             <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.date)}${memoHtml}</span>
@@ -1006,6 +1004,7 @@
                 });
                 container.innerHTML = html;
             }
+            // 实时触发目标的UI重绘
             updateGoalProgress();
         }
 
@@ -1019,7 +1018,7 @@
                 card.classList.remove('is-slacking'); card.style.display = 'none'; 
             } else {
                 card.classList.add('is-slacking'); card.style.display = 'block';
-                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无充能将断档！` : '今日金库尚未进账！';
+                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无进账将断档！` : '今日还没开始加单跑量！';
             }
 
             if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
@@ -1033,18 +1032,8 @@
             }
         }
 
-        window.recordTodayEarnings = function() {
-            if (currentCalculatedTotal <= 0) { alert('当前计算收益为 0，请先输入有效的单量！'); return; }
-            document.getElementById('recordModalTitle').textContent = "确认资金入库";
-            document.getElementById('recordEditIndex').value = "-1";
-            document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
-            document.getElementById('recordModalAmount').value = currentCalculatedTotal.toFixed(2);
-            document.getElementById('recordModalMemo').value = "常规打卡存入";
-            new bootstrap.Modal(document.getElementById('recordModal')).show();
-        };
-
         window.openCustomDepositModal = function() {
-            document.getElementById('recordModalTitle').textContent = "记录资金流动";
+            document.getElementById('recordModalTitle').textContent = "手动记录资金流动";
             document.getElementById('recordEditIndex').value = "-1";
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = '';
@@ -1068,20 +1057,17 @@
         window.saveRecordFromModal = function() {
             const editIndex = parseInt(document.getElementById('recordEditIndex').value, 10);
             const dtVal = document.getElementById('recordModalDateTime').value, amount = parseFloat(document.getElementById('recordModalAmount').value), memo = document.getElementById('recordModalMemo').value.trim();
-            if (!dtVal) { alert('请选择有效的打卡日期！'); return; }
+            if (!dtVal) { alert('请选择有效的记录日期！'); return; }
             if (isNaN(amount) || amount === 0) { alert('请输入有效的金额！'); return; }
             const displayDate = dtVal.replace('T', ' ');
 
             if (editIndex === -1) {
-                earningsHistory.unshift({ date: displayDate, amount: amount, memo: memo || "打卡存入" });
-                if (document.getElementById('recordModalTitle').textContent.includes('确认资金入库')) {
-                    if (totalOrdersInput) totalOrdersInput.value = '0'; if (groupOrdersInput) groupOrdersInput.value = '0'; calculate(true);
-                }
+                earningsHistory.unshift({ date: displayDate, amount: amount, memo: memo || "补录存入" });
             } else {
                 earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
             earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
-            if (amount > 0) fireConfetti();
+            if (amount > 0 && editIndex === -1) fireConfetti();
             persistEarningsHistory(); renderEarningsHistory();
             bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
         };
@@ -1089,13 +1075,6 @@
         window.deleteEarningsRecord = function(index) {
             if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？`)) {
                 earningsHistory.splice(index, 1); persistEarningsHistory(); renderEarningsHistory();
-            }
-        };
-
-        window.clearEarningsHistory = function() {
-            if (earningsHistory.length === 0) return;
-            if (confirm('危险操作：确定要清空所有已打卡存入的收益历史吗？此操作不可逆！')) {
-                earningsHistory = []; persistEarningsHistory(); renderEarningsHistory();
             }
         };
 
@@ -1365,36 +1344,65 @@
 
         const sanitizeInput = (val) => { let clean = String(val).replace(/[^\d]/g, ''); if (clean.length > 5) clean = clean.slice(0, 5); return clean; };
 
-        window.addTotalOrders = (amount) => { if (!totalOrdersInput) return; totalOrdersInput.value = String((parseInt(totalOrdersInput.value || '0', 10) || 0) + amount); calculate(true); playChaChingSound(); };
+        window.addTotalOrders = (amount) => { 
+            if (!totalOrdersInput) return; 
+            let current = parseInt(totalOrdersInput.value || '0', 10) || 0;
+            let newVal = current + amount;
+            if(newVal < 0) newVal = 0;
+            totalOrdersInput.value = String(newVal); 
+            calculate(true); 
+            if (amount > 0) playChaChingSound(); 
+        };
         window.clearOrders = () => { if (!totalOrdersInput) return; totalOrdersInput.value = '0'; calculate(true); };
-        window.addGroupOrders = (amount) => { if (!groupOrdersInput) return; groupOrdersInput.value = String((parseInt(groupOrdersInput.value || '0', 10) || 0) + amount); calculate(true); playChaChingSound(); };
+        
+        window.addGroupOrders = (amount) => { 
+            if (!groupOrdersInput) return; 
+            let current = parseInt(groupOrdersInput.value || '0', 10) || 0;
+            let newVal = current + amount;
+            if(newVal < 0) newVal = 0;
+            groupOrdersInput.value = String(newVal); 
+            calculate(true); 
+            if (amount > 0) playChaChingSound(); 
+        };
         window.clearGroupOrders = () => { if (!groupOrdersInput) return; groupOrdersInput.value = '0'; calculate(true); };
 
         function initCalculatorData() {
-            renderGoalChips(); renderEarningsHistory();
-            let localData = null; try { if (window.localStorage) localData = localStorage.getItem('tier_calculator_storage_v2'); } catch (e) {}
+            renderGoalChips(); 
+            renderEarningsHistory();
+            let localData = null; 
+            
+            try { 
+                if (window.localStorage) localData = localStorage.getItem('tier_calculator_storage_v3'); 
+            } catch (e) {}
+            
+            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
+            let shouldClear = false;
+
             if (localData && totalOrdersInput && groupOrdersInput) {
                 try {
                     const parsed = JSON.parse(localData);
-                    totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
-                    groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
-                    calculate(false); return;
+                    // 跨天自动重置输入框，保护昨日同步的金库流水不被误删
+                    if (parsed.date !== todayStr) {
+                        shouldClear = true;
+                    } else {
+                        totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
+                        groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
+                    }
                 } catch (e) {}
             }
-            if (totalOrdersInput && groupOrdersInput) { totalOrdersInput.value = '0'; groupOrdersInput.value = '0'; calculate(true); }
+            
+            if (shouldClear || !localData) {
+                if (totalOrdersInput) totalOrdersInput.value = '0';
+                if (groupOrdersInput) groupOrdersInput.value = '0';
+            }
+            
+            calculate(false); // 初始加载，由已有的金库历史驱动UI即可
         }
 
         function calculate(shouldSave = true) {
             showError(""); if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
             const totalOrdersStr = totalOrdersInput.value.trim(), groupOrdersStr = groupOrdersInput.value.trim();
-            if (shouldSave) {
-                try {
-                    if (window.localStorage) {
-                        localStorage.setItem('tier_calculator_storage_v2', JSON.stringify({ totalOrders: totalOrdersStr, groupOrders: groupOrdersStr }));
-                        if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
-                    }
-                } catch (e) {}
-            }
+            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
 
             let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
@@ -1425,6 +1433,47 @@
             
             // 触发上午/下午双轨每日目标的进度更新
             updateDailyTargetProgress(totalOrdersNum);
+
+            // ✨ 加单自动存入并保存配置的核心逻辑 ✨
+            if (shouldSave) {
+                try {
+                    if (window.localStorage) {
+                        localStorage.setItem('tier_calculator_storage_v3', JSON.stringify({ 
+                            date: todayStr, 
+                            totalOrders: totalOrdersStr, 
+                            groupOrders: groupOrdersStr 
+                        }));
+                        if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
+                    }
+                } catch (e) {}
+
+                // 查找今日由系统自动创建的打卡记录
+                let todayRecordIndex = earningsHistory.findIndex(item => item.date.startsWith(todayStr) && item.memo === "今日实时单量");
+                
+                if (grandTotal > 0) {
+                    if (todayRecordIndex !== -1) {
+                        earningsHistory[todayRecordIndex].amount = grandTotal;
+                        earningsHistory[todayRecordIndex].date = formatToDatetimeLocal(new Date()).replace('T', ' ');
+                    } else {
+                        earningsHistory.unshift({
+                            date: formatToDatetimeLocal(new Date()).replace('T', ' '),
+                            amount: grandTotal,
+                            memo: "今日实时单量"
+                        });
+                    }
+                } else {
+                    // 若当前重置为0单，则撤销今日的自动同步记录
+                    if (todayRecordIndex !== -1) {
+                        earningsHistory.splice(todayRecordIndex, 1);
+                    }
+                }
+                
+                earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
+                persistEarningsHistory();
+                
+                // 自动刷新金库列表，进而触碰 updateGoalProgress(), 实现增减单量的瞬间反馈
+                renderEarningsHistory(); 
+            }
         }
 
         function updateProgressEngine(regularOrders, matchedIndex) {
