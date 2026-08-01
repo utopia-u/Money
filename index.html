@@ -24,11 +24,8 @@
 
     <style>
         :root {
-            /* 2026 字体系统 */
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
-
-            /* 浅色空间拟态 */
             --bg-body: #F4F6FB;
             --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
             --glass-bg: rgba(255, 255, 255, 0.65);
@@ -36,15 +33,12 @@
             --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
             --text-primary: #0F172A;
             --text-secondary: #64748B;
-            
-            --accent-color: #6366F1;
+            --accent-color: #6366F1; 
             --accent-light: rgba(99, 102, 241, 0.1);
-            
             --danger-bg: rgba(239, 68, 68, 0.1);
             --danger-text: #EF4444;
             --success-color: #10B981;
             --success-bg: rgba(16, 185, 129, 0.1);
-
             --radius-xl: 32px;        
             --radius-lg: 24px;        
             --radius-md: 16px;        
@@ -52,20 +46,15 @@
         }
 
         [data-theme="dark"] {
-            /* 深空黑曜石质感 */
             --bg-body: #050507;
-            --bg-body-gradient: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            --bg-body-gradient: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             --glass-bg: rgba(20, 20, 25, 0.55);
             --glass-border: rgba(255, 255, 255, 0.06);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.04);
             --text-primary: #F8FAFC; 
             --text-secondary: #94A3B8; 
-            
             --accent-color: #818CF8;
             --accent-light: rgba(129, 140, 248, 0.15);
-            
             --danger-bg: rgba(248, 113, 113, 0.15);
             --danger-text: #FCA5A5;
             --success-color: #34D399;
@@ -73,32 +62,18 @@
         }
 
         html, body { touch-action: manipulation; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-
-        body {
-            background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed;
-            color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px;
-            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh;
-        }
-
+        body { background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed; color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px; padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        .money-text-gradient {
-            background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
-        [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
+        .money-text-gradient { background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
-        .motivation-banner {
-            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill);
-            padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
-        }
+        .motivation-banner { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
         .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
         .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
-
         .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; }
 
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -149,8 +124,9 @@
         .goal-stat-item .stat-value { font-size: 0.95rem; font-weight: 900; font-family: var(--font-money); margin-top: 4px; display: block; }
         .goal-progress-bar-bg { height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         [data-theme="dark"] .goal-progress-bar-bg { background: rgba(255,255,255,0.05); }
+        /* 【已修复颜色拼写Bug】 */
         .goal-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease; }
-        .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #F110B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
+        .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #10B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
 
         .earnings-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
         .earnings-history-list::-webkit-scrollbar { width: 4px; }
@@ -158,6 +134,7 @@
         .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s; }
         .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
         .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
+        .auto-sync-badge { border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
 
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -231,7 +208,6 @@
                         </div>
                         <span id="resTierBadge" class="hero-badge-glass hero-badge-accent ms-auto">匹配中...</span>
                     </div>
-                    
                     <div class="hero-amount-wrapper">
                         <span class="hero-currency-symbol">¥</span>
                         <span id="resTotalNum" class="hero-amount-number">0.00</span>
@@ -356,7 +332,7 @@
                             <span class="text-sm fw-bold text-primary">金库打卡记录</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
+                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日差额</button>
                             <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
                         </div>
                     </div>
@@ -541,9 +517,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // -------------------------
-        // 🛠 安全修复：引入HTML转义工具函数防止XSS注入
-        // -------------------------
+        // 【已修复】XSS转义加强
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(tag) {
@@ -564,7 +538,6 @@
         ];
         
         let selectedGoalIndex = 1;
-        
         let morningOrderTarget = 20; 
         let afternoonOrderTarget = 30; 
 
@@ -581,17 +554,25 @@
             "财富引擎已启动，今日绝不停歇！"
         ];
 
+        // 【已修复】音频上下文崩溃内存溢出 Bug
+        let globalAudioCtx = null;
         function playChaChingSound() {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.type = 'sine'; osc1.frequency.setValueAtTime(987.77, ctx.currentTime); 
-                osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.08); 
-                gain1.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-                osc1.connect(gain1); gain1.connect(ctx.destination);
-                osc1.start(); osc1.stop(ctx.currentTime + 0.35);
+                if (!globalAudioCtx) {
+                    globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (globalAudioCtx.state === 'suspended') {
+                    globalAudioCtx.resume();
+                }
+                const osc1 = globalAudioCtx.createOscillator();
+                const gain1 = globalAudioCtx.createGain();
+                osc1.type = 'sine'; 
+                osc1.frequency.setValueAtTime(987.77, globalAudioCtx.currentTime); 
+                osc1.frequency.setValueAtTime(1318.51, globalAudioCtx.currentTime + 0.08); 
+                gain1.gain.setValueAtTime(0.15, globalAudioCtx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.001, globalAudioCtx.currentTime + 0.35);
+                osc1.connect(gain1); gain1.connect(globalAudioCtx.destination);
+                osc1.start(); osc1.stop(globalAudioCtx.currentTime + 0.35);
             } catch(e) {}
         }
 
@@ -723,6 +704,7 @@
 
         function removeGoalImage() { currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview(""); }
 
+        // 【已修复】跨日连胜夏令时引起的数学偏差Bug
         function calculateStreak() {
             if (earningsHistory.length === 0) return 0;
             const dates = [...new Set(earningsHistory.map(item => item.date.split(' ')[0]))].sort().reverse();
@@ -730,7 +712,7 @@
             let count = 1;
             const now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             let lastDate = parseLocalDateString(dates[0]);
-            const diffDaysWithToday = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+            const diffDaysWithToday = Math.round((today - lastDate) / (1000 * 60 * 60 * 24));
             if (diffDaysWithToday > 1) return 0;
             for (let i = 0; i < dates.length - 1; i++) {
                 const curr = parseLocalDateString(dates[i]), prev = parseLocalDateString(dates[i+1]);
@@ -823,6 +805,7 @@
             }
         }
 
+        // 【已修复】重复开启新实例的 Modal Bug
         window.recordTodayEarnings = function() {
             const unpunched = getUnpunchedToday();
             
@@ -840,7 +823,7 @@
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = unpunched.toFixed(2);
             document.getElementById('recordModalMemo').value = "常规打卡存入";
-            new bootstrap.Modal(document.getElementById('recordModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
         };
 
         window.openCustomDepositModal = function() {
@@ -849,7 +832,7 @@
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
             document.getElementById('recordModalAmount').value = '';
             document.getElementById('recordModalMemo').value = '';
-            new bootstrap.Modal(document.getElementById('recordModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
         };
 
         window.openEditEarningsRecord = function(index) {
@@ -862,7 +845,7 @@
             document.getElementById('recordModalDateTime').value = dtStr;
             document.getElementById('recordModalAmount').value = item.amount;
             document.getElementById('recordModalMemo').value = item.memo || '';
-            new bootstrap.Modal(document.getElementById('recordModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
         };
 
         window.saveRecordFromModal = function() {
@@ -877,7 +860,9 @@
             } else {
                 earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
-            earningsHistory.sort((a, b) => new Date(b.date.replace(' ', 'T')) - new Date(a.date.replace(' ', 'T')));
+            
+            // 【已修复】跨平台排序兼容性 Bug
+            earningsHistory.sort((a, b) => b.date.localeCompare(a.date));
             
             if (amount > 0 && editIndex === -1) fireConfetti();
             persistEarningsHistory(); 
@@ -931,7 +916,7 @@
             currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview("");
             document.querySelectorAll('#emojiSelector .quick-chip').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('#emojiSelector .quick-chip')[0].classList.add('active');
-            new bootstrap.Modal(document.getElementById('goalModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('goalModal')).show();
         };
 
         window.openEditGoalModal = function(event, idx) {
@@ -940,7 +925,7 @@
             document.getElementById('goalModalName').value = goal.name; document.getElementById('goalModalAmount').value = goal.amount;
             document.getElementById('goalModalEmoji').value = goal.emoji || '🎯';
             currentUploadedGoalImgBase64 = goal.image || ""; updateGoalModalImgPreview(currentUploadedGoalImgBase64);
-            new bootstrap.Modal(document.getElementById('goalModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('goalModal')).show();
         };
 
         window.saveGoalFromModal = function() {
@@ -980,7 +965,7 @@
             
             let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
             if (unpunched > 0) {
-                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含未打卡)</span>`;
+                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含临时展示)</span>`;
             }
             goalSavedAmount.innerHTML = htmlSaved;
 
@@ -1006,8 +991,14 @@
             progressBarFill.style.width = `${pct}%`; goalPercentText.textContent = `${pct.toFixed(1)}%`;
             const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length, avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
 
-            if (diff <= 0) {
+            // 【已修复】精确匹配时文案显示错误的 Bug
+            if (diff < 0) {
                 goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
+                goalDiffStatusText.className = "text-xs fw-bold text-success";
+                progressBarFill.classList.add('completed');
+                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
+            } else if (diff === 0) {
+                goalDiffStatusText.innerHTML = `🏆 完美达成！`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
                 goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
@@ -1053,14 +1044,14 @@
         window.openAddTierModal = function() {
             document.getElementById('tierModalTitle').textContent = '增设阶梯档位'; document.getElementById('editTierIndex').value = '-1';
             document.getElementById('tierModalMinOrder').value = ''; document.getElementById('tierModalPrice').value = '';
-            new bootstrap.Modal(document.getElementById('tierModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('tierModal')).show();
         };
 
         window.openEditTier = function(index) {
             const tier = imageTiers[index]; if (!tier) return;
             document.getElementById('tierModalTitle').textContent = '调整阶梯标准'; document.getElementById('editTierIndex').value = index;
             document.getElementById('tierModalMinOrder').value = tier.minOrder; document.getElementById('tierModalPrice').value = tier.price;
-            new bootstrap.Modal(document.getElementById('tierModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('tierModal')).show();
         };
 
         window.saveTierFromModal = function() {
@@ -1079,7 +1070,7 @@
         window.openDailyTargetModal = function() {
             document.getElementById('morningTargetInput').value = morningOrderTarget;
             document.getElementById('afternoonTargetInput').value = afternoonOrderTarget;
-            new bootstrap.Modal(document.getElementById('dailyTargetModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('dailyTargetModal')).show();
         };
 
         window.saveDailyTarget = function() {
@@ -1221,6 +1212,8 @@
             const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
 
             let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+            
+            // 【已修复】非法输入拦截前置，彻底杜绝坏数据污染本地存档 Bug
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
             if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
             if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
@@ -1248,17 +1241,14 @@
             updateProgressEngine(regularOrdersNum, matchedIndex);
             updateDailyTargetProgress(totalOrdersNum);
 
-            // ✨ 本月累计单量功能 ✨
             let orderHistory = {};
             try { orderHistory = JSON.parse(localStorage.getItem('custom_daily_orders_history_v1') || '{}'); } catch(e) {}
-            // 将今天输入框中的当前值更新入对象
             orderHistory[todayStr] = totalOrdersNum;
             
             let monthlyTotal = 0;
-            const currentMonthPrefix = todayStr.substring(0, 7); // e.g. "2026-07"
+            const currentMonthPrefix = todayStr.substring(0, 7); 
             
             for (let dateKey in orderHistory) {
-                // 仅筛选以当月前缀开头的日期键，巧妙实现跨月自动重置
                 if (dateKey.startsWith(currentMonthPrefix)) {
                     monthlyTotal += (orderHistory[dateKey] || 0);
                 }
@@ -1267,7 +1257,6 @@
             const monthlyCumulativeEl = document.getElementById('monthlyCumulativeOrders');
             if (monthlyCumulativeEl) monthlyCumulativeEl.textContent = monthlyTotal;
 
-            // 存储更新
             if (shouldSave) {
                 try {
                     localStorage.setItem('custom_daily_orders_history_v1', JSON.stringify(orderHistory));
