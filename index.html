@@ -24,9 +24,11 @@
 
     <style>
         :root {
+            /* 2026 字体系统 */
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
+            /* 浅色空间拟态 */
             --bg-body: #F4F6FB;
             --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
             --glass-bg: rgba(255, 255, 255, 0.65);
@@ -50,6 +52,7 @@
         }
 
         [data-theme="dark"] {
+            /* 深空黑曜石质感 */
             --bg-body: #050507;
             --bg-body-gradient: 
                 radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
@@ -538,7 +541,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 【已修复】XSS转义加强
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(tag) {
@@ -575,26 +577,52 @@
             "财富引擎已启动，今日绝不停歇！"
         ];
 
-        // 【已修复】音频上下文崩溃内存溢出 Bug
+        // ==========================================
+        // ✨ 【核心修复】PWA桌面模式音频生命周期管理 ✨
+        // ==========================================
         let globalAudioCtx = null;
+        let isAudioUnlocked = false;
         
-        // 全局解锁机制，确保移动端Safari和限制严格的浏览器能发声
         function unlockAudio() {
-            if (!globalAudioCtx) {
-                globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (globalAudioCtx.state === 'suspended') {
-                globalAudioCtx.resume();
-            }
+            try {
+                if (!globalAudioCtx) {
+                    globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (globalAudioCtx.state === 'suspended') {
+                    globalAudioCtx.resume();
+                }
+                // 强制播放极短的静音波形，彻底绕过 iOS/Android 桌面模式的底层静音锁
+                if (!isAudioUnlocked && globalAudioCtx.state === 'running') {
+                    const osc = globalAudioCtx.createOscillator();
+                    const gain = globalAudioCtx.createGain();
+                    gain.gain.value = 0;
+                    osc.connect(gain);
+                    gain.connect(globalAudioCtx.destination);
+                    osc.start(globalAudioCtx.currentTime);
+                    osc.stop(globalAudioCtx.currentTime + 0.01);
+                    isAudioUnlocked = true;
+                }
+            } catch(e) {}
         }
         
-        // 绑定在任何交互上，确保引擎被提早唤醒
-        document.addEventListener('click', unlockAudio, { once: true });
-        document.addEventListener('touchstart', unlockAudio, { once: true });
+        // 移除 once:true。添加到桌面后，每次切后台音频引擎都会被系统强制冻结
+        // 必须在每次触摸时都保持监听并实时唤醒
+        document.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
+        document.addEventListener('touchend', unlockAudio, { capture: true, passive: true });
+        document.addEventListener('click', unlockAudio, { capture: true, passive: true });
+        
+        // 监听应用切回前台事件，主动唤醒音频
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && globalAudioCtx && globalAudioCtx.state === 'suspended') {
+                globalAudioCtx.resume();
+            }
+        });
 
         function playChaChingSound() {
             try {
-                unlockAudio();
+                unlockAudio(); // 每次播放前强制执行一次检查和唤醒
+                if (!globalAudioCtx) return;
+                
                 const t = globalAudioCtx.currentTime;
                 const osc = globalAudioCtx.createOscillator();
                 const gain = globalAudioCtx.createGain();
@@ -603,7 +631,7 @@
                 osc.frequency.setValueAtTime(987.77, t); 
                 osc.frequency.setValueAtTime(1318.51, t + 0.08); 
                 
-                // 【已优化】加入极短的淡入，防止波形截断导致的爆音或吞音
+                // 加入淡入淡出，防止波形生硬截断导致的偶发爆音或吞音
                 gain.gain.setValueAtTime(0, t);
                 gain.gain.linearRampToValueAtTime(0.15, t + 0.02);
                 gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
@@ -615,6 +643,8 @@
                 osc.stop(t + 0.35);
             } catch(e) {}
         }
+        // ==========================================
+
 
         function parseLocalDateString(dateStr) {
             const parts = dateStr.split(' ')[0].split('-');
@@ -744,7 +774,6 @@
 
         function removeGoalImage() { currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview(""); }
 
-        // 【已修复】跨日连胜夏令时引起的数学偏差Bug
         function calculateStreak() {
             if (earningsHistory.length === 0) return 0;
             const dates = [...new Set(earningsHistory.map(item => item.date.split(' ')[0]))].sort().reverse();
@@ -845,7 +874,6 @@
             }
         }
 
-        // 【已修复】重复开启新实例的 Modal Bug
         window.recordTodayEarnings = function() {
             const unpunched = getUnpunchedToday();
             
@@ -901,7 +929,6 @@
                 earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
             }
             
-            // 【已修复】跨平台排序兼容性 Bug
             earningsHistory.sort((a, b) => b.date.localeCompare(a.date));
             
             if (amount > 0 && editIndex === -1) fireConfetti();
@@ -1031,7 +1058,6 @@
             progressBarFill.style.width = `${pct}%`; goalPercentText.textContent = `${pct.toFixed(1)}%`;
             const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length, avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
 
-            // 【已修复】精确匹配时文案显示错误的 Bug
             if (diff < 0) {
                 goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
@@ -1253,7 +1279,6 @@
 
             let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
             
-            // 【已修复】非法输入拦截前置，彻底杜绝坏数据污染本地存档 Bug
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
             if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
             if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
