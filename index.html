@@ -26,6 +26,7 @@
         :root {
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+
             --bg-body: #F4F6FB;
             --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
             --glass-bg: rgba(255, 255, 255, 0.65);
@@ -33,12 +34,15 @@
             --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
             --text-primary: #0F172A;
             --text-secondary: #64748B;
-            --accent-color: #6366F1; 
+            
+            --accent-color: #6366F1;
             --accent-light: rgba(99, 102, 241, 0.1);
+            
             --danger-bg: rgba(239, 68, 68, 0.1);
             --danger-text: #EF4444;
             --success-color: #10B981;
             --success-bg: rgba(16, 185, 129, 0.1);
+
             --radius-xl: 32px;        
             --radius-lg: 24px;        
             --radius-md: 16px;        
@@ -47,14 +51,18 @@
 
         [data-theme="dark"] {
             --bg-body: #050507;
-            --bg-body-gradient: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            --bg-body-gradient: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             --glass-bg: rgba(20, 20, 25, 0.55);
             --glass-border: rgba(255, 255, 255, 0.06);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.04);
             --text-primary: #F8FAFC; 
             --text-secondary: #94A3B8; 
+            
             --accent-color: #818CF8;
             --accent-light: rgba(129, 140, 248, 0.15);
+            
             --danger-bg: rgba(248, 113, 113, 0.15);
             --danger-text: #FCA5A5;
             --success-color: #34D399;
@@ -62,18 +70,32 @@
         }
 
         html, body { touch-action: manipulation; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        body { background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed; color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px; padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
+
+        body {
+            background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed;
+            color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh;
+        }
+
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        .money-text-gradient { background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .money-text-gradient {
+            background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
         [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
-        .motivation-banner { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
+        .motivation-banner {
+            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill);
+            padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
+        }
         .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
         .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+
         .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; }
 
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -124,7 +146,6 @@
         .goal-stat-item .stat-value { font-size: 0.95rem; font-weight: 900; font-family: var(--font-money); margin-top: 4px; display: block; }
         .goal-progress-bar-bg { height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         [data-theme="dark"] .goal-progress-bar-bg { background: rgba(255,255,255,0.05); }
-        /* 【已修复颜色拼写Bug】 */
         .goal-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease; }
         .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #10B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
 
@@ -556,23 +577,42 @@
 
         // 【已修复】音频上下文崩溃内存溢出 Bug
         let globalAudioCtx = null;
+        
+        // 全局解锁机制，确保移动端Safari和限制严格的浏览器能发声
+        function unlockAudio() {
+            if (!globalAudioCtx) {
+                globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (globalAudioCtx.state === 'suspended') {
+                globalAudioCtx.resume();
+            }
+        }
+        
+        // 绑定在任何交互上，确保引擎被提早唤醒
+        document.addEventListener('click', unlockAudio, { once: true });
+        document.addEventListener('touchstart', unlockAudio, { once: true });
+
         function playChaChingSound() {
             try {
-                if (!globalAudioCtx) {
-                    globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (globalAudioCtx.state === 'suspended') {
-                    globalAudioCtx.resume();
-                }
-                const osc1 = globalAudioCtx.createOscillator();
-                const gain1 = globalAudioCtx.createGain();
-                osc1.type = 'sine'; 
-                osc1.frequency.setValueAtTime(987.77, globalAudioCtx.currentTime); 
-                osc1.frequency.setValueAtTime(1318.51, globalAudioCtx.currentTime + 0.08); 
-                gain1.gain.setValueAtTime(0.15, globalAudioCtx.currentTime);
-                gain1.gain.exponentialRampToValueAtTime(0.001, globalAudioCtx.currentTime + 0.35);
-                osc1.connect(gain1); gain1.connect(globalAudioCtx.destination);
-                osc1.start(); osc1.stop(globalAudioCtx.currentTime + 0.35);
+                unlockAudio();
+                const t = globalAudioCtx.currentTime;
+                const osc = globalAudioCtx.createOscillator();
+                const gain = globalAudioCtx.createGain();
+                
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(987.77, t); 
+                osc.frequency.setValueAtTime(1318.51, t + 0.08); 
+                
+                // 【已优化】加入极短的淡入，防止波形截断导致的爆音或吞音
+                gain.gain.setValueAtTime(0, t);
+                gain.gain.linearRampToValueAtTime(0.15, t + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+                
+                osc.connect(gain); 
+                gain.connect(globalAudioCtx.destination);
+                
+                osc.start(t); 
+                osc.stop(t + 0.35);
             } catch(e) {}
         }
 
