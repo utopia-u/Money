@@ -24,11 +24,9 @@
 
     <style>
         :root {
-            /* 2026 字体系统 */
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
-            /* 浅色空间拟态 */
             --bg-body: #F4F6FB;
             --bg-body-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.06), transparent 25%), radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06), transparent 25%);
             --glass-bg: rgba(255, 255, 255, 0.65);
@@ -36,36 +34,26 @@
             --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
             --text-primary: #0F172A;
             --text-secondary: #64748B;
-            
             --accent-color: #6366F1;
             --accent-light: rgba(99, 102, 241, 0.1);
-            
             --danger-bg: rgba(239, 68, 68, 0.1);
             --danger-text: #EF4444;
             --success-color: #10B981;
             --success-bg: rgba(16, 185, 129, 0.1);
 
-            --radius-xl: 32px;        
-            --radius-lg: 24px;        
-            --radius-md: 16px;        
-            --radius-pill: 99px;    
+            --radius-xl: 32px; --radius-lg: 24px; --radius-md: 16px; --radius-pill: 99px;    
         }
 
         [data-theme="dark"] {
-            /* 深空黑曜石质感 */
             --bg-body: #050507;
-            --bg-body-gradient: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), 
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            --bg-body-gradient: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             --glass-bg: rgba(20, 20, 25, 0.55);
             --glass-border: rgba(255, 255, 255, 0.06);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.04);
             --text-primary: #F8FAFC; 
             --text-secondary: #94A3B8; 
-            
             --accent-color: #818CF8;
             --accent-light: rgba(129, 140, 248, 0.15);
-            
             --danger-bg: rgba(248, 113, 113, 0.15);
             --danger-text: #FCA5A5;
             --success-color: #34D399;
@@ -73,27 +61,14 @@
         }
 
         html, body { touch-action: manipulation; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-
-        body {
-            background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed;
-            color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px;
-            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh;
-        }
-
+        body { background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed; color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px; padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        .money-text-gradient {
-            background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-        }
+        .money-text-gradient { background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
         [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
-        .motivation-banner {
-            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill);
-            padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
-        }
+        .motivation-banner { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
         .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
         .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -158,8 +133,7 @@
         .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s; }
         .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
         .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
-        .auto-sync-badge { border: 1px dashed rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
-
+        
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
         .tier-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 12px; text-align: center; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -199,7 +173,7 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-danger text-white rounded-pill"><i class="ph ph-warning-circle"></i> 摆烂危险期</span>
-                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡存入收益！连胜记录岌岌可危！</span>
+                    <span class="text-xs fw-bold text-secondary" id="slackingWarningText">今天还没打卡记录收益！连胜记录岌岌可危！</span>
                 </div>
                 <span class="text-xs fw-bold text-danger money-font-style" id="midnightCountdown">剩余: 00:00:00</span>
             </div>
@@ -213,7 +187,7 @@
                 <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px var(--accent-light);"><i class="ph-fill ph-calculator fs-4"></i></div>
                 <div>
                     <h4 class="mb-0 fw-black fs-6">跑单财富加速器</h4>
-                    <span class="text-xs text-secondary fw-bold">阶梯单量 / 单价极速核算</span>
+                    <span class="text-xs text-secondary fw-bold">阶梯单量自动追溯系统</span>
                 </div>
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
@@ -227,7 +201,7 @@
                 <div class="spatial-wealth-hero">
                     <div class="hero-header-row flex-wrap gap-2 align-items-start">
                         <div class="d-flex flex-wrap gap-2">
-                            <span class="hero-badge-glass"><i class="ph-fill ph-sparkle text-warning"></i> 预估总收益</span>
+                            <span class="hero-badge-glass"><i class="ph-fill ph-sparkle text-warning"></i> 今日核算收益</span>
                             <span class="hero-badge-glass"><i class="ph-fill ph-calendar-check text-info"></i> 本月累计: <strong id="monthlyCumulativeOrders" class="ms-1 money-font-style text-white">0</strong> <span class="ms-1">单</span></span>
                         </div>
                         <span id="resTierBadge" class="hero-badge-glass hero-badge-accent ms-auto">匹配中...</span>
@@ -240,7 +214,7 @@
                     <div class="d-flex flex-column gap-2 position-relative" style="z-index: 2;">
                         <div class="hero-progress-box">
                             <div class="hero-progress-info mb-1">
-                                <span id="tierProgressLabel">常规单量进度</span>
+                                <span id="tierProgressLabel">本月常规单量进度</span>
                                 <span id="tierProgressDetail" class="money-font-style">0 单</span>
                             </div>
                             <div class="hero-progress-track mb-0">
@@ -270,7 +244,7 @@
                 </div>
 
                 <div class="formula-preview-pill mb-3">
-                    <span><i class="ph-fill ph-receipt me-1"></i> 核算公式</span>
+                    <span><i class="ph-fill ph-receipt me-1"></i> 今日计算核算</span>
                     <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
                 </div>
 
@@ -300,8 +274,8 @@
                             </div>
                         </div>
                         <div class="goal-stats-grid">
-                            <div class="goal-stat-item"><span class="stat-label">已充能(含临时)</span><span class="stat-value money-text-gradient" id="goalSavedAmount" style="font-size:0.8rem;">￥0.00</span></div>
-                            <div class="goal-stat-item"><span class="stat-label">完成进度</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">已充能进度</span><span class="stat-value money-text-gradient" id="goalSavedAmount" style="font-size:0.8rem;">￥0.00</span></div>
+                            <div class="goal-stat-item"><span class="stat-label">完成百分比</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
                             <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
                             <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
                         </div>
@@ -312,7 +286,7 @@
                     <div class="col-12 col-md-6">
                         <div class="glass-card">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="text-sm fw-bold text-secondary mb-0">完成总单量</label>
+                                <label class="text-sm fw-bold text-secondary mb-0">今日完成总单量</label>
                                 <span id="regularOrdersBadge" class="badge bg-secondary bg-opacity-10 text-secondary text-xs rounded-pill money-font-style">常规: 0单</span>
                             </div>
                             <div class="calc-input-group">
@@ -332,7 +306,7 @@
                     <div class="col-12 col-md-6">
                         <div class="glass-card">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="text-sm fw-bold text-secondary mb-0">拼团单量</label>
+                                <label class="text-sm fw-bold text-secondary mb-0">今日拼团单量</label>
                                 <span class="text-xs fw-bold text-secondary opacity-75 money-font-style">固定 ￥3.20</span>
                             </div>
                             <div class="calc-input-group">
@@ -353,17 +327,18 @@
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <i class="ph-fill ph-vault text-warning fs-5"></i>
-                            <span class="text-sm fw-bold text-primary">金库打卡记录</span>
+                            <span class="text-sm fw-bold text-primary">金库硬打卡记录</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日差额</button>
+                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
                             <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-4" style="background: rgba(var(--bg-surface-rgb), 0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                        <span class="text-xs fw-bold text-secondary">打卡 <span id="historyCount" class="text-primary fs-6 money-font-style">0</span> 天 (日均: <span id="dailyAvgText" class="money-text-gradient">￥0.00</span>)</span>
-                        <span class="text-xs fw-bold text-secondary">总存入: <span id="accumulatedTotal" class="fs-5 money-text-gradient ms-1">￥0.00</span></span>
+                        <span class="text-xs fw-bold text-secondary">已存入 <span id="historyCount" class="text-primary fs-6 money-font-style">0</span> 天 (日均: <span id="dailyAvgText" class="money-text-gradient">￥0.00</span>)</span>
+                        <span class="text-xs fw-bold text-secondary">金库总资产: <span id="accumulatedTotal" class="fs-5 money-text-gradient ms-1">￥0.00</span></span>
                     </div>
+                    <div class="text-xs text-secondary opacity-75 mb-2 fst-italic text-center"><i class="ph-fill ph-info"></i> 到达阶梯时，本月历史打卡记录将自动按新价格重算补偿</div>
                     <div class="earnings-history-list" id="earningsHistoryList"></div>
                 </div>
 
@@ -401,7 +376,7 @@
                         <button class="calc-btn">.</button>
                     </div>
                 </div>
-                <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>数据已静默同步云端本地</div>
+                <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>临时数据已安全静默防丢失</div>
                 <div id="errorBox" class="text-center text-xs fw-bold text-danger mt-2" style="display:none;"></div>
             </div>
         </div>
@@ -442,7 +417,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="editTierIndex" value="-1">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">起步单量</label>
+                        <label class="form-label text-xs fw-bold text-secondary">本月起步累计单量</label>
                         <input type="number" id="tierModalMinOrder" class="form-control calc-input-group money-font-style bg-light">
                     </div>
                     <div class="mb-3">
@@ -513,27 +488,27 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-black fs-6" id="recordModalTitle">金库资金流动</h5>
+                    <h5 class="modal-title fw-black fs-6" id="recordModalTitle">金库历史修正补录</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="recordEditIndex" value="-1">
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">资金流水时间</label>
+                        <label class="form-label text-xs fw-bold text-secondary">记录日期</label>
                         <input type="datetime-local" id="recordModalDateTime" class="form-control money-font-style bg-light">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">金额 (元)</label>
+                        <label class="form-label text-xs fw-bold text-danger"><i class="ph-bold ph-warning"></i> 注意：纯手动金额将不再享受后续阶梯自动追溯</label>
                         <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style bg-light text-success fs-5">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">资金来源备注</label>
-                        <input type="text" id="recordModalMemo" class="form-control bg-light fw-bold" placeholder="例如: 爆单打卡">
+                        <label class="form-label text-xs fw-bold text-secondary">备注 (例如：额外奖励/特殊补录)</label>
+                        <input type="text" id="recordModalMemo" class="form-control bg-light fw-bold" placeholder="手动记账">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip text-white" style="background: #10B981; border:none;" onclick="saveRecordFromModal()"><i class="ph-bold ph-check me-1"></i> 确认入库</button>
+                    <button type="button" class="quick-chip text-white" style="background: #10B981; border:none;" onclick="saveRecordFromModal()"><i class="ph-bold ph-check me-1"></i> 保存并剥离重算</button>
                 </div>
             </div>
         </div>
@@ -564,10 +539,8 @@
         let morningOrderTarget = 20; 
         let afternoonOrderTarget = 30; 
 
-        let earningsHistory = [];
-        let currentCalculatedTotal = 0;
-        let streakDays = 0;
-        let currentUploadedGoalImgBase64 = "";
+        // 🌟 核心数据模型升级：所有数据均存储在这个单一数据源里
+        let historyData = [];
 
         const motivationQuotes = [
             "每一单的汗水，都在为你的【心仪目标】铺路！",
@@ -578,11 +551,10 @@
         ];
 
         // ==========================================
-        // ✨ 【核心修复】PWA桌面模式音频生命周期管理 ✨
+        // ✨ 【核心大修】PWA桌面模式彻底防冻结音频机制
         // ==========================================
         let globalAudioCtx = null;
         
-        // 核心解冻函数：每次触发强制复苏
         function unlockAudio() {
             try {
                 if (!globalAudioCtx) {
@@ -594,17 +566,16 @@
             } catch(e) {}
         }
         
-        // 当应用彻底退到后台时，主动销毁音频引擎，避免被系统封锁成“僵尸进程”
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden' && globalAudioCtx) {
+                // 彻底破除系统冷冻：退入后台时，亲手送走音频引擎，防止变僵尸进程
                 try { globalAudioCtx.close(); } catch(e) {}
                 globalAudioCtx = null;
             } else if (document.visibilityState === 'visible') {
-                unlockAudio(); // 切回来时尝试新建并唤醒
+                unlockAudio();
             }
         });
 
-        // 取消单次限制，任何屏幕触摸都会尝试保障引擎活力
         document.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
         document.addEventListener('click', unlockAudio, { capture: true, passive: true });
 
@@ -621,7 +592,6 @@
                 osc.frequency.setValueAtTime(987.77, t); 
                 osc.frequency.setValueAtTime(1318.51, t + 0.08); 
                 
-                // 加入淡入淡出，防止截断爆音
                 gain.gain.setValueAtTime(0, t);
                 gain.gain.linearRampToValueAtTime(0.15, t + 0.02);
                 gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
@@ -631,12 +601,16 @@
                 
                 osc.start(t); 
                 osc.stop(t + 0.35);
-            } catch(e) {
-                console.error("Audio Context Engine Error:", e);
-            }
+            } catch(e) { console.error("Audio Context Engine Error:", e); }
         }
         // ==========================================
 
+
+        function formatToDatetimeLocal(dateObj) {
+            const y = dateObj.getFullYear(), m = String(dateObj.getMonth() + 1).padStart(2, '0'), d = String(dateObj.getDate()).padStart(2, '0');
+            const hh = String(dateObj.getHours()).padStart(2, '0'), mm = String(dateObj.getMinutes()).padStart(2, '0');
+            return `${y}-${m}-${d}T${hh}:${mm}`;
+        }
 
         function parseLocalDateString(dateStr) {
             const parts = dateStr.split(' ')[0].split('-');
@@ -677,14 +651,6 @@
             }
             sortGoalsData();
 
-            const savedHistory = localStorage.getItem('custom_earnings_history_v2');
-            if (savedHistory) {
-                try {
-                    const parsed = JSON.parse(savedHistory);
-                    if (Array.isArray(parsed)) earningsHistory = parsed;
-                } catch (e) {}
-            }
-
             const themeToggle = document.getElementById('themeToggle');
             if (themeToggle) {
                 const themeIcon = themeToggle.querySelector('i');
@@ -705,12 +671,6 @@
 
             initCalculatorData();
         });
-
-        function formatToDatetimeLocal(dateObj) {
-            const y = dateObj.getFullYear(), m = String(dateObj.getMonth() + 1).padStart(2, '0'), d = String(dateObj.getDate()).padStart(2, '0');
-            const hh = String(dateObj.getHours()).padStart(2, '0'), mm = String(dateObj.getMinutes()).padStart(2, '0');
-            return `${y}-${m}-${d}T${hh}:${mm}`;
-        }
 
         function initMotivationMarquee() {
             const marqueeTrack = document.getElementById('motivationMarquee');
@@ -766,174 +726,10 @@
 
         function removeGoalImage() { currentUploadedGoalImgBase64 = ""; document.getElementById('goalImageInput').value = ""; updateGoalModalImgPreview(""); }
 
-        function calculateStreak() {
-            if (earningsHistory.length === 0) return 0;
-            const dates = [...new Set(earningsHistory.map(item => item.date.split(' ')[0]))].sort().reverse();
-            if (dates.length === 0) return 0;
-            let count = 1;
-            const now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            let lastDate = parseLocalDateString(dates[0]);
-            const diffDaysWithToday = Math.round((today - lastDate) / (1000 * 60 * 60 * 24));
-            if (diffDaysWithToday > 1) return 0;
-            for (let i = 0; i < dates.length - 1; i++) {
-                const curr = parseLocalDateString(dates[i]), prev = parseLocalDateString(dates[i+1]);
-                const diff = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
-                if (diff === 1) count++; else break;
-            }
-            return count;
-        }
-
         function fireConfetti() {
             if (typeof confetti === 'function') confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 }, colors: ['#10B981', '#F59E0B', '#6366F1'] });
             playChaChingSound();
         }
-
-        function persistEarningsHistory() { try { localStorage.setItem('custom_earnings_history_v2', JSON.stringify(earningsHistory)); } catch (e) {} }
-        
-        function getTotalPunchedInEarnings() { return earningsHistory.reduce((sum, item) => sum + (item.amount || 0), 0); }
-
-        function getUnpunchedToday() {
-            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
-            const todayPunchedIn = earningsHistory
-                .filter(item => item.date.startsWith(todayStr))
-                .reduce((sum, item) => sum + (item.amount || 0), 0);
-            return Math.max(0, currentCalculatedTotal - todayPunchedIn);
-        }
-
-        function renderEarningsHistory() {
-            const container = document.getElementById('earningsHistoryList'), historyCountEl = document.getElementById('historyCount'), accumulatedTotalEl = document.getElementById('accumulatedTotal'), dailyAvgText = document.getElementById('dailyAvgText');
-            if (!container) return;
-            const totalSum = getTotalPunchedInEarnings(), daysCount = earningsHistory.length;
-            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
-            const avg = uniqueDays > 0 ? (totalSum / uniqueDays) : 0;
-
-            historyCountEl.textContent = daysCount;
-            accumulatedTotalEl.textContent = `￥${totalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            if (dailyAvgText) dailyAvgText.textContent = `￥${avg.toFixed(2)}`;
-
-            streakDays = calculateStreak();
-            const streakBadgeTop = document.getElementById('streakBadgeTop');
-            if (streakBadgeTop) streakBadgeTop.innerHTML = `<i class="ph-fill ph-fire me-1"></i>${streakDays}天热浪连胜`;
-
-            updateAntiSlackingStatus();
-
-            if (daysCount === 0) {
-                container.innerHTML = '<div class="text-center py-4 text-xs text-secondary">暂无金库流水，快去赚取第一桶金！</div>';
-            } else {
-                let html = '';
-                earningsHistory.forEach((item, index) => {
-                    const safeMemo = escapeHTML(item.memo);
-                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
-                    html += `
-                        <div class="earnings-history-item">
-                            <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.date)}${memoHtml}</span>
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="item-amount">${item.amount >= 0 ? '+' : ''}￥${item.amount.toFixed(2)}</span>
-                                <div class="d-flex gap-2">
-                                    <i class="ph-bold ph-pencil-simple text-secondary" style="cursor:pointer;" onclick="openEditEarningsRecord(${index})"></i>
-                                    <i class="ph-bold ph-trash text-danger" style="cursor:pointer;" onclick="deleteEarningsRecord(${index})"></i>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            }
-            updateGoalProgress();
-        }
-
-        function updateAntiSlackingStatus() {
-            const card = document.getElementById('antiSlackingCard'), costText = document.getElementById('slackingCostText'), warningText = document.getElementById('slackingWarningText');
-            if (!card) return;
-            const today = new Date(), todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            const hasPunchedToday = earningsHistory.some(item => item.date.startsWith(todayStr));
-
-            if (hasPunchedToday) {
-                card.classList.remove('is-slacking'); card.style.display = 'none'; 
-            } else {
-                card.classList.add('is-slacking'); card.style.display = 'block';
-                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，今日若无打卡进账将断档！` : '今日还没打卡存入收益！';
-            }
-
-            if (bigGoals.length > 0 && selectedGoalIndex < bigGoals.length) {
-                const totalSaved = getTotalPunchedInEarnings(), currentGoal = bigGoals[selectedGoalIndex], diff = currentGoal.amount - totalSaved;
-                const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length;
-                const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 200;
-                if (diff > 0) {
-                    const lostDays = (avgDailyEarnings > 0) ? (1).toFixed(1) : 1;
-                    costText.innerHTML = `💡 若今日摆烂：【${escapeHTML(currentGoal.name)}】将被迫延迟 <strong class="text-danger money-font-style">${lostDays} 天</strong>！`;
-                }
-            }
-        }
-
-        window.recordTodayEarnings = function() {
-            const unpunched = getUnpunchedToday();
-            
-            if (currentCalculatedTotal <= 0) { 
-                alert('当前页面计算收益为 0，请先输入单量！'); 
-                return; 
-            }
-            if (unpunched <= 0) { 
-                alert('当前页面上的收益已全部打卡入库，继续跑单产生新收益后再来吧！'); 
-                return; 
-            }
-            
-            document.getElementById('recordModalTitle').textContent = "确认资金入库";
-            document.getElementById('recordEditIndex').value = "-1";
-            document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
-            document.getElementById('recordModalAmount').value = unpunched.toFixed(2);
-            document.getElementById('recordModalMemo').value = "常规打卡存入";
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
-        };
-
-        window.openCustomDepositModal = function() {
-            document.getElementById('recordModalTitle').textContent = "手动补录资金流动";
-            document.getElementById('recordEditIndex').value = "-1";
-            document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
-            document.getElementById('recordModalAmount').value = '';
-            document.getElementById('recordModalMemo').value = '';
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
-        };
-
-        window.openEditEarningsRecord = function(index) {
-            const item = earningsHistory[index];
-            if (!item) return;
-            document.getElementById('recordModalTitle').textContent = "修正资金记录";
-            document.getElementById('recordEditIndex').value = index;
-            let dtStr = item.date.replace(' ', 'T');
-            if (dtStr.length > 16) dtStr = dtStr.substring(0, 16); if (dtStr.length === 10) dtStr += "T00:00";
-            document.getElementById('recordModalDateTime').value = dtStr;
-            document.getElementById('recordModalAmount').value = item.amount;
-            document.getElementById('recordModalMemo').value = item.memo || '';
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
-        };
-
-        window.saveRecordFromModal = function() {
-            const editIndex = parseInt(document.getElementById('recordEditIndex').value, 10);
-            const dtVal = document.getElementById('recordModalDateTime').value, amount = parseFloat(document.getElementById('recordModalAmount').value), memo = document.getElementById('recordModalMemo').value.trim();
-            if (!dtVal) { alert('请选择有效的记录日期！'); return; }
-            if (isNaN(amount) || amount === 0) { alert('请输入有效的金额！'); return; }
-            const displayDate = dtVal.replace('T', ' ');
-
-            if (editIndex === -1) {
-                earningsHistory.unshift({ date: displayDate, amount: amount, memo: memo || "补录存入" });
-            } else {
-                earningsHistory[editIndex] = { date: displayDate, amount: amount, memo: memo };
-            }
-            
-            earningsHistory.sort((a, b) => b.date.localeCompare(a.date));
-            
-            if (amount > 0 && editIndex === -1) fireConfetti();
-            persistEarningsHistory(); 
-            renderEarningsHistory();
-            bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
-        };
-
-        window.deleteEarningsRecord = function(index) {
-            if (confirm(`确定要删除 ${earningsHistory[index].date} 的打卡记录吗？`)) {
-                earningsHistory.splice(index, 1); persistEarningsHistory(); renderEarningsHistory();
-            }
-        };
 
         function sortGoalsData() {
             const currentSelected = bigGoals[selectedGoalIndex];
@@ -1011,70 +807,11 @@
             }
         };
 
-        function updateGoalProgress() {
-            const goalTitleText = document.getElementById('goalTitleText'), goalDiffStatusText = document.getElementById('goalDiffStatusText'), progressBarFill = document.getElementById('goalProgressBarFill');
-            const goalSavedAmount = document.getElementById('goalSavedAmount'), goalPercentText = document.getElementById('goalPercentText'), goalEstOrders = document.getElementById('goalEstOrders'), goalEstDays = document.getElementById('goalEstDays');
-            const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper'), goalCoverImg = document.getElementById('goalCoverImg'), goalCoverOverlay = document.getElementById('goalCoverOverlay');
-
-            if (!goalTitleText) return;
-            
-            const totalSaved = getTotalPunchedInEarnings(); 
-            const unpunched = getUnpunchedToday(); 
-            const effectiveTotal = totalSaved + unpunched;
-            
-            let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
-            if (unpunched > 0) {
-                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含临时展示)</span>`;
-            }
-            goalSavedAmount.innerHTML = htmlSaved;
-
-            if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
-                goalTitleText.textContent = "未设定目标"; goalDiffStatusText.textContent = "请设立";
-                progressBarFill.style.width = "0%"; goalPercentText.textContent = "0%"; goalEstOrders.textContent = "-- 单"; goalEstDays.textContent = "-- 天";
-                if (goalCoverImgWrapper) goalCoverImgWrapper.style.display = 'none'; return;
-            }
-
-            const currentGoal = bigGoals[selectedGoalIndex];
-            goalTitleText.innerHTML = `${escapeHTML(currentGoal.emoji || '🎯')} ${escapeHTML(currentGoal.name)}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
-
-            const diff = currentGoal.amount - effectiveTotal, pct = Math.min(100, Math.max(0, (effectiveTotal / currentGoal.amount) * 100));
-
-            if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
-                if (currentGoal.image) {
-                    goalCoverImg.src = currentGoal.image; goalCoverImgWrapper.style.display = 'block';
-                    if (pct >= 100) { goalCoverOverlay.style.background = 'rgba(16, 185, 129, 0.4)'; goalCoverOverlay.innerHTML = '<i class="ph-fill ph-check-circle fs-5"></i>'; }
-                    else { goalCoverOverlay.style.background = `rgba(0, 0, 0, ${Math.max(0.1, 0.6 - (pct / 200))})`; goalCoverOverlay.innerHTML = `${pct.toFixed(0)}%`; }
-                } else { goalCoverImgWrapper.style.display = 'none'; }
-            }
-
-            progressBarFill.style.width = `${pct}%`; goalPercentText.textContent = `${pct.toFixed(1)}%`;
-            const uniqueDays = [...new Set(earningsHistory.map(i => i.date.split(' ')[0]))].length, avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
-
-            if (diff < 0) {
-                goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
-                goalDiffStatusText.className = "text-xs fw-bold text-success";
-                progressBarFill.classList.add('completed');
-                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
-            } else if (diff === 0) {
-                goalDiffStatusText.innerHTML = `🏆 完美达成！`;
-                goalDiffStatusText.className = "text-xs fw-bold text-success";
-                progressBarFill.classList.add('completed');
-                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
-            } else {
-                goalDiffStatusText.innerHTML = `距目标 <span class="money-font-style">￥${diff.toFixed(2)}</span>`;
-                goalDiffStatusText.className = "text-xs fw-bold text-danger";
-                progressBarFill.classList.remove('completed');
-                goalEstOrders.textContent = `约 ${Math.ceil(diff / 5.0)} 单`;
-                if (avgDailyEarnings > 0) { goalEstDays.textContent = `约 ${Math.ceil(diff / avgDailyEarnings)} 天`; goalEstDays.className = "stat-value text-warning"; } 
-                else { goalEstDays.textContent = "-- 天"; goalEstDays.className = "stat-value text-secondary"; }
-            }
-        }
-
-        function renderTierCards(matchedIndex, regularOrdersNum) {
+        function renderTierCards(matchedIndex, monthlyRegularOrders) {
             const container = document.getElementById('tierRoadmapGrid'); if (!container) return;
             imageTiers.sort((a, b) => a.minOrder - b.minOrder); let html = '';
             imageTiers.forEach((tier, index) => {
-                const isActive = (index === matchedIndex && regularOrdersNum > 0);
+                const isActive = (index === matchedIndex && monthlyRegularOrders > 0);
                 let rangeText = ''; const nextTier = imageTiers[index + 1];
                 if (!nextTier) rangeText = `${tier.minOrder} 单及以上`;
                 else {
@@ -1100,7 +837,7 @@
         function persistTiers() { try { localStorage.setItem('custom_image_tiers_v2', JSON.stringify(imageTiers)); } catch (e) {} }
 
         window.openAddTierModal = function() {
-            document.getElementById('tierModalTitle').textContent = '增设阶梯档位'; document.getElementById('editTierIndex').value = '-1';
+            document.getElementById('tierModalTitle').textContent = '增设本月阶梯档位'; document.getElementById('editTierIndex').value = '-1';
             document.getElementById('tierModalMinOrder').value = ''; document.getElementById('tierModalPrice').value = '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('tierModal')).show();
         };
@@ -1203,6 +940,10 @@
             }
         }
 
+
+        // ==========================================
+        // ✨ 全新架构核心：计算与重追溯模型 (V5)
+        // ==========================================
         const totalOrdersInput = document.getElementById('totalOrders'), groupOrdersInput = document.getElementById('groupOrders');
         const regularOrdersBadge = document.getElementById('regularOrdersBadge'), errorBox = document.getElementById('errorBox'), saveTip = document.getElementById('saveTip');
         const resTotalNum = document.getElementById('resTotalNum'), resTierBadge = document.getElementById('resTierBadge'), tierProgressFill = document.getElementById('tierProgressFill'), tierProgressLabel = document.getElementById('tierProgressLabel'), tierProgressDetail = document.getElementById('tierProgressDetail'), formulaPreview = document.getElementById('formulaPreview');
@@ -1234,115 +975,137 @@
 
         function initCalculatorData() {
             renderGoalChips(); 
-            renderEarningsHistory();
-            let localData = null; 
             
             try { 
-                if (window.localStorage) localData = localStorage.getItem('tier_calculator_storage_v3'); 
-            } catch (e) {}
+                if (window.localStorage) {
+                    let oldData = localStorage.getItem('earnings_v5');
+                    historyData = oldData ? JSON.parse(oldData) : [];
+                }
+            } catch (e) { historyData = []; }
             
             const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
-            let shouldClear = false;
-
-            if (localData && totalOrdersInput && groupOrdersInput) {
-                try {
-                    const parsed = JSON.parse(localData);
-                    if (parsed.date !== todayStr) {
-                        shouldClear = true;
-                    } else {
-                        totalOrdersInput.value = parsed.totalOrders !== undefined ? sanitizeInput(String(parsed.totalOrders)) : '0';
-                        groupOrdersInput.value = parsed.groupOrders !== undefined ? sanitizeInput(String(parsed.groupOrders)) : '0';
-                    }
-                } catch (e) {}
-            }
             
-            if (shouldClear || !localData) {
-                if (totalOrdersInput) totalOrdersInput.value = '0';
-                if (groupOrdersInput) groupOrdersInput.value = '0';
+            let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
+            if (todayItem) {
+                totalOrdersInput.value = String(todayItem.regular + todayItem.group) || '0';
+                groupOrdersInput.value = String(todayItem.group) || '0';
+            } else {
+                totalOrdersInput.value = '0';
+                groupOrdersInput.value = '0';
             }
             
             calculate(false); 
         }
 
         function calculate(shouldSave = true) {
-            showError(""); if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
-            const totalOrdersStr = totalOrdersInput.value.trim(), groupOrdersStr = groupOrdersInput.value.trim();
+            showError(""); 
+            if (!totalOrdersInput || !groupOrdersInput || !resTotalNum || !resTierBadge) return;
+            
+            const totalOrdersStr = totalOrdersInput.value.trim();
+            const groupOrdersStr = groupOrdersInput.value.trim();
             const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
 
-            let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr), groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
+            let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr);
+            let groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
             
+            // 安全预检：阻断错误数据污染本地库
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
             if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
             if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
 
-            const regularOrdersNum = Math.max(0, totalOrdersNum - groupOrdersNum);
-            if (regularOrdersBadge) regularOrdersBadge.textContent = `常规核算单量: ${regularOrdersNum}单`;
+            const todayRegularNum = Math.max(0, totalOrdersNum - groupOrdersNum);
+            if (regularOrdersBadge) regularOrdersBadge.textContent = `常规核算单量: ${todayRegularNum}单`;
 
-            let regularSubtotal = 0, matchedIndex = -1; imageTiers.sort((a, b) => a.minOrder - b.minOrder);
-            if (regularOrdersNum >= 1) { for (let i = 0; i < imageTiers.length; i++) { if (regularOrdersNum >= imageTiers[i].minOrder) matchedIndex = i; } }
-
-            renderTierCards(matchedIndex, regularOrdersNum);
-
-            let currentPrice = 0;
-            if (matchedIndex !== -1 && regularOrdersNum > 0) {
-                currentPrice = imageTiers[matchedIndex].price; regularSubtotal = regularOrdersNum * currentPrice;
-                resTierBadge.innerHTML = `<i class="ph-bold ph-lightning"></i> ￥${currentPrice.toFixed(2)} / 单`;
-            } else { resTierBadge.textContent = regularOrdersNum === 0 ? "门槛未激活 (0单)" : "门槛未激活"; }
-
-            const groupUnitPrice = 3.20, groupSubtotal = groupOrdersNum * groupUnitPrice, grandTotal = regularSubtotal + groupSubtotal;
-            currentCalculatedTotal = grandTotal;
-            resTotalNum.textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-white mx-1">${regularOrdersNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥${groupUnitPrice.toFixed(2)}</span>`;
-
-            updateProgressEngine(regularOrdersNum, matchedIndex);
-            updateDailyTargetProgress(totalOrdersNum);
-
-            let orderHistory = {};
-            try { orderHistory = JSON.parse(localStorage.getItem('custom_daily_orders_history_v1') || '{}'); } catch(e) {}
-            orderHistory[todayStr] = totalOrdersNum;
+            // 1. 查找或建立今日账单记录
+            let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
+            if (!todayItem) {
+                todayItem = { id: todayStr, type: 'daily', timestamp: formatToDatetimeLocal(new Date()).replace('T', ' '), regular: 0, group: 0, amount: 0, isPunched: false, memo: "日常打卡存入" };
+                historyData.push(todayItem);
+            }
             
-            let monthlyTotal = 0;
-            const currentMonthPrefix = todayStr.substring(0, 7); 
+            // 实时赋入今日单量
+            todayItem.regular = todayRegularNum;
+            todayItem.group = groupOrdersNum;
+
+            // 2. 计算本月跨天累计数据（自动按 YYYY-MM 截断归零）
+            let currentMonthPrefix = todayStr.substring(0, 7);
+            let monthlyRegular = 0, monthlyGroup = 0;
             
-            for (let dateKey in orderHistory) {
-                if (dateKey.startsWith(currentMonthPrefix)) {
-                    monthlyTotal += (orderHistory[dateKey] || 0);
+            historyData.forEach(item => {
+                if (item.id.startsWith(currentMonthPrefix) && item.type === 'daily') {
+                    monthlyRegular += item.regular;
+                    monthlyGroup += item.group;
+                }
+            });
+
+            // 3. 根据【本月累计常规单量】推算此刻阶梯
+            let matchedIndex = -1;
+            imageTiers.sort((a, b) => a.minOrder - b.minOrder);
+            if (monthlyRegular >= 1) {
+                for (let i = 0; i < imageTiers.length; i++) {
+                    if (monthlyRegular >= imageTiers[i].minOrder) matchedIndex = i;
                 }
             }
-            
-            const monthlyCumulativeEl = document.getElementById('monthlyCumulativeOrders');
-            if (monthlyCumulativeEl) monthlyCumulativeEl.textContent = monthlyTotal;
+            let currentPrice = matchedIndex !== -1 ? imageTiers[matchedIndex].price : 0;
+
+            // 4. 时光机：所有本月历史账单，享受全额自动补发！
+            let isPastUpgraded = false;
+            historyData.forEach(item => {
+                if (item.id.startsWith(currentMonthPrefix) && item.type === 'daily') {
+                    let newAmt = item.regular * currentPrice + item.group * 3.20;
+                    if (item.isPunched && item.id !== todayStr && item.amount !== newAmt) {
+                        isPastUpgraded = true; // 探知到了历史追溯动作
+                    }
+                    item.amount = newAmt;
+                }
+            });
 
             if (shouldSave) {
-                try {
-                    localStorage.setItem('custom_daily_orders_history_v1', JSON.stringify(orderHistory));
-                    if (window.localStorage) {
-                        localStorage.setItem('tier_calculator_storage_v3', JSON.stringify({ 
-                            date: todayStr, 
-                            totalOrders: totalOrdersStr, 
-                            groupOrders: groupOrdersStr 
-                        }));
-                        if (saveTip) { saveTip.style.display = 'block'; if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2000); }
-                    }
-                } catch (e) {}
-
-                updateGoalProgress(); 
+                localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+                if (saveTip) { 
+                    saveTip.innerHTML = isPastUpgraded ? '<i class="ph-fill ph-rocket-launch me-1"></i>阶梯已升级！历史追溯补偿成功！' : '<i class="ph-fill ph-check-circle me-1"></i>临时输入进度已记录';
+                    saveTip.className = isPastUpgraded ? "text-center text-xs fw-bold text-danger mt-3" : "text-center text-xs fw-bold text-success mt-3";
+                    saveTip.style.display = 'block'; 
+                    if (saveTimeout) clearTimeout(saveTimeout); 
+                    saveTimeout = setTimeout(() => { saveTip.style.display = 'none'; }, 2500); 
+                }
             }
+
+            // 5. 渲染 UI
+            resTotalNum.textContent = todayItem.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            let monthLabelEl = document.getElementById('monthlyCumulativeOrders');
+            if (monthLabelEl) monthLabelEl.textContent = (monthlyRegular + monthlyGroup);
+
+            renderTierCards(matchedIndex, monthlyRegular);
+
+            if (matchedIndex !== -1) {
+                resTierBadge.innerHTML = `<i class="ph-bold ph-lightning"></i> ￥${currentPrice.toFixed(2)} / 单`;
+            } else { 
+                resTierBadge.textContent = "门槛未激活"; 
+            }
+
+            if (formulaPreview) formulaPreview.innerHTML = `<span>今日常规 <strong class="text-white mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥3.20</span>`;
+
+            updateProgressEngine(monthlyRegular, matchedIndex);
+            updateDailyTargetProgress(totalOrdersNum);
+
+            // 让列表和进度条同步感应所有历史金额的暴涨
+            renderEarningsHistory();
         }
 
-        function updateProgressEngine(regularOrders, matchedIndex) {
+        function updateProgressEngine(monthlyRegularOrders, matchedIndex) {
             if (!tierProgressFill || !tierProgressLabel || !tierProgressDetail) return;
             let progressPct = 100, labelText = "", detailText = "";
             if (imageTiers.length === 0) { tierProgressFill.style.width = '0%'; tierProgressLabel.textContent = '暂无档位标准'; tierProgressDetail.textContent = '0 单'; return; }
-            let nextTier = imageTiers.find(t => t.minOrder > regularOrders);
+            let nextTier = imageTiers.find(t => t.minOrder > monthlyRegularOrders);
             if (matchedIndex === -1) {
-                const firstTier = imageTiers[0]; progressPct = Math.min(100, Math.max(0, (regularOrders / firstTier.minOrder) * 100));
-                labelText = `距升档至 ￥${firstTier.price.toFixed(2)}/单`; detailText = `还差 ${firstTier.minOrder - regularOrders} 单`;
+                const firstTier = imageTiers[0]; progressPct = Math.min(100, Math.max(0, (monthlyRegularOrders / firstTier.minOrder) * 100));
+                labelText = `距本月首档 ￥${firstTier.price.toFixed(2)}/单`; detailText = `还差 ${firstTier.minOrder - monthlyRegularOrders} 单`;
             } else if (nextTier) {
-                const currentTier = imageTiers[matchedIndex], span = nextTier.minOrder - currentTier.minOrder, currentProgress = regularOrders - currentTier.minOrder;
+                const currentTier = imageTiers[matchedIndex], span = nextTier.minOrder - currentTier.minOrder, currentProgress = monthlyRegularOrders - currentTier.minOrder;
                 progressPct = Math.min(100, Math.max(0, (currentProgress / span) * 100));
-                labelText = `距升档至 ￥${nextTier.price.toFixed(2)}/单`; detailText = `还差 ${nextTier.minOrder - regularOrders} 单`;
+                labelText = `距升档至 ￥${nextTier.price.toFixed(2)}/单`; detailText = `还差 ${nextTier.minOrder - monthlyRegularOrders} 单`;
             } else {
                 progressPct = 100; labelText = `🎉 已激活最高溢价档位`; detailText = `顶级单价 ￥${imageTiers[imageTiers.length - 1].price.toFixed(2)}`;
             }
@@ -1350,12 +1113,258 @@
         }
 
         function resetResultDisplay() {
-            currentCalculatedTotal = 0; if (resTotalNum && resTierBadge) { resTotalNum.textContent = "0.00"; resTierBadge.textContent = "等待输入"; }
-            renderTierCards(-1, 0);
+            if (resTotalNum && resTierBadge) { resTotalNum.textContent = "0.00"; resTierBadge.textContent = "等待输入"; }
             updateDailyTargetProgress(0);
         }
 
         function showError(msg) { if (!errorBox) return; if (msg) { errorBox.innerHTML = `<i class="ph-fill ph-warning-circle me-1"></i>${msg}`; errorBox.style.display = 'block'; } else { errorBox.style.display = 'none'; } }
+
+        // =========================
+        // 渲染与持久化核心部分
+        // =========================
+        function renderEarningsHistory() {
+            const container = document.getElementById('earningsHistoryList');
+            const historyCountEl = document.getElementById('historyCount');
+            const accumulatedTotalEl = document.getElementById('accumulatedTotal');
+            const dailyAvgText = document.getElementById('dailyAvgText');
+            if (!container) return;
+            
+            // 筛选出真实的“硬打卡”记录
+            let punchedItems = historyData.filter(i => i.isPunched).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+
+            let totalSum = punchedItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+            let uniqueDays = [...new Set(punchedItems.map(i => i.timestamp.split(' ')[0]))].length;
+            let avg = uniqueDays > 0 ? (totalSum / uniqueDays) : 0;
+
+            historyCountEl.textContent = uniqueDays;
+            accumulatedTotalEl.textContent = `￥${totalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            if (dailyAvgText) dailyAvgText.textContent = `￥${avg.toFixed(2)}`;
+
+            streakDays = 0;
+            if (punchedItems.length > 0) {
+                const dates = [...new Set(punchedItems.map(item => item.timestamp.split(' ')[0]))].sort().reverse();
+                let count = 1;
+                const now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                let lastDate = parseLocalDateString(dates[0]);
+                const diffDaysWithToday = Math.round((today - lastDate) / (1000 * 60 * 60 * 24));
+                if (diffDaysWithToday <= 1) {
+                    for (let i = 0; i < dates.length - 1; i++) {
+                        const curr = parseLocalDateString(dates[i]), prev = parseLocalDateString(dates[i+1]);
+                        if (Math.round((curr - prev) / (1000 * 60 * 60 * 24)) === 1) count++; else break;
+                    }
+                    streakDays = count;
+                }
+            }
+            
+            const streakBadgeTop = document.getElementById('streakBadgeTop');
+            if (streakBadgeTop) streakBadgeTop.innerHTML = `<i class="ph-fill ph-fire me-1"></i>${streakDays}天热浪连胜`;
+
+            updateAntiSlackingStatus();
+
+            if (punchedItems.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-xs text-secondary">暂无金库流水，快去把今日临时账单存入吧！</div>';
+            } else {
+                let html = '';
+                punchedItems.forEach((item) => {
+                    const safeMemo = escapeHTML(item.memo);
+                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
+                    html += `
+                        <div class="earnings-history-item">
+                            <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.timestamp)}${memoHtml}</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="item-amount">${item.amount >= 0 ? '+' : ''}￥${item.amount.toFixed(2)}</span>
+                                <div class="d-flex gap-2">
+                                    <i class="ph-bold ph-pencil-simple text-secondary" style="cursor:pointer;" onclick="openEditEarningsRecord('${item.id}')"></i>
+                                    <i class="ph-bold ph-trash text-danger" style="cursor:pointer;" onclick="deleteEarningsRecord('${item.id}')"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+            updateGoalProgress();
+        }
+
+        function updateGoalProgress() {
+            const goalTitleText = document.getElementById('goalTitleText'), goalDiffStatusText = document.getElementById('goalDiffStatusText'), progressBarFill = document.getElementById('goalProgressBarFill');
+            const goalSavedAmount = document.getElementById('goalSavedAmount'), goalPercentText = document.getElementById('goalPercentText'), goalEstOrders = document.getElementById('goalEstOrders'), goalEstDays = document.getElementById('goalEstDays');
+            const goalCoverImgWrapper = document.getElementById('goalCoverImgWrapper'), goalCoverImg = document.getElementById('goalCoverImg'), goalCoverOverlay = document.getElementById('goalCoverOverlay');
+
+            if (!goalTitleText) return;
+            
+            // 【核心特性】进度条 = 硬打卡总额 + 未打卡的临时游离账单，让用户预感喜悦！
+            let totalSaved = 0; 
+            let temporary = 0; 
+            
+            historyData.forEach(item => {
+                if (item.isPunched) totalSaved += item.amount;
+                else temporary += item.amount;
+            });
+            
+            let effectiveTotal = totalSaved + temporary;
+            
+            let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
+            if (temporary > 0) {
+                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含未打卡￥${temporary.toFixed(0)})</span>`;
+            }
+            goalSavedAmount.innerHTML = htmlSaved;
+
+            if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
+                goalTitleText.textContent = "未设定目标"; goalDiffStatusText.textContent = "请设立";
+                progressBarFill.style.width = "0%"; goalPercentText.textContent = "0%"; goalEstOrders.textContent = "-- 单"; goalEstDays.textContent = "-- 天";
+                if (goalCoverImgWrapper) goalCoverImgWrapper.style.display = 'none'; return;
+            }
+
+            const currentGoal = bigGoals[selectedGoalIndex];
+            goalTitleText.innerHTML = `${escapeHTML(currentGoal.emoji || '🎯')} ${escapeHTML(currentGoal.name)}: <span class="money-font-style">￥${currentGoal.amount.toFixed(2)}</span>`;
+
+            const diff = currentGoal.amount - effectiveTotal, pct = Math.min(100, Math.max(0, (effectiveTotal / currentGoal.amount) * 100));
+
+            if (goalCoverImgWrapper && goalCoverImg && goalCoverOverlay) {
+                if (currentGoal.image) {
+                    goalCoverImg.src = currentGoal.image; goalCoverImgWrapper.style.display = 'block';
+                    if (pct >= 100) { goalCoverOverlay.style.background = 'rgba(16, 185, 129, 0.4)'; goalCoverOverlay.innerHTML = '<i class="ph-fill ph-check-circle fs-5"></i>'; }
+                    else { goalCoverOverlay.style.background = `rgba(0, 0, 0, ${Math.max(0.1, 0.6 - (pct / 200))})`; goalCoverOverlay.innerHTML = `${pct.toFixed(0)}%`; }
+                } else { goalCoverImgWrapper.style.display = 'none'; }
+            }
+
+            progressBarFill.style.width = `${pct}%`; goalPercentText.textContent = `${pct.toFixed(1)}%`;
+            const uniqueDays = [...new Set(historyData.filter(i=>i.isPunched).map(i => i.timestamp.split(' ')[0]))].length;
+            const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
+
+            if (diff < 0) {
+                goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
+                goalDiffStatusText.className = "text-xs fw-bold text-success";
+                progressBarFill.classList.add('completed');
+                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
+            } else if (diff === 0) {
+                goalDiffStatusText.innerHTML = `🏆 完美达成！`;
+                goalDiffStatusText.className = "text-xs fw-bold text-success";
+                progressBarFill.classList.add('completed');
+                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
+            } else {
+                goalDiffStatusText.innerHTML = `距目标 <span class="money-font-style">￥${diff.toFixed(2)}</span>`;
+                goalDiffStatusText.className = "text-xs fw-bold text-danger";
+                progressBarFill.classList.remove('completed');
+                goalEstOrders.textContent = `约 ${Math.ceil(diff / 5.0)} 单`;
+                if (avgDailyEarnings > 0) { goalEstDays.textContent = `约 ${Math.ceil(diff / avgDailyEarnings)} 天`; goalEstDays.className = "stat-value text-warning"; } 
+                else { goalEstDays.textContent = "-- 天"; goalEstDays.className = "stat-value text-secondary"; }
+            }
+        }
+
+        function updateAntiSlackingStatus() {
+            const card = document.getElementById('antiSlackingCard'), warningText = document.getElementById('slackingWarningText');
+            if (!card) return;
+            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
+            const todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
+            
+            if (todayItem && todayItem.isPunched) {
+                card.classList.remove('is-slacking'); card.style.display = 'none'; 
+            } else {
+                card.classList.add('is-slacking'); card.style.display = 'block';
+                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，临时账单必须点【存入】才能保级！` : '今天跑到单后，务必存入金库硬打卡！';
+            }
+        }
+
+        // =========================
+        // 打卡与模态框逻辑
+        // =========================
+        window.recordTodayEarnings = function() {
+            const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
+            let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
+            
+            if (!todayItem || todayItem.amount <= 0) {
+                alert('当前页面计算收益为 0，没有需要存入的内容！');
+                return;
+            }
+            if (todayItem.isPunched) {
+                alert('今日收益金库已经成功打卡！如果您增加了上方单量，金库账单和历史记录已经全自动感应更新拉满，无需反复手动点击存入！');
+                return;
+            }
+
+            todayItem.isPunched = true;
+            todayItem.timestamp = formatToDatetimeLocal(new Date()).replace('T', ' ');
+            localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+            
+            fireConfetti();
+            renderEarningsHistory();
+        };
+
+        window.openCustomDepositModal = function() {
+            document.getElementById('recordModalTitle').textContent = "手动补录/奖励登记";
+            document.getElementById('recordEditIndex').value = "-1";
+            document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
+            document.getElementById('recordModalAmount').value = '';
+            document.getElementById('recordModalMemo').value = '';
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
+        };
+
+        window.openEditEarningsRecord = function(id) {
+            let item = historyData.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('recordModalTitle').textContent = "修正/剥离历史记录";
+            document.getElementById('recordEditIndex').value = id; // 使用严格 ID
+            let dtStr = item.timestamp.replace(' ', 'T');
+            if (dtStr.length > 16) dtStr = dtStr.substring(0, 16); if (dtStr.length === 10) dtStr += "T00:00";
+            document.getElementById('recordModalDateTime').value = dtStr;
+            document.getElementById('recordModalAmount').value = item.amount;
+            document.getElementById('recordModalMemo').value = item.memo || '';
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
+        };
+
+        window.saveRecordFromModal = function() {
+            const editId = document.getElementById('recordEditIndex').value;
+            const dtVal = document.getElementById('recordModalDateTime').value;
+            const amount = parseFloat(document.getElementById('recordModalAmount').value);
+            const memo = document.getElementById('recordModalMemo').value.trim();
+            
+            if (!dtVal) { alert('请选择有效的记录日期！'); return; }
+            if (isNaN(amount) || amount === 0) { alert('请输入有效的金额！'); return; }
+
+            if (editId === "-1") {
+                historyData.push({
+                    id: "custom_" + Date.now(),
+                    type: 'custom',
+                    timestamp: dtVal.replace('T', ' '),
+                    amount: amount,
+                    memo: memo || "补录存入",
+                    isPunched: true
+                });
+                if (amount > 0) fireConfetti();
+            } else {
+                let idx = historyData.findIndex(i => i.id === editId);
+                if (idx !== -1) {
+                    // 【关键保护】如果用户手动篡改了某天的大盘数据金额，将其转换为 custom 类型。
+                    // 这样这笔钱就会冻结固化，不再享受之后的阶梯追溯红利。
+                    historyData[idx].type = 'custom'; 
+                    historyData[idx].timestamp = dtVal.replace('T', ' ');
+                    historyData[idx].amount = amount;
+                    historyData[idx].memo = memo || "手动剥离修正";
+                }
+            }
+            
+            localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+            bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
+            calculate(false); // 重触发全链路核算
+        };
+
+        window.deleteEarningsRecord = function(id) {
+            if (confirm('确定要删除这条金库记录吗？')) {
+                let idx = historyData.findIndex(i => i.id === id);
+                if (idx !== -1) {
+                    const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
+                    // 如果删除的是今天的记录，只取消打卡状态，数据不删。
+                    if (historyData[idx].type === 'daily' && historyData[idx].id === todayStr) {
+                        historyData[idx].isPunched = false;
+                    } else {
+                        historyData.splice(idx, 1);
+                    }
+                    localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+                    calculate(false);
+                }
+            }
+        };
 
         if (totalOrdersInput && groupOrdersInput) {
             totalOrdersInput.addEventListener('input', (e) => { e.target.value = sanitizeInput(e.target.value); calculate(true); });
