@@ -581,46 +581,36 @@
         // ✨ 【核心修复】PWA桌面模式音频生命周期管理 ✨
         // ==========================================
         let globalAudioCtx = null;
-        let isAudioUnlocked = false;
         
+        // 核心解冻函数：每次触发强制复苏
         function unlockAudio() {
             try {
                 if (!globalAudioCtx) {
                     globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                if (globalAudioCtx.state === 'suspended') {
+                if (globalAudioCtx.state === 'suspended' || globalAudioCtx.state === 'interrupted') {
                     globalAudioCtx.resume();
-                }
-                // 强制播放极短的静音波形，彻底绕过 iOS/Android 桌面模式的底层静音锁
-                if (!isAudioUnlocked && globalAudioCtx.state === 'running') {
-                    const osc = globalAudioCtx.createOscillator();
-                    const gain = globalAudioCtx.createGain();
-                    gain.gain.value = 0;
-                    osc.connect(gain);
-                    gain.connect(globalAudioCtx.destination);
-                    osc.start(globalAudioCtx.currentTime);
-                    osc.stop(globalAudioCtx.currentTime + 0.01);
-                    isAudioUnlocked = true;
                 }
             } catch(e) {}
         }
         
-        // 移除 once:true。添加到桌面后，每次切后台音频引擎都会被系统强制冻结
-        // 必须在每次触摸时都保持监听并实时唤醒
-        document.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
-        document.addEventListener('touchend', unlockAudio, { capture: true, passive: true });
-        document.addEventListener('click', unlockAudio, { capture: true, passive: true });
-        
-        // 监听应用切回前台事件，主动唤醒音频
+        // 当应用彻底退到后台时，主动销毁音频引擎，避免被系统封锁成“僵尸进程”
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && globalAudioCtx && globalAudioCtx.state === 'suspended') {
-                globalAudioCtx.resume();
+            if (document.visibilityState === 'hidden' && globalAudioCtx) {
+                try { globalAudioCtx.close(); } catch(e) {}
+                globalAudioCtx = null;
+            } else if (document.visibilityState === 'visible') {
+                unlockAudio(); // 切回来时尝试新建并唤醒
             }
         });
 
+        // 取消单次限制，任何屏幕触摸都会尝试保障引擎活力
+        document.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
+        document.addEventListener('click', unlockAudio, { capture: true, passive: true });
+
         function playChaChingSound() {
             try {
-                unlockAudio(); // 每次播放前强制执行一次检查和唤醒
+                unlockAudio();
                 if (!globalAudioCtx) return;
                 
                 const t = globalAudioCtx.currentTime;
@@ -631,7 +621,7 @@
                 osc.frequency.setValueAtTime(987.77, t); 
                 osc.frequency.setValueAtTime(1318.51, t + 0.08); 
                 
-                // 加入淡入淡出，防止波形生硬截断导致的偶发爆音或吞音
+                // 加入淡入淡出，防止截断爆音
                 gain.gain.setValueAtTime(0, t);
                 gain.gain.linearRampToValueAtTime(0.15, t + 0.02);
                 gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
@@ -641,7 +631,9 @@
                 
                 osc.start(t); 
                 osc.stop(t + 0.35);
-            } catch(e) {}
+            } catch(e) {
+                console.error("Audio Context Engine Error:", e);
+            }
         }
         // ==========================================
 
