@@ -89,6 +89,11 @@
         .hero-header-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
         .hero-badge-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px; }
         .hero-badge-accent { background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.2)); border-color: rgba(52, 211, 153, 0.4); color: #A7F3D0; }
+        
+        /* 🔥 新增：所有可修正元素的点击悬浮反馈 */
+        .clickable-badge { cursor: pointer; transition: all 0.2s ease; border: 1px dashed transparent; }
+        .clickable-badge:hover { transform: scale(1.03); filter: brightness(1.1); background-color: rgba(99, 102, 241, 0.15) !important; color: var(--accent-color) !important; border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
+        .hero-badge-glass.clickable-badge:hover { border-color: rgba(255, 255, 255, 0.5); }
 
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
         .hero-currency-symbol { font-size: 2rem; font-weight: 800; font-family: var(--font-money); color: rgba(255, 255, 255, 0.7); }
@@ -187,7 +192,7 @@
                 <div style="width: 40px; height: 40px; border-radius: 12px; background: var(--accent-light); color: var(--accent-color); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px var(--accent-light);"><i class="ph-fill ph-calculator fs-4"></i></div>
                 <div>
                     <h4 class="mb-0 fw-black fs-6">跑单财富加速器</h4>
-                    <span class="text-xs text-secondary fw-bold">阶梯单量自动追溯系统</span>
+                    <span class="text-xs text-secondary fw-bold">全参数独立动态核算</span>
                 </div>
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
@@ -202,7 +207,11 @@
                     <div class="hero-header-row flex-wrap gap-2 align-items-start">
                         <div class="d-flex flex-wrap gap-2">
                             <span class="hero-badge-glass"><i class="ph-fill ph-sparkle text-warning"></i> 今日核算收益</span>
-                            <span class="hero-badge-glass"><i class="ph-fill ph-calendar-check text-info"></i> 本月累计: <strong id="monthlyCumulativeOrders" class="ms-1 money-font-style text-white">0</strong> <span class="ms-1">单</span></span>
+                            <span class="hero-badge-glass clickable-badge" onclick="editMonthlyBase()" title="点击修正本月外部/初始单量">
+                                <i class="ph-fill ph-calendar-check text-info"></i> 本月累计: 
+                                <strong id="monthlyCumulativeOrders" class="ms-1 money-font-style text-white">0</strong> <span class="ms-1">单</span>
+                                <i class="ph-bold ph-pencil-simple text-white opacity-50 ms-1"></i>
+                            </span>
                         </div>
                         <span id="resTierBadge" class="hero-badge-glass hero-badge-accent ms-auto">匹配中...</span>
                     </div>
@@ -225,7 +234,7 @@
                         <div class="hero-progress-box">
                             <div class="hero-progress-info mb-1 d-flex justify-content-between align-items-center">
                                 <span id="morningTargetLabel"><i class="ph-fill ph-sun me-1 text-warning"></i>上午目标: -- 单</span>
-                                <i class="ph-bold ph-pencil-simple text-white opacity-75" style="cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'" onclick="openDailyTargetModal()" title="设置目标单量"></i>
+                                <i class="ph-bold ph-pencil-simple text-white opacity-75 clickable-badge" onclick="openDailyTargetModal()" title="设置目标单量"></i>
                             </div>
                             <div class="hero-progress-track mb-2">
                                 <div id="morningOrderProgressBar" class="daily-target-fill" style="width: 0%; background: linear-gradient(90deg, #FBBF24, #F59E0B);"></div>
@@ -307,7 +316,9 @@
                         <div class="glass-card">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <label class="text-sm fw-bold text-secondary mb-0">今日拼团单量</label>
-                                <span class="text-xs fw-bold text-secondary opacity-75 money-font-style">固定 ￥3.20</span>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary clickable-badge text-xs rounded-pill money-font-style" onclick="editGroupPrice()" title="点击修改拼团全局单价">
+                                    单价 ￥<span id="groupPriceDisplay">3.20</span> <i class="ph-bold ph-pencil-simple"></i>
+                                </span>
                             </div>
                             <div class="calc-input-group">
                                 <input type="text" inputmode="numeric" id="groupOrders" placeholder="0">
@@ -330,7 +341,7 @@
                             <span class="text-sm fw-bold text-primary">金库硬打卡记录</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 存入今日</button>
+                            <button type="button" class="quick-chip text-white shadow-sm" style="background: linear-gradient(135deg, #10B981, #059669); border:none;" onclick="recordTodayEarnings()"><i class="ph-bold ph-check-circle me-1"></i> 打卡存入</button>
                             <button type="button" class="quick-chip" onclick="openCustomDepositModal()">补录</button>
                         </div>
                     </div>
@@ -497,18 +508,33 @@
                         <label class="form-label text-xs fw-bold text-secondary">记录日期</label>
                         <input type="datetime-local" id="recordModalDateTime" class="form-control money-font-style bg-light">
                     </div>
+                    
+                    <div class="row g-2 mb-3 border border-opacity-25 border-info rounded p-2 bg-info bg-opacity-10">
+                        <div class="col-6">
+                            <label class="form-label text-xs fw-bold text-primary">包含常规单量 (单)</label>
+                            <input type="number" id="recordModalRegular" class="form-control bg-white money-font-style" placeholder="0">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-xs fw-bold text-primary">包含拼团单量 (单)</label>
+                            <input type="number" id="recordModalGroup" class="form-control bg-white money-font-style" placeholder="0">
+                        </div>
+                        <div class="col-12 mt-1">
+                            <span class="text-xs text-info"><i class="ph-fill ph-info"></i> 修改上述单量会影响【本月累计】与阶梯计算</span>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-danger"><i class="ph-bold ph-warning"></i> 注意：纯手动金额将不再享受后续阶梯自动追溯</label>
+                        <label class="form-label text-xs fw-bold text-danger"><i class="ph-bold ph-warning"></i> 锁定修正金额 (手动改钱将不再自动涨价追溯)</label>
                         <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style bg-light text-success fs-5">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-xs fw-bold text-secondary">备注 (例如：额外奖励/特殊补录)</label>
+                        <label class="form-label text-xs fw-bold text-secondary">备注 (例如：平台冲单奖励)</label>
                         <input type="text" id="recordModalMemo" class="form-control bg-light fw-bold" placeholder="手动记账">
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="quick-chip" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="quick-chip text-white" style="background: #10B981; border:none;" onclick="saveRecordFromModal()"><i class="ph-bold ph-check me-1"></i> 保存并剥离重算</button>
+                    <button type="button" class="quick-chip text-white" style="background: #10B981; border:none;" onclick="saveRecordFromModal()"><i class="ph-bold ph-check me-1"></i> 保存重算并入账</button>
                 </div>
             </div>
         </div>
@@ -539,7 +565,10 @@
         let morningOrderTarget = 20; 
         let afternoonOrderTarget = 30; 
 
-        // 🌟 核心数据模型升级：所有数据均存储在这个单一数据源里
+        // 全局自定义单价，默认 3.20
+        let customGroupPrice = parseFloat(localStorage.getItem('custom_group_price_v1')) || 3.20;
+
+        // 🌟 V5 核心数据模型：一切以 historyData 数组为唯一真相
         let historyData = [];
 
         const motivationQuotes = [
@@ -551,7 +580,7 @@
         ];
 
         // ==========================================
-        // ✨ 【核心大修】PWA桌面模式彻底防冻结音频机制
+        // ✨ PWA桌面模式彻底防冻结音频机制
         // ==========================================
         let globalAudioCtx = null;
         
@@ -568,7 +597,6 @@
         
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden' && globalAudioCtx) {
-                // 彻底破除系统冷冻：退入后台时，亲手送走音频引擎，防止变僵尸进程
                 try { globalAudioCtx.close(); } catch(e) {}
                 globalAudioCtx = null;
             } else if (document.visibilityState === 'visible') {
@@ -601,10 +629,9 @@
                 
                 osc.start(t); 
                 osc.stop(t + 0.35);
-            } catch(e) { console.error("Audio Context Engine Error:", e); }
+            } catch(e) {}
         }
         // ==========================================
-
 
         function formatToDatetimeLocal(dateObj) {
             const y = dateObj.getFullYear(), m = String(dateObj.getMonth() + 1).padStart(2, '0'), d = String(dateObj.getDate()).padStart(2, '0');
@@ -621,6 +648,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMotivationMarquee();
             startMidnightCountdown();
+
+            // 初始化自定义固定单价UI
+            document.getElementById('groupPriceDisplay').textContent = customGroupPrice.toFixed(2);
 
             const savedMorning = localStorage.getItem('custom_morning_target_v1');
             if (savedMorning) morningOrderTarget = parseInt(savedMorning, 10) || 20;
@@ -671,6 +701,38 @@
 
             initCalculatorData();
         });
+
+        // 🔥 新增：修改拼团全局单价函数
+        window.editGroupPrice = function() {
+            let p = prompt("请输入您想锁定的拼团/固定单价（元）：", customGroupPrice);
+            if(p !== null) {
+                let parsed = parseFloat(p);
+                if(!isNaN(parsed) && parsed >= 0) {
+                    customGroupPrice = parsed;
+                    localStorage.setItem('custom_group_price_v1', customGroupPrice);
+                    document.getElementById('groupPriceDisplay').textContent = customGroupPrice.toFixed(2);
+                    calculate(true);
+                } else {
+                    alert("请输入有效的数字！");
+                }
+            }
+        };
+
+        // 🔥 新增：修正本月累计基础单量函数
+        window.editMonthlyBase = function() {
+            const currentMonthPrefix = formatToDatetimeLocal(new Date()).substring(0, 7);
+            let currentBase = parseInt(localStorage.getItem('monthly_base_' + currentMonthPrefix)) || 0;
+            let p = prompt("【修正本月起始单量】\n比如您换了设备，或者有几天没记录，可以把漏掉的单量加在这里，用来辅助触发新阶梯：", currentBase);
+            if(p !== null) {
+                let parsed = parseInt(p);
+                if(!isNaN(parsed) && parsed >= 0) {
+                    localStorage.setItem('monthly_base_' + currentMonthPrefix, parsed);
+                    calculate(true);
+                } else {
+                    alert("请输入有效的整数！");
+                }
+            }
+        };
 
         function initMotivationMarquee() {
             const marqueeTrack = document.getElementById('motivationMarquee');
@@ -837,7 +899,7 @@
         function persistTiers() { try { localStorage.setItem('custom_image_tiers_v2', JSON.stringify(imageTiers)); } catch (e) {} }
 
         window.openAddTierModal = function() {
-            document.getElementById('tierModalTitle').textContent = '增设本月阶梯档位'; document.getElementById('editTierIndex').value = '-1';
+            document.getElementById('tierModalTitle').textContent = '增设阶梯档位'; document.getElementById('editTierIndex').value = '-1';
             document.getElementById('tierModalMinOrder').value = ''; document.getElementById('tierModalPrice').value = '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('tierModal')).show();
         };
@@ -942,7 +1004,7 @@
 
 
         // ==========================================
-        // ✨ 全新架构核心：计算与重追溯模型 (V5)
+        // ✨ V5 全新数据重算引擎：支持所有元素修改和回退
         // ==========================================
         const totalOrdersInput = document.getElementById('totalOrders'), groupOrdersInput = document.getElementById('groupOrders');
         const regularOrdersBadge = document.getElementById('regularOrdersBadge'), errorBox = document.getElementById('errorBox'), saveTip = document.getElementById('saveTip');
@@ -987,8 +1049,8 @@
             
             let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
             if (todayItem) {
-                totalOrdersInput.value = String(todayItem.regular + todayItem.group) || '0';
-                groupOrdersInput.value = String(todayItem.group) || '0';
+                totalOrdersInput.value = String((todayItem.regular || 0) + (todayItem.group || 0));
+                groupOrdersInput.value = String(todayItem.group || 0);
             } else {
                 totalOrdersInput.value = '0';
                 groupOrdersInput.value = '0';
@@ -1008,7 +1070,6 @@
             let totalOrdersNum = totalOrdersStr === "" ? 0 : parseFloat(totalOrdersStr);
             let groupOrdersNum = groupOrdersStr === "" ? 0 : parseFloat(groupOrdersStr);
             
-            // 安全预检：阻断错误数据污染本地库
             if (isNaN(totalOrdersNum) || totalOrdersNum < 0 || !Number.isInteger(totalOrdersNum)) { if (totalOrdersStr !== "") { showError("完成总单量必须为有效数字"); resetResultDisplay(); return; } }
             if (isNaN(groupOrdersNum) || groupOrdersNum < 0 || !Number.isInteger(groupOrdersNum)) { if (groupOrdersStr !== "") { showError("拼团单量必须为有效数字"); resetResultDisplay(); return; } }
             if (groupOrdersNum > totalOrdersNum && totalOrdersStr !== "") { showError(`拼团单量（${groupOrdersNum}单）超出了总单量（${totalOrdersNum}单）逻辑不符`); resetResultDisplay(); return; }
@@ -1016,29 +1077,30 @@
             const todayRegularNum = Math.max(0, totalOrdersNum - groupOrdersNum);
             if (regularOrdersBadge) regularOrdersBadge.textContent = `常规核算单量: ${todayRegularNum}单`;
 
-            // 1. 查找或建立今日账单记录
+            // 1. 建立/锁定今日活跃账单
             let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
-            if (!todayItem) {
+            if (!todayItem && (todayRegularNum > 0 || groupOrdersNum > 0)) {
                 todayItem = { id: todayStr, type: 'daily', timestamp: formatToDatetimeLocal(new Date()).replace('T', ' '), regular: 0, group: 0, amount: 0, isPunched: false, memo: "日常打卡存入" };
                 historyData.push(todayItem);
             }
-            
-            // 实时赋入今日单量
-            todayItem.regular = todayRegularNum;
-            todayItem.group = groupOrdersNum;
+            if (todayItem) {
+                todayItem.regular = todayRegularNum;
+                todayItem.group = groupOrdersNum;
+            }
 
-            // 2. 计算本月跨天累计数据（自动按 YYYY-MM 截断归零）
+            // 2. 月度计算 (跨月自动隔离清理)
             let currentMonthPrefix = todayStr.substring(0, 7);
-            let monthlyRegular = 0, monthlyGroup = 0;
+            let monthlyRegular = parseInt(localStorage.getItem('monthly_base_' + currentMonthPrefix)) || 0;
+            let monthlyGroup = 0;
             
             historyData.forEach(item => {
-                if (item.id.startsWith(currentMonthPrefix) && item.type === 'daily') {
-                    monthlyRegular += item.regular;
-                    monthlyGroup += item.group;
+                if (item.timestamp.startsWith(currentMonthPrefix)) {
+                    monthlyRegular += (item.regular || 0);
+                    monthlyGroup += (item.group || 0);
                 }
             });
 
-            // 3. 根据【本月累计常规单量】推算此刻阶梯
+            // 3. 匹配当前终极阶梯
             let matchedIndex = -1;
             imageTiers.sort((a, b) => a.minOrder - b.minOrder);
             if (monthlyRegular >= 1) {
@@ -1048,22 +1110,27 @@
             }
             let currentPrice = matchedIndex !== -1 ? imageTiers[matchedIndex].price : 0;
 
-            // 4. 时光机：所有本月历史账单，享受全额自动补发！
+            // 4. 【时光机系统】自动补发以往所有单量的差价
             let isPastUpgraded = false;
             historyData.forEach(item => {
-                if (item.id.startsWith(currentMonthPrefix) && item.type === 'daily') {
-                    let newAmt = item.regular * currentPrice + item.group * 3.20;
-                    if (item.isPunched && item.id !== todayStr && item.amount !== newAmt) {
-                        isPastUpgraded = true; // 探知到了历史追溯动作
+                if (item.timestamp.startsWith(currentMonthPrefix) && item.type === 'daily') {
+                    let newAmt = (item.regular || 0) * currentPrice + (item.group || 0) * customGroupPrice;
+                    if (item.isPunched && item.id !== todayStr && Math.abs(item.amount - newAmt) > 0.01) {
+                        isPastUpgraded = true;
                     }
                     item.amount = newAmt;
                 }
             });
 
+            let regularSubtotal = todayRegularNum * currentPrice;
+            let groupSubtotal = groupOrdersNum * customGroupPrice;
+            let grandTotal = regularSubtotal + groupSubtotal;
+            currentCalculatedTotal = grandTotal; 
+
             if (shouldSave) {
                 localStorage.setItem('earnings_v5', JSON.stringify(historyData));
                 if (saveTip) { 
-                    saveTip.innerHTML = isPastUpgraded ? '<i class="ph-fill ph-rocket-launch me-1"></i>阶梯已升级！历史追溯补偿成功！' : '<i class="ph-fill ph-check-circle me-1"></i>临时输入进度已记录';
+                    saveTip.innerHTML = isPastUpgraded ? '<i class="ph-fill ph-rocket-launch me-1"></i>阶梯升级！历史打卡记录已全自动按新单价重算补偿！' : '<i class="ph-fill ph-check-circle me-1"></i>临时数据已安全静默防丢失';
                     saveTip.className = isPastUpgraded ? "text-center text-xs fw-bold text-danger mt-3" : "text-center text-xs fw-bold text-success mt-3";
                     saveTip.style.display = 'block'; 
                     if (saveTimeout) clearTimeout(saveTimeout); 
@@ -1071,26 +1138,25 @@
                 }
             }
 
-            // 5. 渲染 UI
-            resTotalNum.textContent = todayItem.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            
+            // 5. 刷新面板
+            resTotalNum.textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             let monthLabelEl = document.getElementById('monthlyCumulativeOrders');
             if (monthLabelEl) monthLabelEl.textContent = (monthlyRegular + monthlyGroup);
 
             renderTierCards(matchedIndex, monthlyRegular);
 
-            if (matchedIndex !== -1) {
+            if (matchedIndex !== -1 && todayRegularNum > 0) {
                 resTierBadge.innerHTML = `<i class="ph-bold ph-lightning"></i> ￥${currentPrice.toFixed(2)} / 单`;
+            } else if (matchedIndex !== -1) {
+                resTierBadge.innerHTML = `<i class="ph-bold ph-lightning"></i> 当前档位 ￥${currentPrice.toFixed(2)}`;
             } else { 
                 resTierBadge.textContent = "门槛未激活"; 
             }
 
-            if (formulaPreview) formulaPreview.innerHTML = `<span>今日常规 <strong class="text-white mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥3.20</span>`;
+            if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-white mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥${customGroupPrice.toFixed(2)}</span>`;
 
             updateProgressEngine(monthlyRegular, matchedIndex);
             updateDailyTargetProgress(totalOrdersNum);
-
-            // 让列表和进度条同步感应所有历史金额的暴涨
             renderEarningsHistory();
         }
 
@@ -1120,7 +1186,7 @@
         function showError(msg) { if (!errorBox) return; if (msg) { errorBox.innerHTML = `<i class="ph-fill ph-warning-circle me-1"></i>${msg}`; errorBox.style.display = 'block'; } else { errorBox.style.display = 'none'; } }
 
         // =========================
-        // 渲染与持久化核心部分
+        // 金库与历史打卡核心
         // =========================
         function renderEarningsHistory() {
             const container = document.getElementById('earningsHistoryList');
@@ -1129,9 +1195,7 @@
             const dailyAvgText = document.getElementById('dailyAvgText');
             if (!container) return;
             
-            // 筛选出真实的“硬打卡”记录
             let punchedItems = historyData.filter(i => i.isPunched).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-
             let totalSum = punchedItems.reduce((sum, item) => sum + (item.amount || 0), 0);
             let uniqueDays = [...new Set(punchedItems.map(i => i.timestamp.split(' ')[0]))].length;
             let avg = uniqueDays > 0 ? (totalSum / uniqueDays) : 0;
@@ -1162,12 +1226,14 @@
             updateAntiSlackingStatus();
 
             if (punchedItems.length === 0) {
-                container.innerHTML = '<div class="text-center py-4 text-xs text-secondary">暂无金库流水，快去把今日临时账单存入吧！</div>';
+                container.innerHTML = '<div class="text-center py-4 text-xs text-secondary">金库空空如也，跑完单别忘了点击【打卡存入】！</div>';
             } else {
                 let html = '';
                 punchedItems.forEach((item) => {
                     const safeMemo = escapeHTML(item.memo);
-                    const memoHtml = safeMemo ? `<span class="badge bg-secondary bg-opacity-10 text-secondary ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
+                    const isManual = item.type === 'custom';
+                    let badgeColor = isManual ? 'bg-danger bg-opacity-10 text-danger' : 'bg-secondary bg-opacity-10 text-secondary';
+                    const memoHtml = safeMemo ? `<span class="badge ${badgeColor} ms-2 rounded-pill px-2 py-1">${safeMemo}</span>` : '';
                     html += `
                         <div class="earnings-history-item">
                             <span class="text-secondary fw-bold"><i class="ph-bold ph-clock me-1"></i>${escapeHTML(item.timestamp)}${memoHtml}</span>
@@ -1193,7 +1259,6 @@
 
             if (!goalTitleText) return;
             
-            // 【核心特性】进度条 = 硬打卡总额 + 未打卡的临时游离账单，让用户预感喜悦！
             let totalSaved = 0; 
             let temporary = 0; 
             
@@ -1206,7 +1271,7 @@
             
             let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
             if (temporary > 0) {
-                htmlSaved += `<span class="text-warning ms-1" style="font-size:0.6rem;">(含未打卡￥${temporary.toFixed(0)})</span>`;
+                htmlSaved += `<br><span class="text-warning" style="font-size:0.6rem;">(含未打卡临时 ￥${temporary.toFixed(2)})</span>`;
             }
             goalSavedAmount.innerHTML = htmlSaved;
 
@@ -1263,23 +1328,20 @@
                 card.classList.remove('is-slacking'); card.style.display = 'none'; 
             } else {
                 card.classList.add('is-slacking'); card.style.display = 'block';
-                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，临时账单必须点【存入】才能保级！` : '今天跑到单后，务必存入金库硬打卡！';
+                warningText.textContent = streakDays > 0 ? `已连胜 ${streakDays} 天，跑完别忘了点击【打卡存入】！` : '今天跑单后，一定要打卡存入记录哦！';
             }
         }
 
-        // =========================
-        // 打卡与模态框逻辑
-        // =========================
         window.recordTodayEarnings = function() {
             const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
             let todayItem = historyData.find(i => i.id === todayStr && i.type === 'daily');
             
             if (!todayItem || todayItem.amount <= 0) {
-                alert('当前页面计算收益为 0，没有需要存入的内容！');
+                alert('当前页面没有收益，请输入单量后再打卡！');
                 return;
             }
             if (todayItem.isPunched) {
-                alert('今日收益金库已经成功打卡！如果您增加了上方单量，金库账单和历史记录已经全自动感应更新拉满，无需反复手动点击存入！');
+                alert('今日收益金库已经成功激活！\n之后你增减任何上方单量，系统均会【全自动】帮你记账，无需再点此按钮！');
                 return;
             }
 
@@ -1292,9 +1354,11 @@
         };
 
         window.openCustomDepositModal = function() {
-            document.getElementById('recordModalTitle').textContent = "手动补录/奖励登记";
+            document.getElementById('recordModalTitle').textContent = "手动增减记录与单量";
             document.getElementById('recordEditIndex').value = "-1";
             document.getElementById('recordModalDateTime').value = formatToDatetimeLocal(new Date());
+            document.getElementById('recordModalRegular').value = 0;
+            document.getElementById('recordModalGroup').value = 0;
             document.getElementById('recordModalAmount').value = '';
             document.getElementById('recordModalMemo').value = '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
@@ -1303,11 +1367,13 @@
         window.openEditEarningsRecord = function(id) {
             let item = historyData.find(i => i.id === id);
             if (!item) return;
-            document.getElementById('recordModalTitle').textContent = "修正/剥离历史记录";
-            document.getElementById('recordEditIndex').value = id; // 使用严格 ID
+            document.getElementById('recordModalTitle').textContent = "修正金库记录与单量";
+            document.getElementById('recordEditIndex').value = id; 
             let dtStr = item.timestamp.replace(' ', 'T');
             if (dtStr.length > 16) dtStr = dtStr.substring(0, 16); if (dtStr.length === 10) dtStr += "T00:00";
             document.getElementById('recordModalDateTime').value = dtStr;
+            document.getElementById('recordModalRegular').value = item.regular || 0;
+            document.getElementById('recordModalGroup').value = item.group || 0;
             document.getElementById('recordModalAmount').value = item.amount;
             document.getElementById('recordModalMemo').value = item.memo || '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
@@ -1317,46 +1383,49 @@
             const editId = document.getElementById('recordEditIndex').value;
             const dtVal = document.getElementById('recordModalDateTime').value;
             const amount = parseFloat(document.getElementById('recordModalAmount').value);
+            const regOrders = parseInt(document.getElementById('recordModalRegular').value) || 0;
+            const grpOrders = parseInt(document.getElementById('recordModalGroup').value) || 0;
             const memo = document.getElementById('recordModalMemo').value.trim();
             
             if (!dtVal) { alert('请选择有效的记录日期！'); return; }
-            if (isNaN(amount) || amount === 0) { alert('请输入有效的金额！'); return; }
+            if (isNaN(amount)) { alert('请输入有效的修正金额！'); return; }
 
             if (editId === "-1") {
                 historyData.push({
                     id: "custom_" + Date.now(),
-                    type: 'custom',
+                    type: 'custom', // custom 将不享受未来阶梯溢价自动追溯
                     timestamp: dtVal.replace('T', ' '),
+                    regular: regOrders,
+                    group: grpOrders,
                     amount: amount,
-                    memo: memo || "补录存入",
+                    memo: memo || "记录补录",
                     isPunched: true
                 });
                 if (amount > 0) fireConfetti();
             } else {
                 let idx = historyData.findIndex(i => i.id === editId);
                 if (idx !== -1) {
-                    // 【关键保护】如果用户手动篡改了某天的大盘数据金额，将其转换为 custom 类型。
-                    // 这样这笔钱就会冻结固化，不再享受之后的阶梯追溯红利。
-                    historyData[idx].type = 'custom'; 
                     historyData[idx].timestamp = dtVal.replace('T', ' ');
+                    historyData[idx].regular = regOrders;
+                    historyData[idx].group = grpOrders;
                     historyData[idx].amount = amount;
-                    historyData[idx].memo = memo || "手动剥离修正";
+                    historyData[idx].memo = memo || "手动修正结账";
+                    historyData[idx].type = 'custom'; // 转换为人工死账，不自动追溯
                 }
             }
             
             localStorage.setItem('earnings_v5', JSON.stringify(historyData));
             bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
-            calculate(false); // 重触发全链路核算
+            calculate(false); 
         };
 
         window.deleteEarningsRecord = function(id) {
-            if (confirm('确定要删除这条金库记录吗？')) {
+            if (confirm('确定要删除这笔金库流水吗？（包含其中的单量也将被移除）')) {
                 let idx = historyData.findIndex(i => i.id === id);
                 if (idx !== -1) {
                     const todayStr = formatToDatetimeLocal(new Date()).split('T')[0];
-                    // 如果删除的是今天的记录，只取消打卡状态，数据不删。
                     if (historyData[idx].type === 'daily' && historyData[idx].id === todayStr) {
-                        historyData[idx].isPunched = false;
+                        historyData[idx].isPunched = false; // 只反注册打卡，保留今日数字
                     } else {
                         historyData.splice(idx, 1);
                     }
