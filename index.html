@@ -172,8 +172,8 @@
                 <div class="marquee-track" id="motivationMarquee"></div>
             </div>
             <div class="d-flex gap-2 flex-shrink-0" style="z-index: 2;">
-                <span class="streak-badge clickable" id="paydayBadgeTop" onclick="editPayday()" title="点击修改发薪日日期">
-                    <i class="ph-fill ph-wallet me-1"></i>--天
+                <span class="streak-badge clickable" id="paydayBadgeTop" onclick="editPayday()" title="点击修改发薪日期">
+                    <i class="ph-fill ph-wallet me-1"></i>--天 --:--:--
                 </span>
                 <span class="streak-badge" id="streakBadgeTop"><i class="ph-fill ph-fire me-1"></i>0 天</span>
             </div>
@@ -571,7 +571,7 @@
         let afternoonOrderTarget = 30; 
         let customGroupPrice = parseFloat(localStorage.getItem('custom_group_price_v1')) || 3.20;
         
-        // 🔥 发薪日变量
+        // 发薪日变量
         let customPayday = parseInt(localStorage.getItem('custom_payday_v1')) || 25;
 
         let historyData = [];
@@ -648,8 +648,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initMotivationMarquee();
-            startMidnightCountdown();
-            updatePaydayCountdown();
+            startGlobalTimers();
 
             document.getElementById('groupPriceDisplay').textContent = customGroupPrice.toFixed(2);
 
@@ -703,7 +702,6 @@
             initCalculatorData();
         });
 
-        // 🔥 修改发薪日功能
         window.editPayday = function() {
             let p = prompt("请输入您每月的发薪日（1-31）：", customPayday);
             if(p !== null) {
@@ -718,33 +716,56 @@
             }
         };
 
-        // 🔥 更新发薪倒计时 UI
+        // 🔥 更新发薪精确到秒的倒计时
         function updatePaydayCountdown() {
-            const now = new Date();
-            const currentDay = now.getDate();
-            let diffDays = 0;
-
-            if (currentDay < customPayday) {
-                diffDays = customPayday - currentDay;
-            } else if (currentDay === customPayday) {
-                diffDays = 0;
-            } else {
-                const currentMonthLastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                diffDays = (currentMonthLastDay - currentDay) + customPayday;
-            }
-
             const paydayBadge = document.getElementById('paydayBadgeTop');
             if (!paydayBadge) return;
 
-            if (diffDays === 0) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const date = now.getDate();
+
+            let targetDate = customPayday;
+            let lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+            if (targetDate > lastDayOfMonth) targetDate = lastDayOfMonth;
+
+            // 如果刚好今天是发薪日
+            if (date === targetDate) {
                 paydayBadge.innerHTML = `<i class="ph-fill ph-confetti me-1"></i>今日发薪！`;
                 paydayBadge.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
                 paydayBadge.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
-            } else {
-                paydayBadge.innerHTML = `<i class="ph-fill ph-wallet me-1"></i>发薪 ${diffDays}天`;
-                paydayBadge.style.background = 'linear-gradient(135deg, #10B981, #059669)';
-                paydayBadge.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                return;
             }
+
+            let targetTime;
+            if (date < targetDate) {
+                targetTime = new Date(year, month, targetDate, 0, 0, 0);
+            } else {
+                let nextMonth = month + 1;
+                let nextYear = year;
+                if (nextMonth > 11) {
+                    nextMonth = 0;
+                    nextYear++;
+                }
+                let lastDayOfNextMonth = new Date(nextYear, nextMonth + 1, 0).getDate();
+                let nextTargetDate = customPayday;
+                if (nextTargetDate > lastDayOfNextMonth) nextTargetDate = lastDayOfNextMonth;
+                targetTime = new Date(nextYear, nextMonth, nextTargetDate, 0, 0, 0);
+            }
+
+            const diffMs = targetTime - now;
+            const d = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const h = String(Math.floor((diffMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+            const m = String(Math.floor((diffMs / 1000 / 60) % 60)).padStart(2, '0');
+            const s = String(Math.floor((diffMs / 1000) % 60)).padStart(2, '0');
+
+            let timeStr = d > 0 ? `${d}天 ${h}:${m}:${s}` : `${h}:${m}:${s}`;
+
+            // 保持等宽数字，防止秒跳动导致的整个徽章抖动
+            paydayBadge.innerHTML = `<i class="ph-fill ph-wallet me-1"></i>发薪 <span class="money-font-style" style="letter-spacing:0;">${timeStr}</span>`;
+            paydayBadge.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+            paydayBadge.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
         }
 
         window.editGroupPrice = function() {
@@ -785,18 +806,26 @@
             marqueeTrack.innerHTML = itemsHtml + itemsHtml;
         }
 
-        function startMidnightCountdown() {
-            function updateClock() {
+        function startGlobalTimers() {
+            function updateTimers() {
+                // 午夜结算倒计时
                 const now = new Date(), midnight = new Date();
                 midnight.setHours(24, 0, 0, 0);
                 const diffMs = midnight - now;
-                if (diffMs <= 0) { document.getElementById('midnightCountdown').textContent = '今日已结算'; return; }
-                const hrs = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
-                const mins = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                const secs = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
-                document.getElementById('midnightCountdown').textContent = `剩余: ${hrs}:${mins}:${secs}`;
+                if (diffMs <= 0) { 
+                    document.getElementById('midnightCountdown').textContent = '今日已结算'; 
+                } else {
+                    const hrs = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
+                    const mins = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                    const secs = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
+                    document.getElementById('midnightCountdown').textContent = `剩余: ${hrs}:${mins}:${secs}`;
+                }
+
+                // 发薪日动态倒计时
+                updatePaydayCountdown();
             }
-            updateClock(); setInterval(updateClock, 1000);
+            updateTimers(); 
+            setInterval(updateTimers, 1000);
         }
 
         function handleGoalImageUpload(event) {
