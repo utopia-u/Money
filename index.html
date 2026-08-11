@@ -11,12 +11,16 @@
 
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const currentHour = new Date().getHours();
-            const isNightTime = currentHour >= 19 || currentHour < 6;
-            if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const currentHour = new Date().getHours();
+                const isNightTime = currentHour >= 19 || currentHour < 6;
+                if (savedTheme === 'dark' || (!savedTheme && isNightTime)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            } catch (e) {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
@@ -547,6 +551,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // 修复：补全隐式声明变量避免严格模式下报错
+        let streakDays = 0;
+        let currentCalculatedTotal = 0;
+        let currentUploadedGoalImgBase64 = "";
+
+        // 修复：补充原本缺失的 fireConfetti 函数实现
+        function fireConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#10B981', '#34D399', '#FDE68A', '#6366F1']
+                });
+            }
+        }
+
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, function(tag) {
@@ -571,7 +592,6 @@
         let afternoonOrderTarget = 30; 
         let customGroupPrice = parseFloat(localStorage.getItem('custom_group_price_v1')) || 3.20;
         
-        // 发薪日变量
         let customPayday = parseInt(localStorage.getItem('custom_payday_v1')) || 25;
 
         let historyData = [];
@@ -688,7 +708,7 @@
                 themeToggle.addEventListener('click', () => {
                     const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                     document.documentElement.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
+                    try { localStorage.setItem('theme', newTheme); } catch(e){}
                     if (themeIcon) {
                         themeIcon.style.transform = 'scale(0) rotate(180deg)';
                         setTimeout(() => {
@@ -708,7 +728,7 @@
                 let parsed = parseInt(p);
                 if(!isNaN(parsed) && parsed >= 1 && parsed <= 31) {
                     customPayday = parsed;
-                    localStorage.setItem('custom_payday_v1', customPayday);
+                    try { localStorage.setItem('custom_payday_v1', customPayday); } catch(e){}
                     updatePaydayCountdown();
                 } else {
                     alert("请输入1到31之间的有效日期！");
@@ -716,7 +736,6 @@
             }
         };
 
-        // 🔥 更新发薪精确到秒的倒计时
         function updatePaydayCountdown() {
             const paydayBadge = document.getElementById('paydayBadgeTop');
             if (!paydayBadge) return;
@@ -730,7 +749,6 @@
             let lastDayOfMonth = new Date(year, month + 1, 0).getDate();
             if (targetDate > lastDayOfMonth) targetDate = lastDayOfMonth;
 
-            // 如果刚好今天是发薪日
             if (date === targetDate) {
                 paydayBadge.innerHTML = `<i class="ph-fill ph-confetti me-1"></i>今日发薪！`;
                 paydayBadge.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
@@ -762,7 +780,6 @@
 
             let timeStr = d > 0 ? `${d}天 ${h}:${m}:${s}` : `${h}:${m}:${s}`;
 
-            // 保持等宽数字，防止秒跳动导致的整个徽章抖动
             paydayBadge.innerHTML = `<i class="ph-fill ph-wallet me-1"></i>发薪 <span class="money-font-style" style="letter-spacing:0;">${timeStr}</span>`;
             paydayBadge.style.background = 'linear-gradient(135deg, #10B981, #059669)';
             paydayBadge.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
@@ -774,7 +791,7 @@
                 let parsed = parseFloat(p);
                 if(!isNaN(parsed) && parsed >= 0) {
                     customGroupPrice = parsed;
-                    localStorage.setItem('custom_group_price_v1', customGroupPrice);
+                    try{ localStorage.setItem('custom_group_price_v1', customGroupPrice); } catch(e){}
                     document.getElementById('groupPriceDisplay').textContent = customGroupPrice.toFixed(2);
                     calculate(true);
                 } else {
@@ -790,7 +807,7 @@
             if(p !== null) {
                 let parsed = parseInt(p);
                 if(!isNaN(parsed) && parsed >= 0) {
-                    localStorage.setItem('monthly_base_' + currentMonthPrefix, parsed);
+                    try { localStorage.setItem('monthly_base_' + currentMonthPrefix, parsed); } catch(e){}
                     calculate(true);
                 } else {
                     alert("请输入有效的整数！");
@@ -808,7 +825,6 @@
 
         function startGlobalTimers() {
             function updateTimers() {
-                // 午夜结算倒计时
                 const now = new Date(), midnight = new Date();
                 midnight.setHours(24, 0, 0, 0);
                 const diffMs = midnight - now;
@@ -820,8 +836,6 @@
                     const secs = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
                     document.getElementById('midnightCountdown').textContent = `剩余: ${hrs}:${mins}:${secs}`;
                 }
-
-                // 发薪日动态倒计时
                 updatePaydayCountdown();
             }
             updateTimers(); 
@@ -866,7 +880,16 @@
             if (currentSelected) { const newIdx = bigGoals.indexOf(currentSelected); selectedGoalIndex = newIdx !== -1 ? newIdx : 0; } else { selectedGoalIndex = 0; }
         }
 
-        function persistGoals() { try { localStorage.setItem('custom_big_goals_v5', JSON.stringify({ goals: bigGoals, selectedIndex: selectedGoalIndex })); } catch (e) {} }
+        function persistGoals() { 
+            // 修复：处理保存突破浏览器 Storage 限制的情况
+            try { 
+                localStorage.setItem('custom_big_goals_v5', JSON.stringify({ goals: bigGoals, selectedIndex: selectedGoalIndex })); 
+            } catch (e) {
+                if (e.name === 'QuotaExceededError' || e.code === 22) {
+                    alert("本地存储空间已满！保存激励图失败，建议移除部分目标图片后再试。");
+                }
+            } 
+        }
 
         function renderGoalChips() {
             const container = document.getElementById('goalChipsContainer'); if (!container) return;
@@ -1069,7 +1092,6 @@
             }
         }
 
-
         const totalOrdersInput = document.getElementById('totalOrders'), groupOrdersInput = document.getElementById('groupOrders');
         const regularOrdersBadge = document.getElementById('regularOrdersBadge'), errorBox = document.getElementById('errorBox'), saveTip = document.getElementById('saveTip');
         const resTotalNum = document.getElementById('resTotalNum'), resTierBadge = document.getElementById('resTierBadge'), tierProgressFill = document.getElementById('tierProgressFill'), tierProgressLabel = document.getElementById('tierProgressLabel'), tierProgressDetail = document.getElementById('tierProgressDetail'), formulaPreview = document.getElementById('formulaPreview');
@@ -1188,7 +1210,9 @@
             currentCalculatedTotal = grandTotal; 
 
             if (shouldSave) {
-                localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+                try {
+                    localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+                } catch(e) {}
                 if (saveTip) { 
                     saveTip.innerHTML = isPastUpgraded ? '<i class="ph-fill ph-rocket-launch me-1"></i>阶梯升级！历史打卡记录已全自动按新单价重算补偿！' : '<i class="ph-fill ph-check-circle me-1"></i>临时数据已安全静默防丢失';
                     saveTip.className = isPastUpgraded ? "text-center text-xs fw-bold text-danger mt-3" : "text-center text-xs fw-bold text-success mt-3";
@@ -1403,7 +1427,7 @@
 
             todayItem.isPunched = true;
             todayItem.timestamp = formatToDatetimeLocal(new Date()).replace('T', ' ');
-            localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+            try { localStorage.setItem('earnings_v5', JSON.stringify(historyData)); } catch(e){}
             
             fireConfetti();
             renderEarningsHistory();
@@ -1470,7 +1494,7 @@
                 }
             }
             
-            localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+            try { localStorage.setItem('earnings_v5', JSON.stringify(historyData)); } catch(e){}
             bootstrap.Modal.getInstance(document.getElementById('recordModal')).hide();
             calculate(false); 
         };
@@ -1485,7 +1509,7 @@
                     } else {
                         historyData.splice(idx, 1);
                     }
-                    localStorage.setItem('earnings_v5', JSON.stringify(historyData));
+                    try { localStorage.setItem('earnings_v5', JSON.stringify(historyData)); } catch(e){}
                     calculate(false);
                 }
             }
@@ -1510,6 +1534,7 @@
                     if (calcValue === '' || calcValue === '错误' || operators.includes(calcValue.slice(-1))) return;
                     try {
                         const cleanedExpr = sanitizeCalcExpression(calcValue);
+                        // 防御性设计：严格限制字符只能包含算数符号，规避任意代码执行（XSS）漏洞
                         if (!/^[0-9+\-*/. ]+$/.test(cleanedExpr)) throw new Error('Invalid');
                         let result = new Function('return ' + cleanedExpr)();
                         if (!isFinite(result)) throw new Error('Infinity');
