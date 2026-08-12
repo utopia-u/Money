@@ -212,6 +212,7 @@
 
         <div class="row g-3">
             <div class="col-12 col-lg-8">
+                
                 <div class="spatial-wealth-hero">
                     <div class="hero-header-row flex-wrap gap-2 align-items-start">
                         <div class="d-flex flex-wrap gap-2">
@@ -261,8 +262,51 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="text-sm fw-bold text-secondary mb-0">今日完成总单量</label>
+                                <span id="regularOrdersBadge" class="badge bg-secondary bg-opacity-10 text-secondary text-xs rounded-pill money-font-style">常规: 0单</span>
+                            </div>
+                            <div class="calc-input-group">
+                                <input type="text" inputmode="numeric" id="totalOrders" placeholder="0">
+                                <span class="input-suffix">单</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button type="button" class="quick-chip money-font-style" style="background: var(--accent-color); color: white;" onclick="addTotalOrders(1)">+1</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(5)">+5</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(10)">+10</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-1)">-1</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-5)">-5</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearOrders()"><i class="ph-bold ph-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="text-sm fw-bold text-secondary mb-0">今日拼团单量</label>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary clickable-badge text-xs rounded-pill money-font-style" onclick="editGroupPrice()" title="点击修改拼团全局单价">
+                                    单价 ￥<span id="groupPriceDisplay">3.20</span> <i class="ph-bold ph-pencil-simple"></i>
+                                </span>
+                            </div>
+                            <div class="calc-input-group">
+                                <input type="text" inputmode="numeric" id="groupOrders" placeholder="0">
+                                <span class="input-suffix">单</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <button type="button" class="quick-chip money-font-style" style="background: var(--accent-color); color: white;" onclick="addGroupOrders(1)">+1</button>
+                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(5)">+5</button>
+                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addGroupOrders(-1)">-1</button>
+                                <button type="button" class="quick-chip text-danger" onclick="clearGroupOrders()"><i class="ph-bold ph-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="formula-preview-pill mb-3">
-                    <span><i class="ph-fill ph-receipt me-1"></i> 今日计算核算</span>
+                    <span><i class="ph-fill ph-receipt me-1"></i> 今日实时核算</span>
                     <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
                 </div>
 
@@ -296,49 +340,6 @@
                             <div class="goal-stat-item"><span class="stat-label">完成百分比</span><span class="stat-value text-primary" id="goalPercentText">0%</span></div>
                             <div class="goal-stat-item"><span class="stat-label">预计还需跑</span><span class="stat-value text-danger" id="goalEstOrders">-- 单</span></div>
                             <div class="goal-stat-item"><span class="stat-label">按日均约需</span><span class="stat-value text-warning" id="goalEstDays">-- 天</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-12 col-md-6">
-                        <div class="glass-card">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="text-sm fw-bold text-secondary mb-0">今日完成总单量</label>
-                                <span id="regularOrdersBadge" class="badge bg-secondary bg-opacity-10 text-secondary text-xs rounded-pill money-font-style">常规: 0单</span>
-                            </div>
-                            <div class="calc-input-group">
-                                <input type="text" inputmode="numeric" id="totalOrders" placeholder="0">
-                                <span class="input-suffix">单</span>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(1)">+1</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(5)">+5</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addTotalOrders(10)">+10</button>
-                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-1)">-1</button>
-                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addTotalOrders(-5)">-5</button>
-                                <button type="button" class="quick-chip text-danger" onclick="clearOrders()"><i class="ph-bold ph-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="glass-card">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="text-sm fw-bold text-secondary mb-0">今日拼团单量</label>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary clickable-badge text-xs rounded-pill money-font-style" onclick="editGroupPrice()" title="点击修改拼团全局单价">
-                                    单价 ￥<span id="groupPriceDisplay">3.20</span> <i class="ph-bold ph-pencil-simple"></i>
-                                </span>
-                            </div>
-                            <div class="calc-input-group">
-                                <input type="text" inputmode="numeric" id="groupOrders" placeholder="0">
-                                <span class="input-suffix">单</span>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(1)">+1</button>
-                                <button type="button" class="quick-chip money-font-style" onclick="addGroupOrders(5)">+5</button>
-                                <button type="button" class="quick-chip text-danger money-font-style" onclick="addGroupOrders(-1)">-1</button>
-                                <button type="button" class="quick-chip text-danger" onclick="clearGroupOrders()"><i class="ph-bold ph-trash"></i></button>
-                            </div>
                         </div>
                     </div>
                 </div>
