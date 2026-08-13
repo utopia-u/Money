@@ -68,8 +68,9 @@
         body { background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed; color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px; padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        .money-text-gradient { background: linear-gradient(135deg, #34D399, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-        [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #A7F3D0, #34D399, #10B981); text-shadow: 0 4px 16px rgba(52, 211, 153, 0.25); }
+        /* -------------------------- 财富红渐变文字 -------------------------- */
+        .money-text-gradient { background: linear-gradient(135deg, #FF7875, #FF4D4F, #F5222D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(245, 34, 45, 0.2); }
+        [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #FFA39E, #FF7875, #FF4D4F); text-shadow: 0 4px 16px rgba(255, 120, 117, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
         .motivation-banner { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
@@ -90,7 +91,6 @@
         @keyframes fluidAurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .spatial-wealth-hero { position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; transition: background 0.3s ease; }
         .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; z-index: 1;}
-        /* 新增：自定义背景的样式 */
         .spatial-wealth-hero.has-custom-bg { animation: none !important; }
         .spatial-wealth-hero.has-custom-bg::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1; border-radius: inherit; }
 
@@ -104,7 +104,9 @@
 
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
         .hero-currency-symbol { font-size: 2rem; font-weight: 800; font-family: var(--font-money); color: rgba(255, 255, 255, 0.7); }
-        .hero-amount-number { font-family: var(--font-money) !important; font-size: 4rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1; background: linear-gradient(to bottom, #FFFFFF 20%, #A7F3D0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4)); }
+        
+        /* -------------------------- 英雄卡片主数字 财富红渐变 -------------------------- */
+        .hero-amount-number { font-family: var(--font-money) !important; font-size: 4rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1; background: linear-gradient(to bottom, #FFFFFF 20%, #FF7875 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4)); }
 
         .hero-progress-box { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 10px 14px; position: relative; z-index: 2; }
         .hero-progress-track { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
@@ -144,7 +146,10 @@
         .earnings-history-list::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 4px; opacity: 0.3; }
         .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s; }
         .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
-        .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: var(--success-color); font-size: 1rem; }
+        
+        /* -------------------------- 历史记录金额 财富红 -------------------------- */
+        .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: #FF4D4F; font-size: 1rem; }
+        [data-theme="dark"] .earnings-history-item .item-amount { color: #FF7875; }
         
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -546,7 +551,7 @@
 
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-danger"><i class="ph-bold ph-warning"></i> 锁定修正金额 (手动改钱将不再自动涨价追溯)</label>
-                        <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style bg-light text-success fs-5">
+                        <input type="number" step="0.01" id="recordModalAmount" class="form-control money-font-style bg-light text-danger fs-5">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-xs fw-bold text-secondary">备注 (例如：平台冲单奖励)</label>
@@ -573,7 +578,7 @@
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#10B981', '#34D399', '#FDE68A', '#6366F1']
+                    colors: ['#FF4D4F', '#FF7875', '#FDE68A', '#F5222D'] // 稍微把纸屑的颜色也加入红色元素
                 });
             }
         }
@@ -856,8 +861,8 @@
             let timeStr = d > 0 ? `${d}天 ${h}:${m}:${s}` : `${h}:${m}:${s}`;
 
             paydayBadge.innerHTML = `<i class="ph-fill ph-wallet me-1"></i>发薪 <span class="money-font-style" style="letter-spacing:0;">${timeStr}</span>`;
-            paydayBadge.style.background = 'linear-gradient(135deg, #10B981, #059669)';
-            paydayBadge.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+            paydayBadge.style.background = 'linear-gradient(135deg, #FF4D4F, #F5222D)';
+            paydayBadge.style.boxShadow = '0 4px 12px rgba(245, 34, 45, 0.3)';
         }
 
         window.editGroupPrice = function() {
