@@ -88,8 +88,11 @@
         .app-header { padding: 12px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
         @keyframes fluidAurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .spatial-wealth-hero { position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; }
-        .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; }
+        .spatial-wealth-hero { position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; transition: background 0.3s ease; }
+        .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; z-index: 1;}
+        /* 新增：自定义背景的样式 */
+        .spatial-wealth-hero.has-custom-bg { animation: none !important; }
+        .spatial-wealth-hero.has-custom-bg::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1; border-radius: inherit; }
 
         .hero-header-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
         .hero-badge-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px; }
@@ -97,7 +100,7 @@
         
         .clickable-badge { cursor: pointer; transition: all 0.2s ease; border: 1px dashed transparent; }
         .clickable-badge:hover { transform: scale(1.03); filter: brightness(1.1); background-color: rgba(99, 102, 241, 0.15) !important; color: var(--accent-color) !important; border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
-        .hero-badge-glass.clickable-badge:hover { border-color: rgba(255, 255, 255, 0.5); }
+        .hero-badge-glass.clickable-badge:hover { border-color: rgba(255, 255, 255, 0.5); color: #fff !important; }
 
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
         .hero-currency-symbol { font-size: 2rem; font-weight: 800; font-family: var(--font-money); color: rgba(255, 255, 255, 0.7); }
@@ -171,6 +174,8 @@
 <body>
 
     <div class="app-layout">
+        <input type="file" id="heroBgInput" class="d-none" accept="image/*" onchange="handleHeroBgUpload(event)">
+
         <div class="motivation-banner">
             <div class="marquee-container me-2">
                 <div class="marquee-track" id="motivationMarquee"></div>
@@ -221,6 +226,12 @@
                                 <i class="ph-fill ph-calendar-check text-info"></i> 本月累计: 
                                 <strong id="monthlyCumulativeOrders" class="ms-1 money-font-style text-white">0</strong> <span class="ms-1">单</span>
                                 <i class="ph-bold ph-pencil-simple text-white opacity-50 ms-1"></i>
+                            </span>
+                            <span class="hero-badge-glass clickable-badge" onclick="document.getElementById('heroBgInput').click()" title="设置专属金额背景图">
+                                <i class="ph-fill ph-image text-white opacity-75"></i> 自定义背景
+                            </span>
+                            <span id="clearHeroBgBtn" class="hero-badge-glass clickable-badge" style="display: none; border-color: rgba(239,68,68,0.3);" onclick="clearHeroBg()" title="恢复默认动态背景">
+                                <i class="ph-bold ph-trash text-danger"></i>
                             </span>
                         </div>
                         <span id="resTierBadge" class="hero-badge-glass hero-badge-accent ms-auto">匹配中...</span>
@@ -718,8 +729,73 @@
                 });
             }
 
+            // 初始化背景图
+            const savedHeroBg = localStorage.getItem('custom_hero_bg_v1');
+            if (savedHeroBg) {
+                applyHeroBg(savedHeroBg);
+            }
+
             initCalculatorData();
         });
+
+        // ================= 背景图处理逻辑 =================
+        window.handleHeroBgUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let w = img.width, h = img.height; 
+                    const maxDim = 800; // 设置合理的分辨率防止爆缓存
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; } 
+                        else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+                    }
+                    const canvas = document.createElement('canvas'); 
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d'); 
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    try {
+                        localStorage.setItem('custom_hero_bg_v1', compressedBase64);
+                        applyHeroBg(compressedBase64);
+                    } catch(err) {
+                        alert("存储空间不足，请尝试上传更小的图片！");
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.applyHeroBg = function(base64) {
+            const heroEl = document.querySelector('.spatial-wealth-hero');
+            const clearBtn = document.getElementById('clearHeroBgBtn');
+            if (base64) {
+                heroEl.style.backgroundImage = `url(${base64})`;
+                heroEl.style.backgroundSize = 'cover';
+                heroEl.style.backgroundPosition = 'center';
+                heroEl.classList.add('has-custom-bg');
+                if(clearBtn) clearBtn.style.display = 'inline-flex';
+            } else {
+                heroEl.style.backgroundImage = '';
+                heroEl.style.backgroundSize = '';
+                heroEl.style.backgroundPosition = '';
+                heroEl.classList.remove('has-custom-bg');
+                if(clearBtn) clearBtn.style.display = 'none';
+            }
+        };
+
+        window.clearHeroBg = function() {
+            if(confirm("确定要移除自定义背景图，恢复为极光动态背景吗？")) {
+                localStorage.removeItem('custom_hero_bg_v1');
+                document.getElementById('heroBgInput').value = '';
+                applyHeroBg('');
+            }
+        };
+        // ================= 背景图处理结束 =================
 
         window.editPayday = function() {
             let p = prompt("请输入您每月的发薪日（1-31）：", customPayday);
@@ -802,7 +878,6 @@
         window.editMonthlyBase = function() {
             const currentMonthPrefix = formatToDatetimeLocal(new Date()).substring(0, 7);
             
-            // 1. 统计当前系统内已打卡记录的真实单量（包含常规单与拼团单）
             let historyRegular = 0;
             let historyGroup = 0;
             historyData.forEach(item => {
@@ -812,24 +887,20 @@
                 }
             });
             
-            // 2. 加上现有的补漏基础值，计算出当前屏幕上展示的总数
             let currentBase = parseInt(localStorage.getItem('monthly_base_' + currentMonthPrefix)) || 0;
             let currentTotal = currentBase + historyRegular + historyGroup;
 
-            // 3. 让用户直接输入期望的【最终总数字】
             let p = prompt("【直接修改本月总单量】\n请输入您本月目前的实际总单量（系统会自动计算差额补齐）：", currentTotal);
             
             if(p !== null) {
                 let parsed = parseInt(p);
                 if(!isNaN(parsed) && parsed >= 0) {
-                    // 4. 逆向计算：新的后台补漏值 = 用户想要的总数 - 已打卡的历史单量
                     let newBase = parsed - historyRegular - historyGroup;
                     
                     try { 
                         localStorage.setItem('monthly_base_' + currentMonthPrefix, newBase); 
                     } catch(e) {}
                     
-                    // 重新核算数据并刷新界面
                     calculate(true);
                 } else {
                     alert("请输入大于等于 0 的有效整数！");
