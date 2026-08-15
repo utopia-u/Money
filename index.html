@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>阶梯单量计算器 - 2026全息财富版</title>
+    <title>阶梯单量计算器 - 2026全息财富极速版</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -64,66 +64,115 @@
             --success-bg: rgba(52, 211, 153, 0.15);
         }
 
-        html, body { touch-action: manipulation; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        body { background-color: var(--bg-body); background-image: var(--bg-body-gradient); background-attachment: fixed; color: var(--text-primary); font-family: var(--font-sans) !important; padding: 12px; padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); min-height: 100vh; }
+        /* 零延迟与手势性能优化 */
+        html, body { 
+            touch-action: manipulation; 
+            scroll-behavior: smooth; 
+            -webkit-font-smoothing: antialiased; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        body { 
+            background-color: var(--bg-body); 
+            background-image: var(--bg-body-gradient); 
+            background-attachment: fixed; 
+            color: var(--text-primary); 
+            font-family: var(--font-sans) !important; 
+            padding: 12px; 
+            padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px)); 
+            min-height: 100vh; 
+        }
         .app-layout { max-width: 1000px; margin: 0 auto; }
 
-        /* -------------------------- 财富红渐变文字 -------------------------- */
+        /* 金额文字渐变 */
         .money-text-gradient { background: linear-gradient(135deg, #FF7875, #FF4D4F, #F5222D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: var(--font-money) !important; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 12px rgba(245, 34, 45, 0.2); }
         [data-theme="dark"] .money-text-gradient { background: linear-gradient(135deg, #FFA39E, #FF7875, #FF4D4F); text-shadow: 0 4px 16px rgba(255, 120, 117, 0.25); }
         .money-font-style { font-family: var(--font-money) !important; font-weight: 800; font-variant-numeric: tabular-nums;}
 
         .motivation-banner { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); color: var(--text-primary); border-radius: var(--radius-pill); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
         .marquee-container { display: flex; align-items: center; overflow: hidden; width: 100%; height: 22px; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);}
-        .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; }
+        .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 30s linear infinite; will-change: transform; }
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
 
-        .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; transition: all 0.2s ease; }
-        .streak-badge.clickable:hover { transform: scale(1.05); filter: brightness(1.1); cursor: pointer; }
+        .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; transition: transform 0.15s ease; cursor: pointer; user-select: none; }
+        .streak-badge:active { transform: scale(0.95); }
 
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .glass-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transform: skewX(-20deg); animation: glass-shine 8s infinite; }
         @keyframes glass-shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .app-header { padding: 12px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
         @keyframes fluidAurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .spatial-wealth-hero { position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; transition: background 0.3s ease; }
+        
+        .spatial-wealth-hero { 
+            position: relative; 
+            background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); 
+            background-size: 300% 300%; 
+            animation: fluidAurora 18s ease infinite; 
+            padding: 24px; 
+            border-radius: var(--radius-lg); 
+            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            margin-bottom: 16px; 
+            color: #ffffff; 
+            will-change: background-position;
+        }
         .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; z-index: 1;}
-        .spatial-wealth-hero.has-custom-bg { animation: none !important; }
-        /* 降低了毛玻璃模糊度(blur从4px降为1px)和遮罩层浓度(0.55降为0.35)，让图片更清晰 */
-        .spatial-wealth-hero.has-custom-bg::before { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); z-index: 1; border-radius: inherit; }
+        .spatial-wealth-hero.has-custom-bg { 
+            animation: none !important; 
+            background-position: var(--bg-pos-x, 50%) var(--bg-pos-y, 50%) !important; 
+        }
+        .spatial-wealth-hero.has-custom-bg::before { 
+            content: ''; position: absolute; inset: 0; 
+            background: rgba(0, 0, 0, var(--bg-overlay-opacity, 0.35)); 
+            backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); 
+            z-index: 1; border-radius: inherit;
+        }
 
         .hero-header-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
         .hero-badge-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px; }
         .hero-badge-accent { background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.2)); border-color: rgba(52, 211, 153, 0.4); color: #A7F3D0; }
         
-        .clickable-badge { cursor: pointer; transition: all 0.2s ease; border: 1px dashed transparent; }
-        .clickable-badge:hover { transform: scale(1.03); filter: brightness(1.1); background-color: rgba(99, 102, 241, 0.15) !important; color: var(--accent-color) !important; border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
-        .hero-badge-glass.clickable-badge:hover { border-color: rgba(255, 255, 255, 0.5); color: #fff !important; }
+        /* 点按无延迟 */
+        .clickable-badge { cursor: pointer; transition: transform 0.1s ease; border: 1px dashed transparent; user-select: none; }
+        .clickable-badge:active { transform: scale(0.95) !important; }
 
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
         .hero-currency-symbol { font-size: 2rem; font-weight: 800; font-family: var(--font-money); color: rgba(255, 255, 255, 0.7); }
-        
-        /* -------------------------- 英雄卡片主数字 财富红渐变 -------------------------- */
         .hero-amount-number { font-family: var(--font-money) !important; font-size: 4rem; font-weight: 900; letter-spacing: -1.5px; line-height: 1; background: linear-gradient(to bottom, #FFFFFF 20%, #FF7875 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.4)); }
 
         .hero-progress-box { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); padding: 10px 14px; position: relative; z-index: 2; }
         .hero-progress-track { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
-        .hero-progress-fill { height: 100%; background: linear-gradient(90deg, #FDE68A, #34D399); border-radius: var(--radius-pill); width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px rgba(52, 211, 153, 0.6); }
-        .daily-target-fill { height: 100%; border-radius: var(--radius-pill); width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hero-progress-fill { height: 100%; background: linear-gradient(90deg, #FDE68A, #34D399); border-radius: var(--radius-pill); width: 0%; transition: width 0.3s ease; box-shadow: 0 0 12px rgba(52, 211, 153, 0.6); }
+        .daily-target-fill { height: 100%; border-radius: var(--radius-pill); width: 0%; transition: width 0.3s ease; }
         .hero-progress-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
 
         .calc-input-group { position: relative; width: 100%; margin-bottom: 8px; }
-        .calc-input-group input { width: 100%; height: 48px; padding: 4px 40px 4px 16px; border: 2px solid transparent; background: rgba(var(--bg-surface-rgb), 0.4); border-radius: var(--radius-md); font-size: 1.25rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .calc-input-group input { width: 100%; height: 48px; padding: 4px 40px 4px 16px; border: 2px solid transparent; background: rgba(var(--bg-surface-rgb), 0.4); border-radius: var(--radius-md); font-size: 1.25rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); transition: all 0.2s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         [data-theme="dark"] .calc-input-group input { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); }
         .calc-input-group input:focus { outline: none; border-color: var(--accent-color); background: var(--bg-body); box-shadow: 0 0 0 4px var(--accent-light); }
         .calc-input-group .input-suffix { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); pointer-events: none; }
 
-        .quick-chip { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(8px); }
-        .quick-chip:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); border-color: var(--accent-color); color: var(--accent-color); }
-        .quick-chip:active { transform: scale(0.96); }
+        /* 零延迟按钮 */
+        .quick-chip { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            color: var(--text-primary); 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            padding: 6px 14px; 
+            border-radius: var(--radius-pill); 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 4px; 
+            backdrop-filter: blur(8px); 
+            user-select: none;
+            transition: transform 0.08s ease, background-color 0.15s ease;
+        }
+        .quick-chip:active { transform: scale(0.92) !important; opacity: 0.85; }
         .quick-chip.active { background: var(--accent-color); color: #FFFFFF; border-color: var(--accent-color); box-shadow: 0 4px 12px var(--accent-light); }
 
         .formula-preview-pill { background: rgba(var(--bg-surface-rgb), 0.3); border: 1px dashed var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; }
@@ -132,40 +181,55 @@
         .goal-banner-card { background: rgba(var(--bg-surface-rgb), 0.2); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 16px; margin-top: 12px; }
         .goal-cover-img-wrapper { position: relative; width: 72px; height: 72px; border-radius: var(--radius-md); overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
         .goal-cover-img { width: 100%; height: 100%; object-fit: cover; }
-        .goal-cover-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(2px); transition: all 0.3s ease; }
+        .goal-cover-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(2px); transition: all 0.2s ease; }
         .goal-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
         .goal-stat-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 8px 4px; text-align: center; }
         .goal-stat-item .stat-label { font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); display: block; }
         .goal-stat-item .stat-value { font-size: 0.95rem; font-weight: 900; font-family: var(--font-money); margin-top: 4px; display: block; }
         .goal-progress-bar-bg { height: 10px; background: rgba(0,0,0,0.05); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
         [data-theme="dark"] .goal-progress-bar-bg { background: rgba(255,255,255,0.05); }
-        .goal-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.5s ease; }
+        .goal-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: var(--radius-pill); transition: width 0.3s ease; }
         .goal-progress-bar-fill.completed { background: linear-gradient(90deg, #F59E0B, #10B981); box-shadow: 0 0 12px rgba(16,185,129,0.5); }
 
         .earnings-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
         .earnings-history-list::-webkit-scrollbar { width: 4px; }
         .earnings-history-list::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 4px; opacity: 0.3; }
-        .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; transition: transform 0.2s; }
-        .earnings-history-item:hover { transform: translateX(2px); background: var(--glass-bg); }
+        .earnings-history-item { display: flex; justify-content: space-between; align-items: center; background: rgba(var(--bg-surface-rgb), 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; }
         
-        /* -------------------------- 历史记录金额 财富红 -------------------------- */
         .earnings-history-item .item-amount { font-weight: 900; font-family: var(--font-money); color: #FF4D4F; font-size: 1rem; }
         [data-theme="dark"] .earnings-history-item .item-amount { color: #FF7875; }
         
         .tier-roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 576px) { .tier-roadmap-grid { grid-template-columns: repeat(3, 1fr); } }
-        .tier-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 12px; text-align: center; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tier-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 12px; text-align: center; position: relative; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .tier-card .tier-range { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
         .tier-card .tier-price { font-size: 1.3rem; font-weight: 900; font-family: var(--font-money); color: var(--text-primary); }
-        .tier-card.is-active { background: var(--accent-light); border-color: var(--accent-color); box-shadow: 0 8px 24px var(--accent-light); transform: translateY(-4px); }
+        .tier-card.is-active { background: var(--accent-light); border-color: var(--accent-color); box-shadow: 0 8px 24px var(--accent-light); transform: translateY(-2px); }
         .tier-card.is-active::after { content: '✓ 匹配档位'; position: absolute; top: -10px; right: 50%; transform: translateX(50%); background: var(--accent-color); color: #FFF; font-size: 0.65rem; font-weight: 800; padding: 2px 10px; border-radius: var(--radius-pill); box-shadow: 0 4px 12px var(--accent-light); white-space: nowrap; }
 
         .calculator-wrapper { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 16px; width: 100%; max-width: 320px; margin: 0 auto; box-shadow: var(--glass-shadow); backdrop-filter: blur(20px); }
         #calcDisplay { width: 100%; height: 56px; margin-bottom: 12px; text-align: right; font-size: 1.8rem; font-family: var(--font-money); padding: 8px 16px; border: none; border-radius: var(--radius-lg); background: rgba(0,0,0,0.04); color: var(--text-primary); font-weight: 800; box-shadow: inset 0 2px 6px rgba(0,0,0,0.05); }
         [data-theme="dark"] #calcDisplay { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { height: 48px; font-size: 1.25rem; font-family: var(--font-money); font-weight: 800; border: 1px solid var(--glass-border); border-radius: var(--radius-md); background: rgba(var(--bg-surface-rgb), 0.4); color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease; }
-        .calc-btn:active { transform: scale(0.92); }
+        
+        /* 高频独立计算盘点按零延迟 */
+        .calc-btn { 
+            height: 48px; 
+            font-size: 1.25rem; 
+            font-family: var(--font-money); 
+            font-weight: 800; 
+            border: 1px solid var(--glass-border); 
+            border-radius: var(--radius-md); 
+            background: rgba(var(--bg-surface-rgb), 0.4); 
+            color: var(--text-primary); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            user-select: none;
+            transition: transform 0.05s ease, background-color 0.1s ease; 
+        }
+        .calc-btn:active { transform: scale(0.9) !important; opacity: 0.8; }
         .calc-op { color: var(--accent-color); background: var(--accent-light); border-color: transparent; }
         .calc-clear { color: var(--danger-text); background: var(--danger-bg); border-color: transparent; }
         .calc-equal { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: #FFF; border: none; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); grid-row: span 2; height: 100%; border-radius: var(--radius-md); }
@@ -175,11 +239,41 @@
         .anti-slacking-card { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 12px; backdrop-filter: blur(10px); }
         .anti-slacking-card.is-slacking { animation: danger-pulse 2.5s infinite ease-in-out; }
         @keyframes danger-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        
+        .custom-range { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 99px; outline: none; margin: 8px 0; }
+        [data-theme="dark"] .custom-range { background: rgba(255,255,255,0.1); }
+        .custom-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-color); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+        /* 沉浸式透明微调面板：调节背景时避开英雄卡片 */
+        .modal.immersion-mode {
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .modal.immersion-mode .modal-dialog {
+            pointer-events: auto;
+            margin-top: auto !important;
+            margin-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+        }
+        .modal.immersion-mode .modal-content {
+            background: rgba(15, 23, 42, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .modal.immersion-mode .text-primary, .modal.immersion-mode .text-secondary {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+        .modal-backdrop.immersion-backdrop {
+            opacity: 0 !important;
+        }
     </style>
 </head>
 <body>
 
     <div class="app-layout">
+        <!-- 隐藏的背景图上传组件 -->
         <input type="file" id="heroBgInput" class="d-none" accept="image/*" onchange="handleHeroBgUpload(event)">
 
         <div class="motivation-banner">
@@ -187,7 +281,7 @@
                 <div class="marquee-track" id="motivationMarquee"></div>
             </div>
             <div class="d-flex gap-2 flex-shrink-0" style="z-index: 2;">
-                <span class="streak-badge clickable" id="paydayBadgeTop" onclick="editPayday()" title="点击修改发薪日期">
+                <span class="streak-badge" id="paydayBadgeTop" onclick="editPayday()" title="点击修改发薪日期">
                     <i class="ph-fill ph-wallet me-1"></i>--天 --:--:--
                 </span>
                 <span class="streak-badge" id="streakBadgeTop"><i class="ph-fill ph-fire me-1"></i>0 天</span>
@@ -217,7 +311,7 @@
             </div>
             <button id="themeToggle" class="btn border-0 rounded-circle d-flex align-items-center justify-content-center" 
                     style="width: 40px; height: 40px; background: var(--bg-body); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); color: var(--text-primary);" aria-label="切换深浅主题">
-                <i class="ph-fill ph-moon fs-5" style="transition: transform 0.3s ease;"></i>
+                <i class="ph-fill ph-moon fs-5" style="transition: transform 0.2s ease;"></i>
             </button>
         </header>
 
@@ -233,8 +327,13 @@
                                 <strong id="monthlyCumulativeOrders" class="ms-1 money-font-style text-white">0</strong> <span class="ms-1">单</span>
                                 <i class="ph-bold ph-pencil-simple text-white opacity-50 ms-1"></i>
                             </span>
+                            
+                            <!-- 背景图配置按钮组 -->
                             <span class="hero-badge-glass clickable-badge" onclick="document.getElementById('heroBgInput').click()" title="设置专属金额背景图">
                                 <i class="ph-fill ph-image text-white opacity-75"></i> 自定义背景
+                            </span>
+                            <span id="bgSettingsBtn" class="hero-badge-glass clickable-badge" style="display: none;" onclick="openBgSettingsModal()" title="背景高级设置">
+                                <i class="ph-bold ph-sliders text-white"></i> 调整
                             </span>
                             <span id="clearHeroBgBtn" class="hero-badge-glass clickable-badge" style="display: none; border-color: rgba(239,68,68,0.3);" onclick="clearHeroBg()" title="恢复默认动态背景">
                                 <i class="ph-bold ph-trash text-danger"></i>
@@ -416,6 +515,50 @@
                 </div>
                 <div id="saveTip" class="text-center text-xs fw-bold text-success mt-3" style="display:none;"><i class="ph-fill ph-check-circle me-1"></i>临时数据已安全静默防丢失</div>
                 <div id="errorBox" class="text-center text-xs fw-bold text-danger mt-2" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 背景高级设置：底部沉浸式调图面板（不遮挡顶部卡片） -->
+    <div class="modal fade immersion-mode" id="bgSettingsModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-black fs-6"><i class="ph-fill ph-sliders text-warning me-1"></i> 背景图像实时调节</h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="cancelBgSettings()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label text-xs fw-bold mb-0">水平位置</label>
+                                <span class="text-xs money-font-style" id="bgPosXLabel">50%</span>
+                            </div>
+                            <input type="range" class="custom-range" id="bgPosXInput" min="0" max="100" value="50">
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label text-xs fw-bold mb-0">垂直位置</label>
+                                <span class="text-xs money-font-style" id="bgPosYLabel">50%</span>
+                            </div>
+                            <input type="range" class="custom-range" id="bgPosYInput" min="0" max="100" value="50">
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label text-xs fw-bold mb-0">压暗程度 (保证数字清晰)</label>
+                                <span class="text-xs money-font-style" id="bgOverlayLabel">35%</span>
+                            </div>
+                            <input type="range" class="custom-range" id="bgOverlayInput" min="0" max="1" step="0.01" value="0.35">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+                    <span class="text-xs opacity-75 text-decoration-underline" style="cursor: pointer;" onclick="resetBgSettings()">重置</span>
+                    <div>
+                        <button type="button" class="quick-chip text-white me-2" style="background:rgba(255,255,255,0.2);" onclick="cancelBgSettings()">取消</button>
+                        <button type="button" class="quick-chip active" onclick="saveBgSettings()">保存设置</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -610,6 +753,151 @@
         
         let customPayday = parseInt(localStorage.getItem('custom_payday_v1')) || 25;
 
+        // ================= 背景图调节系统 =================
+        let bgSettings = { x: 50, y: 50, overlay: 0.35 };
+
+        function loadBgSettings() {
+            try {
+                const saved = localStorage.getItem('custom_hero_bg_settings_v1');
+                if (saved) {
+                    bgSettings = Object.assign(bgSettings, JSON.parse(saved));
+                }
+            } catch (e) {}
+            applyBgSettingsToCSS();
+        }
+
+        function applyBgSettingsToCSS() {
+            const heroEl = document.querySelector('.spatial-wealth-hero');
+            if(heroEl) {
+                heroEl.style.setProperty('--bg-pos-x', `${bgSettings.x}%`);
+                heroEl.style.setProperty('--bg-pos-y', `${bgSettings.y}%`);
+                heroEl.style.setProperty('--bg-overlay-opacity', bgSettings.overlay);
+            }
+        }
+
+        window.openBgSettingsModal = function() {
+            document.getElementById('bgPosXInput').value = bgSettings.x;
+            document.getElementById('bgPosYInput').value = bgSettings.y;
+            document.getElementById('bgOverlayInput').value = bgSettings.overlay;
+            
+            document.getElementById('bgPosXLabel').textContent = `${bgSettings.x}%`;
+            document.getElementById('bgPosYLabel').textContent = `${bgSettings.y}%`;
+            document.getElementById('bgOverlayLabel').textContent = `${Math.round(bgSettings.overlay * 100)}%`;
+            
+            // 自动置顶视角：滑动页面让卡片清晰展现
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const modalEl = document.getElementById('bgSettingsModal');
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.show();
+
+            // 移除模态框黑色遮罩，方便实时预览
+            setTimeout(() => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.classList.add('immersion-backdrop');
+            }, 50);
+        };
+
+        // 绑定滑块事件
+        document.getElementById('bgPosXInput').addEventListener('input', function(e) {
+            document.querySelector('.spatial-wealth-hero').style.setProperty('--bg-pos-x', `${e.target.value}%`);
+            document.getElementById('bgPosXLabel').textContent = `${e.target.value}%`;
+        });
+        document.getElementById('bgPosYInput').addEventListener('input', function(e) {
+            document.querySelector('.spatial-wealth-hero').style.setProperty('--bg-pos-y', `${e.target.value}%`);
+            document.getElementById('bgPosYLabel').textContent = `${e.target.value}%`;
+        });
+        document.getElementById('bgOverlayInput').addEventListener('input', function(e) {
+            document.querySelector('.spatial-wealth-hero').style.setProperty('--bg-overlay-opacity', e.target.value);
+            document.getElementById('bgOverlayLabel').textContent = `${Math.round(e.target.value * 100)}%`;
+        });
+
+        window.resetBgSettings = function() {
+            document.getElementById('bgPosXInput').value = 50;
+            document.getElementById('bgPosYInput').value = 50;
+            document.getElementById('bgOverlayInput').value = 0.35;
+            
+            document.getElementById('bgPosXInput').dispatchEvent(new Event('input'));
+            document.getElementById('bgPosYInput').dispatchEvent(new Event('input'));
+            document.getElementById('bgOverlayInput').dispatchEvent(new Event('input'));
+        };
+
+        window.saveBgSettings = function() {
+            bgSettings.x = document.getElementById('bgPosXInput').value;
+            bgSettings.y = document.getElementById('bgPosYInput').value;
+            bgSettings.overlay = document.getElementById('bgOverlayInput').value;
+            localStorage.setItem('custom_hero_bg_settings_v1', JSON.stringify(bgSettings));
+            bootstrap.Modal.getInstance(document.getElementById('bgSettingsModal')).hide();
+        };
+
+        window.cancelBgSettings = function() {
+            applyBgSettingsToCSS();
+            const modalEl = document.getElementById('bgSettingsModal');
+            if (modalEl) {
+                const modalInst = bootstrap.Modal.getInstance(modalEl);
+                if (modalInst) modalInst.hide();
+            }
+        };
+
+        window.handleHeroBgUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let w = img.width, h = img.height; 
+                    const maxDim = 1200; 
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; } 
+                        else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+                    }
+                    const canvas = document.createElement('canvas'); 
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d'); 
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9);
+                    
+                    try {
+                        localStorage.setItem('custom_hero_bg_v1', compressedBase64);
+                        applyHeroBg(compressedBase64);
+                    } catch(err) {
+                        alert("存储空间不足，请尝试上传更小的图片！");
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.applyHeroBg = function(base64) {
+            const heroEl = document.querySelector('.spatial-wealth-hero');
+            const clearBtn = document.getElementById('clearHeroBgBtn');
+            const settingsBtn = document.getElementById('bgSettingsBtn');
+            
+            if (base64) {
+                heroEl.style.backgroundImage = `url(${base64})`;
+                heroEl.style.backgroundSize = 'cover';
+                heroEl.classList.add('has-custom-bg');
+                if(clearBtn) clearBtn.style.display = 'inline-flex';
+                if(settingsBtn) settingsBtn.style.display = 'inline-flex';
+            } else {
+                heroEl.style.backgroundImage = '';
+                heroEl.style.backgroundSize = '';
+                heroEl.classList.remove('has-custom-bg');
+                if(clearBtn) clearBtn.style.display = 'none';
+                if(settingsBtn) settingsBtn.style.display = 'none';
+            }
+        };
+
+        window.clearHeroBg = function() {
+            if(confirm("确定要移除自定义背景图，恢复为极光动态背景吗？")) {
+                localStorage.removeItem('custom_hero_bg_v1');
+                document.getElementById('heroBgInput').value = '';
+                applyHeroBg('');
+            }
+        };
+
         let historyData = [];
 
         const motivationQuotes = [
@@ -685,6 +973,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMotivationMarquee();
             startGlobalTimers();
+            loadBgSettings();
 
             document.getElementById('groupPriceDisplay').textContent = customGroupPrice.toFixed(2);
 
@@ -741,66 +1030,14 @@
             }
 
             initCalculatorData();
+            
+            const bgSettingsModalEl = document.getElementById('bgSettingsModal');
+            if(bgSettingsModalEl) {
+                bgSettingsModalEl.addEventListener('hide.bs.modal', function () {
+                    applyBgSettingsToCSS(); 
+                });
+            }
         });
-
-        // ================= 背景图处理逻辑 =================
-        window.handleHeroBgUpload = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    let w = img.width, h = img.height; 
-                    const maxDim = 1200; // 提高分辨率上限（原800），让图片更清晰
-                    if (w > maxDim || h > maxDim) {
-                        if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; } 
-                        else { w = Math.round(w * (maxDim / h)); h = maxDim; }
-                    }
-                    const canvas = document.createElement('canvas'); 
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d'); 
-                    ctx.drawImage(img, 0, 0, w, h);
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9); // 提高压缩画质，原为0.8
-                    
-                    try {
-                        localStorage.setItem('custom_hero_bg_v1', compressedBase64);
-                        applyHeroBg(compressedBase64);
-                    } catch(err) {
-                        alert("存储空间不足，请尝试上传更小的图片！");
-                    }
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.applyHeroBg = function(base64) {
-            const heroEl = document.querySelector('.spatial-wealth-hero');
-            const clearBtn = document.getElementById('clearHeroBgBtn');
-            if (base64) {
-                heroEl.style.backgroundImage = `url(${base64})`;
-                heroEl.style.backgroundSize = 'cover';
-                heroEl.style.backgroundPosition = 'center';
-                heroEl.classList.add('has-custom-bg');
-                if(clearBtn) clearBtn.style.display = 'inline-flex';
-            } else {
-                heroEl.style.backgroundImage = '';
-                heroEl.style.backgroundSize = '';
-                heroEl.style.backgroundPosition = '';
-                heroEl.classList.remove('has-custom-bg');
-                if(clearBtn) clearBtn.style.display = 'none';
-            }
-        };
-
-        window.clearHeroBg = function() {
-            if(confirm("确定要移除自定义背景图，恢复为极光动态背景吗？")) {
-                localStorage.removeItem('custom_hero_bg_v1');
-                document.getElementById('heroBgInput').value = '';
-                applyHeroBg('');
-            }
-        };
-        // ================= 背景图处理结束 =================
 
         window.editPayday = function() {
             let p = prompt("请输入您每月的发薪日（1-31）：", customPayday);
