@@ -28,8 +28,7 @@
 
     <style>
         :root {
-            /* 修复变量丢失 Bug：补全表层背景 RGB */
-            --bg-surface-rgb: 255, 255, 255;
+            var(--bg-surface-rgb): 255, 255, 255;
             
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -52,7 +51,6 @@
         }
 
         [data-theme="dark"] {
-            /* 修复变量丢失 Bug：补全表层背景 RGB */
             --bg-surface-rgb: 30, 30, 35;
 
             --bg-body: #050507;
@@ -417,7 +415,6 @@
 
                 <div class="formula-preview-pill mb-3">
                     <span><i class="ph-fill ph-receipt me-1"></i> 今日实时核算</span>
-                    <!-- 修复了浅色模式下 text-white 导致文字不可见的 BUG，统一替换为 text-danger -->
                     <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
                 </div>
 
@@ -818,9 +815,9 @@
         };
 
         window.saveBgSettings = function() {
-            bgSettings.x = document.getElementById('bgPosXInput').value;
-            bgSettings.y = document.getElementById('bgPosYInput').value;
-            bgSettings.overlay = document.getElementById('bgOverlayInput').value;
+            bgSettings.x = parseFloat(document.getElementById('bgPosXInput').value);
+            bgSettings.y = parseFloat(document.getElementById('bgPosYInput').value);
+            bgSettings.overlay = parseFloat(document.getElementById('bgOverlayInput').value);
             localStorage.setItem('custom_hero_bg_settings_v1', JSON.stringify(bgSettings));
             bootstrap.Modal.getInstance(document.getElementById('bgSettingsModal')).hide();
         };
@@ -1565,7 +1562,6 @@
                 resTierBadge.textContent = "门槛未激活"; 
             }
 
-            // 修复 Bug：统一替换内部的 text-white 为 text-danger 解决浅色模式隐身问题
             if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-danger mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-danger mx-1">${groupOrdersNum}</strong> 单 × ￥${customGroupPrice.toFixed(2)}</span>`;
 
             updateProgressEngine(monthlyRegular, matchedIndex);
@@ -1670,19 +1666,15 @@
             if (!goalTitleText) return;
             
             let totalSaved = 0; 
-            let temporary = 0; 
             
             historyData.forEach(item => {
                 if (item.isPunched) totalSaved += item.amount;
-                else temporary += item.amount;
             });
             
-            let effectiveTotal = totalSaved + temporary;
+            // 修复进度条计算：只读取真正存入金库里的钱，不再包含今日临时跑单未打卡的钱
+            let effectiveTotal = totalSaved;
             
             let htmlSaved = `￥${effectiveTotal.toFixed(2)}`;
-            if (temporary > 0) {
-                htmlSaved += `<br><span class="text-warning" style="font-size:0.6rem;">(含未打卡临时 ￥${temporary.toFixed(2)})</span>`;
-            }
             goalSavedAmount.innerHTML = htmlSaved;
 
             if (bigGoals.length === 0 || selectedGoalIndex < 0 || selectedGoalIndex >= bigGoals.length) {
@@ -1708,13 +1700,8 @@
             const uniqueDays = [...new Set(historyData.filter(i=>i.isPunched).map(i => i.timestamp.split(' ')[0]))].length;
             const avgDailyEarnings = uniqueDays > 0 ? (totalSaved / uniqueDays) : 0;
 
-            if (diff < 0) {
-                goalDiffStatusText.innerHTML = `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>`;
-                goalDiffStatusText.className = "text-xs fw-bold text-success";
-                progressBarFill.classList.add('completed');
-                goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
-            } else if (diff === 0) {
-                goalDiffStatusText.innerHTML = `🏆 完美达成！`;
+            if (diff <= 0) {
+                goalDiffStatusText.innerHTML = diff < 0 ? `🎉 已超越 <span class="money-font-style">￥${Math.abs(diff).toFixed(2)}</span>` : `🏆 完美达成！`;
                 goalDiffStatusText.className = "text-xs fw-bold text-success";
                 progressBarFill.classList.add('completed');
                 goalEstOrders.textContent = "目标已达成"; goalEstDays.textContent = "完美！"; goalEstDays.className = "stat-value text-success";
@@ -1784,7 +1771,7 @@
             document.getElementById('recordModalDateTime').value = dtStr;
             document.getElementById('recordModalRegular').value = item.regular || 0;
             document.getElementById('recordModalGroup').value = item.group || 0;
-            // 修复精度Bug：编辑金额时强制保留两位小数，避免渲染长尾浮点数
+            // 强制修复浮点数问题，保证修改框不报错
             document.getElementById('recordModalAmount').value = (item.amount || 0).toFixed(2);
             document.getElementById('recordModalMemo').value = item.memo || '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
