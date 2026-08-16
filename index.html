@@ -28,6 +28,9 @@
 
     <style>
         :root {
+            /* 修复变量丢失 Bug：补全表层背景 RGB */
+            --bg-surface-rgb: 255, 255, 255;
+            
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
             --font-money: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 
@@ -49,6 +52,9 @@
         }
 
         [data-theme="dark"] {
+            /* 修复变量丢失 Bug：补全表层背景 RGB */
+            --bg-surface-rgb: 30, 30, 35;
+
             --bg-body: #050507;
             --bg-body-gradient: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             --glass-bg: rgba(20, 20, 25, 0.55);
@@ -94,7 +100,7 @@
         @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-item { display: inline-flex; align-items: center; padding-right: 50px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
 
-        .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; transition: transform 0.15s ease; cursor: pointer; user-select: none; }
+        .streak-badge { background: linear-gradient(135deg, #FF6B6B, #EF4444); color: white; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 800; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); flex-shrink: 0; z-index: 2; transition: transform 0.15s ease; cursor: pointer; user-select: none; -webkit-user-select: none; }
         .streak-badge:active { transform: scale(0.95); }
 
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); padding: 18px; position: relative; overflow: hidden; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -105,19 +111,9 @@
 
         @keyframes fluidAurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
+        /* ------------- 自定义背景CSS变量支持 ------------- */
         .spatial-wealth-hero { 
-            position: relative; 
-            background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); 
-            background-size: 300% 300%; 
-            animation: fluidAurora 18s ease infinite; 
-            padding: 24px; 
-            border-radius: var(--radius-lg); 
-            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); 
-            overflow: hidden; 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            margin-bottom: 16px; 
-            color: #ffffff; 
-            will-change: background-position;
+            position: relative; background: linear-gradient(125deg, #0f172a, #1e1b4b, #064e3b, #312e81, #0f172a); background-size: 300% 300%; animation: fluidAurora 18s ease infinite; padding: 24px; border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 16px; color: #ffffff; transition: background 0.3s ease; will-change: background-position;
         }
         .spatial-wealth-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"); pointer-events: none; mix-blend-mode: overlay; z-index: 1;}
         .spatial-wealth-hero.has-custom-bg { 
@@ -128,15 +124,14 @@
             content: ''; position: absolute; inset: 0; 
             background: rgba(0, 0, 0, var(--bg-overlay-opacity, 0.35)); 
             backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); 
-            z-index: 1; border-radius: inherit;
+            z-index: 1; border-radius: inherit; transition: background 0.1s ease;
         }
 
         .hero-header-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
         .hero-badge-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-flex; align-items: center; gap: 6px; }
         .hero-badge-accent { background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.2)); border-color: rgba(52, 211, 153, 0.4); color: #A7F3D0; }
         
-        /* 点按无延迟 */
-        .clickable-badge { cursor: pointer; transition: transform 0.1s ease; border: 1px dashed transparent; user-select: none; }
+        .clickable-badge { cursor: pointer; transition: transform 0.1s ease; border: 1px dashed transparent; user-select: none; -webkit-user-select: none; }
         .clickable-badge:active { transform: scale(0.95) !important; }
 
         .hero-amount-wrapper { margin: 12px 0 16px 0; position: relative; z-index: 2; display: flex; align-items: baseline; gap: 6px; }
@@ -155,7 +150,6 @@
         .calc-input-group input:focus { outline: none; border-color: var(--accent-color); background: var(--bg-body); box-shadow: 0 0 0 4px var(--accent-light); }
         .calc-input-group .input-suffix { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); pointer-events: none; }
 
-        /* 零延迟按钮 */
         .quick-chip { 
             background: var(--glass-bg); 
             border: 1px solid var(--glass-border); 
@@ -170,12 +164,13 @@
             gap: 4px; 
             backdrop-filter: blur(8px); 
             user-select: none;
+            -webkit-user-select: none;
             transition: transform 0.08s ease, background-color 0.15s ease;
         }
         .quick-chip:active { transform: scale(0.92) !important; opacity: 0.85; }
         .quick-chip.active { background: var(--accent-color); color: #FFFFFF; border-color: var(--accent-color); box-shadow: 0 4px 12px var(--accent-light); }
 
-        .formula-preview-pill { background: rgba(var(--bg-surface-rgb), 0.3); border: 1px dashed var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; }
+        .formula-preview-pill { background: rgba(var(--bg-surface-rgb), 0.4); border: 1px dashed var(--glass-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; }
         .formula-preview-pill .formula-code { color: var(--accent-color); font-weight: 800; font-family: var(--font-money); }
 
         .goal-banner-card { background: rgba(var(--bg-surface-rgb), 0.2); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 16px; margin-top: 12px; }
@@ -212,7 +207,6 @@
         [data-theme="dark"] #calcDisplay { background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         
-        /* 高频独立计算盘点按零延迟 */
         .calc-btn { 
             height: 48px; 
             font-size: 1.25rem; 
@@ -227,6 +221,7 @@
             justify-content: center; 
             cursor: pointer; 
             user-select: none;
+            -webkit-user-select: none;
             transition: transform 0.05s ease, background-color 0.1s ease; 
         }
         .calc-btn:active { transform: scale(0.9) !important; opacity: 0.8; }
@@ -244,7 +239,6 @@
         [data-theme="dark"] .custom-range { background: rgba(255,255,255,0.1); }
         .custom-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-color); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 
-        /* 沉浸式透明微调面板：调节背景时避开英雄卡片 */
         .modal.immersion-mode {
             pointer-events: none;
             background: transparent !important;
@@ -423,6 +417,7 @@
 
                 <div class="formula-preview-pill mb-3">
                     <span><i class="ph-fill ph-receipt me-1"></i> 今日实时核算</span>
+                    <!-- 修复了浅色模式下 text-white 导致文字不可见的 BUG，统一替换为 text-danger -->
                     <span id="formulaPreview" class="formula-code">0单 × ￥0.00 + 0单 × ￥3.20</span>
                 </div>
 
@@ -782,7 +777,7 @@
             
             document.getElementById('bgPosXLabel').textContent = `${bgSettings.x}%`;
             document.getElementById('bgPosYLabel').textContent = `${bgSettings.y}%`;
-            document.getElementById('bgOverlayLabel').textContent = `${Math.round(bgSettings.overlay * 100)}%`;
+            document.getElementById('bgOverlayLabel').textContent = `${Math.round(parseFloat(bgSettings.overlay) * 100)}%`;
             
             // 自动置顶视角：滑动页面让卡片清晰展现
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -809,7 +804,7 @@
         });
         document.getElementById('bgOverlayInput').addEventListener('input', function(e) {
             document.querySelector('.spatial-wealth-hero').style.setProperty('--bg-overlay-opacity', e.target.value);
-            document.getElementById('bgOverlayLabel').textContent = `${Math.round(e.target.value * 100)}%`;
+            document.getElementById('bgOverlayLabel').textContent = `${Math.round(parseFloat(e.target.value) * 100)}%`;
         });
 
         window.resetBgSettings = function() {
@@ -1570,7 +1565,8 @@
                 resTierBadge.textContent = "门槛未激活"; 
             }
 
-            if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-white mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-white mx-1">${groupOrdersNum}</strong> 单 × ￥${customGroupPrice.toFixed(2)}</span>`;
+            // 修复 Bug：统一替换内部的 text-white 为 text-danger 解决浅色模式隐身问题
+            if (formulaPreview) formulaPreview.innerHTML = `<span>常规 <strong class="text-danger mx-1">${todayRegularNum}</strong> 单 × ￥${currentPrice.toFixed(2)}</span> + <span>拼团 <strong class="text-danger mx-1">${groupOrdersNum}</strong> 单 × ￥${customGroupPrice.toFixed(2)}</span>`;
 
             updateProgressEngine(monthlyRegular, matchedIndex);
             updateDailyTargetProgress(totalOrdersNum);
@@ -1788,7 +1784,8 @@
             document.getElementById('recordModalDateTime').value = dtStr;
             document.getElementById('recordModalRegular').value = item.regular || 0;
             document.getElementById('recordModalGroup').value = item.group || 0;
-            document.getElementById('recordModalAmount').value = item.amount;
+            // 修复精度Bug：编辑金额时强制保留两位小数，避免渲染长尾浮点数
+            document.getElementById('recordModalAmount').value = (item.amount || 0).toFixed(2);
             document.getElementById('recordModalMemo').value = item.memo || '';
             bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show();
         };
